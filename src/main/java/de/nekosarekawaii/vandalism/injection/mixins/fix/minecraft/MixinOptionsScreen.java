@@ -18,21 +18,15 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.widget.AxisGridWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.LockButtonWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.UpdateDifficultyLockC2SPacket;
-import net.minecraft.text.Text;
-import net.minecraft.world.Difficulty;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -42,28 +36,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(OptionsScreen.class)
 public abstract class MixinOptionsScreen {
-
-    @Shadow
-    private CyclingButtonWidget<Difficulty> difficultyButton;
-
-    @Unique
-    private static Text vandalism$addEaZy(final Text text) {
-        return Text.literal(text.getString().replace("Easy", "EaZy"));
-    }
-
-    @Inject(method = "init", at = @At("RETURN"))
-    private void changeDifficultyButtonText(final CallbackInfo ci) {
-        if (this.difficultyButton != null) {
-            this.difficultyButton.setMessage(vandalism$addEaZy(this.difficultyButton.getMessage()));
-        }
-    }
-
-    @Inject(method = "method_39487", at = @At("HEAD"))
-    private static void changeDifficultyButtonText2(final MinecraftClient minecraftClient, final CyclingButtonWidget button, final Difficulty difficulty, final CallbackInfo ci) {
-        if (difficulty == Difficulty.EASY) {
-           button.setMessage(vandalism$addEaZy(button.getMessage()));
-        }
-    }
 
     @Inject(method = "lockDifficulty", at = @At("HEAD"), cancellable = true)
     private void removeLockDifficultyFunction(final boolean difficultyLocked, final CallbackInfo ci) {
