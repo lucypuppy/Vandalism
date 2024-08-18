@@ -192,7 +192,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new AutoToolModule(),
                 new AntiFireballModule(),
                 new InventoryMoveModule(),
-                new TranslatorModule()
+                new TranslatorModule(),
+                new KaboomFuckerModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
