@@ -132,6 +132,7 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        // TODO: Fix target selection
         if (this.target == null) {
             final Stream<AbstractClientPlayerEntity> players = this.mc.world.getPlayers().stream();
             this.target = players.sorted(Comparator.comparingDouble(player -> this.mc.player.distanceTo(player))).
