@@ -197,7 +197,9 @@ public class KaboomFuckerModule extends AbstractModule implements PlayerUpdateLi
         }
 
         final String username = this.mc.session.getUsername();
-        this.mc.getNetworkHandler().sendChatCommand("op " + username);
+        if (this.mc.player.getPermissionLevel() < 4) {
+            this.mc.getNetworkHandler().sendChatCommand("op " + username);
+        }
 
         final List<String> commands = new ArrayList<>();
 
