@@ -23,6 +23,7 @@ import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.feature.creativetab.impl.ConsoleSpamItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.TrollItemsCreativeTab;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
@@ -53,7 +54,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
         this.add(
                 // new CrashItemsCreativeTab(),
                 // new KickItemsCreativeTab(),
-                // new ConsoleSpamItemsCreativeTab(),
+                new ConsoleSpamItemsCreativeTab(),
                 new GriefItemsCreativeTab(),
                 new TrollItemsCreativeTab()
         );

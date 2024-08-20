@@ -18,29 +18,25 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
-import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BeehiveBlockEntity;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
+
 public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
-
-    // TODO: Fix
-
-    private static final String HACKED =
-            "888    888        d8888  .d8888b.  888    d8P  8888888888 8888888b.  \n" +
-                    "888    888       d88888 d88P  Y88b 888   d8P   888        888  \"Y88b \n" +
-                    "888    888      d88P888 888    888 888  d8P    888        888    888 \n" +
-                    "8888888888     d88P 888 888        888d88K     8888888    888    888 \n" +
-                    "888    888    d88P  888 888        8888888b    888        888    888 \n" +
-                    "888    888   d88P   888 888    888 888  Y88b   888        888    888 \n" +
-                    "888    888  d8888888888 Y88b  d88P 888   Y88b  888        888  .d88P \n" +
-                    "888    888 d88P     888  \"Y8888P\"  888    Y88b 8888888888 8888888P\"\n" +
-                    "\n[You have been hacked with " + FabricBootstrap.MOD_NAME + "]\n\n" +
-                    "\033c\u001b[32m" + "\n".repeat(10) + "\n\u0007";
 
     public ConsoleSpamItemsCreativeTab() {
         super(Text.literal("Console Spam Items"), Items.SPECTRAL_ARROW);
@@ -48,124 +44,92 @@ public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
 
     @Override
     public void exposeItems(final List<ItemStack> items) {
-       /* items.add(withClientSide(createServerConsoleErrorArrow(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Arrow")));
+        items.add(withClientSide(createServerConsoleErrorArrow(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Arrow")));
         items.add(withClientSide(createServerConsoleErrorBat(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Bat")));
-        items.add(withClientSide(createServerConsoleErrorBook(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Book")));
         items.add(withClientSide(createServerConsoleSpamArrow(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Console Spam Arrow")));
         items.add(withClientSide(createServerConsoleSpamArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Console Spam Area")));
         items.add(withClientSide(createServerConsoleSpamBeeNest(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Console Spam Bee Nest")));
-        items.add(withClientSide(createServerConsoleTrollDisplay(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Server Console Troll Display")));
-        items.add(withClientSide(createServerConsoleTrollFrame(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Server Console Troll Frame"))); */
+        items.add(withClientSide(createServerConsoleSpamDisplay(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Server Console Spam Display")));
+        items.add(withClientSide(createServerConsoleSpamFrame(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Server Console Spam Frame")));
     }
-/*
+
     private static ItemStack createServerConsoleErrorArrow() {
         final ItemStack item = new ItemStack(Items.HORSE_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putByte("pickup", (byte) 3);
-        entityTag.putShort("life", (short) 1200);
-        entityTag.putString("id", "minecraft:arrow");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", "minecraft:arrow");
+        entityData.putByte("pickup", (byte) 3);
+        entityData.putShort("life", (short) 1200);
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createServerConsoleErrorBat() {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putFloat("Health", 1f);
-        entityTag.putShort("Fire", (short) 100);
-        entityTag.putString("DeathLootTable", "\"\"");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
-        return item;
-    }
-
-    private static ItemStack createServerConsoleErrorBook() {
-        final ItemStack item = new ItemStack(Items.WRITTEN_BOOK);
-        final NbtCompound base = new NbtCompound();
-        base.putString("title", "");
-        base.putString("author", "");
-        final NbtList pages = new NbtList();
-        pages.add(NbtString.of("{\"text\":\" \",\"hoverEvent\":{\"action\":\"show_item\",\"contents\":\"{}\"}}"));
-        base.put("pages", pages);
-        base.putByte("resolved", (byte) 1);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", "minecraft:bat");
+        entityData.putShort("Fire", (short) 100);
+        entityData.putFloat("Health", 1f);
+        entityData.putString("DeathLootTable", "\"\"");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createServerConsoleSpamArrow() {
         final ItemStack item = new ItemStack(Items.SHEEP_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putString("SoundEvent", "Hacked:" + RandomStringUtils.random(21000));
-        entityTag.putShort("life", (short) 1200);
-        entityTag.putString("id", "minecraft:arrow");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", "minecraft:arrow");
+        entityData.putShort("life", (short) 1200);
+        entityData.putString("SoundEvent", "Hacked:" + RandomStringUtils.random(21000));
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createServerConsoleSpamArea() {
         final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putFloat("Radius", 0f);
-        entityTag.putString("Particle", "hacked:6:9" + RandomStringUtils.random(15000));
-        entityTag.putString("id", "minecraft:area_effect_cloud");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        final NbtCompound particle = new NbtCompound();
+        particle.putString("type", "hacked:6:9" + RandomStringUtils.random(15000));
+        entityData.put("Particle", particle);
+        entityData.putFloat("Radius", 0f);
+        entityData.putString("id", "minecraft:area_effect_cloud");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createServerConsoleSpamBeeNest() {
         final ItemStack item = new ItemStack(Blocks.BEE_NEST);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound blockEntityTag = new NbtCompound();
-        final NbtList bees = new NbtList();
-        final NbtCompound bee = new NbtCompound();
-        final NbtCompound entityData = new NbtCompound();
-        entityData.putString("id", "Hacked:" + RandomUtils.randomString(
-                15000,
-                true,
-                true,
-                true,
-                true
-        ));
-        bee.put("EntityData", entityData);
-        bees.add(bee);
-        blockEntityTag.put("Bees", bees);
-        base.put("BlockEntityTag", blockEntityTag);
-        item.setNbt(base);
+        final NbtCompound blockEntityData = new NbtCompound();
+        blockEntityData.putString("id", "minecraft:bee_nest");
+        final List<BeehiveBlockEntity.BeeData> bees = new ArrayList<>();
+        final NbtCompound beeData = new NbtCompound();
+        beeData.putString("id", "Hacked:" + RandomStringUtils.random(15000));
+        bees.add(new BeehiveBlockEntity.BeeData(NbtComponent.of(beeData), 0, 0));
+        item.set(DataComponentTypes.BEES, bees);
         return item;
     }
 
-    private static ItemStack createServerConsoleTrollDisplay() {
+    private static ItemStack createServerConsoleSpamDisplay() {
         final ItemStack item = new ItemStack(Items.CHICKEN_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.put("transformation", NbtString.of(HACKED));
-        entityTag.putString("id", "minecraft:text_display");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", "minecraft:text_display");
+        entityData.put("transformation", NbtString.of(RandomStringUtils.random(15000)));
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
-    private static ItemStack createServerConsoleTrollFrame() {
+    private static ItemStack createServerConsoleSpamFrame() {
         final ItemStack item = new ItemStack(Items.ITEM_FRAME);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        final NbtCompound itemNbt = new NbtCompound();
-        itemNbt.putString("id", HACKED);
-        entityTag.put("Item", itemNbt);
-        entityTag.putByte("Fixed", (byte) 1);
-        entityTag.putByte("Invisible", (byte) 1);
-        entityTag.putByte("Silent", (byte) 1);
-        entityTag.putByte("Invulnerable", (byte) 1);
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", "minecraft:item_frame");
+        entityData.putByte("Fixed", (byte) 1);
+        entityData.putByte("Invisible", (byte) 1);
+        entityData.putByte("Silent", (byte) 1);
+        entityData.putByte("Invulnerable", (byte) 1);
+        final NbtCompound itemData = new NbtCompound();
+        itemData.putString("id", RandomStringUtils.random(15000));
+        entityData.put("Item", itemData);
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
-    }*/
+    }
 
 }
