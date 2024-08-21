@@ -84,11 +84,11 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action == GLFW.GLFW_PRESS && this.menuSettings.menuKey.getValue() == key && !(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
-            openScreen();
+            this.openScreen();
         }
     }
 
-    public void openScreen() {
+    private void openScreen() {
         RenderSystem.recordRenderCall(() -> {
             Screen screen = MinecraftClient.getInstance().currentScreen;
             if (screen != null) {
