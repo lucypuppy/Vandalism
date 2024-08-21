@@ -41,10 +41,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.MessageScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.CommandBlockScreen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.screen.ingame.SignEditScreen;
+import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 import org.lwjgl.glfw.GLFW;
@@ -95,7 +92,8 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
                 if (
                         screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen ||
                                 screen instanceof MessageScreen || screen instanceof ClientWindowScreen ||
-                                screen instanceof CommandBlockScreen || screen instanceof SignEditScreen
+                                screen instanceof CommandBlockScreen || screen instanceof SignEditScreen ||
+                                screen instanceof BookEditScreen || screen instanceof BookScreen
                 ) {
                     return;
                 } else if (screen instanceof ChatScreen || screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
