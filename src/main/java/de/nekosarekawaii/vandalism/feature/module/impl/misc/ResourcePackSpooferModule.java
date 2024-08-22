@@ -25,21 +25,17 @@ import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.RunArgs;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
-import net.minecraft.client.resource.server.DownloadQueuer;
 import net.minecraft.client.resource.server.PackStateChangeCallback;
 import net.minecraft.client.resource.server.ReloadScheduler;
 import net.minecraft.client.resource.server.ServerResourcePackLoader;
 import net.minecraft.client.resource.server.ServerResourcePackManager;
-import net.minecraft.client.session.Session;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
 import net.minecraft.network.packet.s2c.common.ResourcePackRemoveS2CPacket;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Downloader;
 import net.minecraft.util.Formatting;
@@ -47,18 +43,9 @@ import net.minecraft.util.Language;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.net.Proxy;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Executor;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -66,7 +53,7 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
 
     private final BooleanValue logStatus = new BooleanValue(
             this,
-            "Log resource pack status",
+            "Log Resource Pack Status",
             "Logs resource pack status to the chat.",
             true
     );
