@@ -47,7 +47,7 @@ public class VehicleControlModule extends AbstractModule implements PlayerUpdate
 
     private final ValueGroup vehicleFlightGroup = new ValueGroup(
             this,
-            "Vehicle Flight Group",
+            "Vehicle Flight Settings",
             "The group for the vehicle flight settings."
     ).visibleCondition(this.vehicleFlight::getValue);
 
