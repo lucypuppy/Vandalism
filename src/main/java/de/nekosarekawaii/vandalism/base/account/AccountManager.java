@@ -77,7 +77,11 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
                 if (FabricBootstrap.INITIALIZED) {
                     for (final AbstractAccount abstractAccount : this.getList()) {
                         if (abstractAccount instanceof final AbstractMicrosoftAccount account) {
-                            if (account.getTokenExpirationTime() - System.currentTimeMillis() <= 0) {
+                            final long tokenExpirationTime = account.getTokenExpirationTime();
+                            if (tokenExpirationTime == -1) {
+                                continue;
+                            }
+                            if (tokenExpirationTime - System.currentTimeMillis() <= 0) {
                                 Vandalism.getInstance().getLogger().info("Refreshing microsoft account {}...", account.getDisplayName());
                                 try {
                                     account.refresh();
