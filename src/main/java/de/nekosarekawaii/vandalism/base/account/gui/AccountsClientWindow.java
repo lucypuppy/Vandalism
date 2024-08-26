@@ -180,11 +180,11 @@ public class AccountsClientWindow extends ClientWindow {
         data.append("Status: ");
         data.append(account.getStatus() == null ? "Idle" : account.getStatus());
         if (account instanceof final AbstractMicrosoftAccount microsoftAccount) {
-            final long tokenExpiration = microsoftAccount.getTokenExpirationTime();
-            if (tokenExpiration != -1) {
+            final long tokenExpirationTime = microsoftAccount.getTokenExpirationTime();
+            if (tokenExpirationTime != -1) {
                 data.append("\n");
-                final long timeLeft = tokenExpiration - System.currentTimeMillis();
-                if (TimeUnit.MILLISECONDS.toHours(timeLeft) <= 0) {
+                final long timeLeft = tokenExpirationTime - System.currentTimeMillis();
+                if (timeLeft <= 0) {
                     data.append("Token expired");
                 } else {
                     data.append("Token expires in: ");
