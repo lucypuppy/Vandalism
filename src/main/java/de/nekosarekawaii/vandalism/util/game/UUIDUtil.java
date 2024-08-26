@@ -34,7 +34,7 @@ public class UUIDUtil {
                 .build();
         final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
         final String mojangApiContent = response.body();
-        if (!mojangApiContent.isBlank()) {
+        if (!mojangApiContent.isBlank() && mojangApiContent.contains("\"id\" : \"")) {
             return mojangApiContent.split("\"id\" : \"")[1].split("\",")[0].replaceFirst(
                     "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
                     "$1-$2-$3-$4-$5"

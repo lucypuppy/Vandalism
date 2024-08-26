@@ -80,12 +80,14 @@ public class SessionAccount extends AbstractAccount {
             if (!this.name.isBlank()) {
                 try {
                     uuid = UUIDUtil.getUUIDFromName(this.name);
-                } catch (Exception e) {
-                    Vandalism.getInstance().getLogger().error("Failed to get UUID from username: \"{}\"", this.name, e);
+                } catch (final Exception ignored) {
+                    Vandalism.getInstance().getLogger().error("Failed to get UUID from username \"{}\", using offline UUID fallback.", this.name);
+                    uuid = Uuids.getOfflinePlayerUuid(this.name).toString();
                 }
             }
             if (!ObjectTypeChecker.isUUID(uuid)) {
                 uuid = UUID.randomUUID().toString();
+                Vandalism.getInstance().getLogger().error("Invalid UUID for username \"{}\", using random UUID fallback.", this.name);
             }
             this.uuid = uuid;
         }

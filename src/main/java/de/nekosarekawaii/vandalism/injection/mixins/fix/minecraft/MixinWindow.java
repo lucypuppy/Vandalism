@@ -30,7 +30,7 @@ public abstract class MixinWindow {
     @Inject(method = "logGlError", at = @At("HEAD"))
     public void forceLogGlErrors(final int error, final long description, final CallbackInfo ci) {
         // Causes the JVM to actually show the caller tree of the native method, added in MC 1.13 with LWJGL 3 we can finally see
-        // Proper stack traces when calling native gl functions
+        // proper stack traces when calling native gl functions
         new IllegalStateException().printStackTrace();
     }
 

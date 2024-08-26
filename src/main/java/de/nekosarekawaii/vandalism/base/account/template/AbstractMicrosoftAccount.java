@@ -18,11 +18,14 @@
 
 package de.nekosarekawaii.vandalism.base.account.template;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.math.AESEncryptionUtil;
+import lombok.Getter;
 import net.minecraft.client.session.Session;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.AbstractStep;
@@ -30,12 +33,20 @@ import net.raphimc.minecraftauth.step.java.StepMCProfile;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
+    private static final Gson GSON = new Gson();
+
     private final AccountFactory factory;
+
     private String tokenChain;
+
     private StepFullJavaSession.FullJavaSession session;
+
+    @Getter
+    private long tokenExpirationTime = -1;
 
     public AbstractMicrosoftAccount(final String name, final AccountFactory factory) {
         super("Microsoft (" + name + ")"); // Java is bad, but we are worse
@@ -50,6 +61,47 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     public abstract AbstractStep<?, StepFullJavaSession.FullJavaSession> getStep();
 
+    private void updateTokenExpirationTime() {
+        if (this.tokenChain != null) {
+            final JsonObject jsonObject = GSON.fromJson(this.tokenChain, JsonObject.class);
+            if (jsonObject.has("mcProfile")) {
+                final JsonObject mcProfile = jsonObject.getAsJsonObject("mcProfile");
+                if (mcProfile.has("mcToken")) {
+                    final JsonObject mcToken = mcProfile.getAsJsonObject("mcToken");
+                    if (mcToken.has("expireTimeMs")) {
+                        this.tokenExpirationTime = mcToken.get("expireTimeMs").getAsLong();
+                    }
+                }
+            }
+        }
+    }
+
+    public void refresh() throws Throwable {
+        // Fixup the session if it's unset
+        if (this.session == null) {
+            final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
+            this.session = this.getStep().refresh(MinecraftAuth.createHttpClient(), this.getStep().fromJson(tokenChainNode));
+            return;
+        }
+
+        // Refresh the token chain
+        this.session = this.getStep().refresh(MinecraftAuth.createHttpClient(), this.session);
+        this.tokenChain = this.getStep().toJson(this.session).toString();
+        this.updateTokenExpirationTime();
+
+        // Log the refresh
+        final StringBuilder tokenExpirationData = new StringBuilder();
+        final long timeLeft = this.tokenExpirationTime - System.currentTimeMillis();
+        tokenExpirationData.append("new token expires in: ");
+        tokenExpirationData.append(TimeUnit.MILLISECONDS.toHours(timeLeft));
+        tokenExpirationData.append(" hours, ");
+        tokenExpirationData.append(TimeUnit.MILLISECONDS.toMinutes(timeLeft) % 60);
+        tokenExpirationData.append(" minutes and ");
+        tokenExpirationData.append(TimeUnit.MILLISECONDS.toSeconds(timeLeft) % 60);
+        tokenExpirationData.append(" seconds");
+        Vandalism.getInstance().getLogger().info("Refreshed microsoft account {} {}", this.getDisplayName(), tokenExpirationData);
+    }
+
     @Override
     public void login0() throws Throwable {
         // Save token chain if it is not already saved
@@ -61,9 +113,9 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
             // Refresh the token chain and get the new token chain
             this.session = this.getStep().refresh(MinecraftAuth.createHttpClient(), this.getStep().fromJson(tokenChainNode));
         }
-
-        final StepMCProfile.MCProfile profile = this.session.getMcProfile();
+        final StepMCProfile.MCProfile profile = session.getMcProfile();
         this.updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
+        this.updateTokenExpirationTime();
     }
 
     public void initialLogin(final StepFullJavaSession.FullJavaSession session) {
@@ -79,6 +131,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
     @Override
     public void load0(final JsonObject mainNode) throws Throwable {
         this.tokenChain = AESEncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("tokenChain").getAsString());
+        this.updateTokenExpirationTime();
     }
 
     @Override

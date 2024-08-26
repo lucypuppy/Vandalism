@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
+import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
 import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
@@ -37,6 +38,7 @@ import net.minecraft.client.session.Session;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class AccountsClientWindow extends ClientWindow {
@@ -168,7 +170,34 @@ public class AccountsClientWindow extends ClientWindow {
             ImGui.openPopup("account-popup");
         }
         ImGui.sameLine(ImUtils.modulateDimension(92));
-        ImGui.textWrapped("Name: " + account.getDisplayName() + "\n" + "Type: " + account.getType() + "\n" + "Status: " + (account.getStatus() == null ? "Idle" : account.getStatus()));
+        final StringBuilder data = new StringBuilder();
+        data.append("Name: ");
+        data.append(playerName);
+        data.append("\n");
+        data.append("Type: ");
+        data.append(account.getType());
+        data.append("\n");
+        data.append("Status: ");
+        data.append(account.getStatus() == null ? "Idle" : account.getStatus());
+        if (account instanceof final AbstractMicrosoftAccount microsoftAccount) {
+            final long tokenExpiration = microsoftAccount.getTokenExpirationTime();
+            if (tokenExpiration != -1) {
+                data.append("\n");
+                final long timeLeft = tokenExpiration - System.currentTimeMillis();
+                if (TimeUnit.MILLISECONDS.toHours(timeLeft) <= 0) {
+                    data.append("Token expired");
+                } else {
+                    data.append("Token expires in: ");
+                    data.append(TimeUnit.MILLISECONDS.toHours(timeLeft));
+                    data.append(" hours, ");
+                    data.append(TimeUnit.MILLISECONDS.toMinutes(timeLeft) % 60);
+                    data.append(" minutes and ");
+                    data.append(TimeUnit.MILLISECONDS.toSeconds(timeLeft) % 60);
+                    data.append(" seconds");
+                }
+            }
+        }
+        ImGui.textWrapped(data.toString());
     }
 
     @Override

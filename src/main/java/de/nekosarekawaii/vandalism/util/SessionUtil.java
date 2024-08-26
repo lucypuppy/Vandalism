@@ -59,7 +59,7 @@ public class SessionUtil implements MinecraftWrapper {
         if (uuid.isBlank()) {
             try {
                 uuid = UUIDUtil.getUUIDFromName(name);
-            } catch (Exception e) {
+            } catch (final Exception ignored) {
                 uuid = Uuids.getOfflinePlayerUuid(name).toString();
             }
         }
