@@ -35,6 +35,7 @@ import imgui.flag.ImGuiMouseButton;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -185,12 +186,15 @@ public class AccountsClientWindow extends ClientWindow {
                 }
                 ImGui.endTabItem();
             }
-            if (ImGui.beginTabItem("Accounts")) {
-                for (final AbstractAccount account : this.accountManager.getList()) {
-                    this.renderAccount(id, account, true);
+            final List<AbstractAccount> list = this.accountManager.getList();
+            if (!list.isEmpty()) {
+                if (ImGui.beginTabItem("Accounts")) {
+                    for (final AbstractAccount account : list) {
+                        this.renderAccount(id, account, true);
+                    }
+                    this.renderHoveredAccountPopup(true);
+                    ImGui.endTabItem();
                 }
-                this.renderHoveredAccountPopup(true);
-                ImGui.endTabItem();
             }
             if (ImGui.beginTabItem("Add Account")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
