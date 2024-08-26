@@ -29,21 +29,21 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class MixinClientPlayNetworkHandler {
 
-    @Redirect(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
+    @Redirect(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), remap = false)
     private void noStupidLoggingMessages(final Logger instance, final String s, final Object o1, final Object o2) {
         final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
         if (networkingSettings.noStupidLoggingMessages.getValue()) return;
         instance.warn(s, o1, o2);
     }
 
-    @Redirect(method = "createEntity", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"))
+    @Redirect(method = "createEntity", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"), remap = false)
     private void noStupidLoggingMessages2(final Logger instance, final String s, final Object o) {
         final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
         if (networkingSettings.noStupidLoggingMessages.getValue()) return;
         instance.warn(s, o);
     }
 
-    @Redirect(method = "onEntitySpawn", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"))
+    @Redirect(method = "onEntitySpawn", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;)V"), remap = false)
     private void noStupidLoggingMessages3(final Logger instance, final String s, final Object o) {
         final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
         if (networkingSettings.noStupidLoggingMessages.getValue()) return;

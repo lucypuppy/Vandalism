@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
-@Mixin(targets = "org/waste/of/time/Events")
+@Mixin(targets = "org/waste/of/time/Events", remap = false)
 public abstract class MixinEvents {
 
     @Inject(method = "onGameMenuScreenInitWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget$Adder;add(Lnet/minecraft/client/gui/widget/Widget;I)Lnet/minecraft/client/gui/widget/Widget;"), cancellable = true)
