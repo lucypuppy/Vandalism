@@ -22,11 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.ChatModifyReceiveListener;
 import de.nekosarekawaii.vandalism.event.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 public class MessageEncryptorModule extends AbstractModule implements ChatSendListener, ChatModifyReceiveListener {
@@ -40,8 +36,12 @@ public class MessageEncryptorModule extends AbstractModule implements ChatSendLi
     private static final char OFFSET_CHAR = '㐀', CHECK_CHAR = '㠀', CHECK_CHAR_2 = '%';
 
     public MessageEncryptorModule() {
-        super("Message Encryptor", "This module encrypts every message you sent that starts and ends with '%'" +
-                        " (e.g. Hello %1234% -> Hello {encrypted message} [E])", Category.MISC);
+        super(
+                "Message Encryptor",
+                "This module encrypts every message you sent that starts and ends with '%'\n" +
+                        "(e.g. Hello %1234% -> Hello {encrypted message} [E])",
+                Category.MISC
+        );
     }
 
     @Override

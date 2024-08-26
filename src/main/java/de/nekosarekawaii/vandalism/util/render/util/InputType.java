@@ -62,6 +62,9 @@ public class InputType {
         if (DENIED_BUTTONS.contains(code)) {
             code = GLFW.GLFW_KEY_UNKNOWN;
         }
+        if (code == GLFW.GLFW_KEY_UNKNOWN) {
+            return "Unknown";
+        }
         return InputUtil.Type.KEYSYM.createFromCode(code).getLocalizedText().getString();
     }
 

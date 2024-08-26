@@ -20,8 +20,10 @@ package de.nekosarekawaii.vandalism.base.account;
 
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.account.config.AccountsConfig;
 import de.nekosarekawaii.vandalism.base.account.gui.AccountsClientWindow;
+import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
 import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSCredentialsAccount;
@@ -66,6 +68,28 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
     @Override
     public void init() {
         Vandalism.getInstance().getEventSystem().subscribe(UpdateSessionEvent.ID, this);
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(5000);
+                } catch (final InterruptedException ignored) {
+                }
+                if (FabricBootstrap.INITIALIZED) {
+                    for (final AbstractAccount abstractAccount : this.getList()) {
+                        if (abstractAccount instanceof final AbstractMicrosoftAccount account) {
+                            if (account.getTokenExpirationTime() - System.currentTimeMillis() <= 0) {
+                                Vandalism.getInstance().getLogger().info("Refreshing microsoft account {}...", account.getDisplayName());
+                                try {
+                                    account.refresh();
+                                } catch (final Throwable throwable) {
+                                    Vandalism.getInstance().getLogger().error("Failed to refresh microsoft account: " + account.getDisplayName(), throwable);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }, "Microsoft Token Refresher").start();
     }
 
     @Override
