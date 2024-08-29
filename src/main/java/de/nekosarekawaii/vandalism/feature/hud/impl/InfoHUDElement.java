@@ -55,11 +55,14 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.joml.Vector2f;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class InfoHUDElement extends HUDElement implements IncomingPacketListener, PlayerUpdateListener {
+
+    private static final Pattern BRAND_PATTERN = Pattern.compile("\\(.*?\\)");
 
     private final BooleanValue shadow = new BooleanValue(
             this,
@@ -520,7 +523,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (this.serverBrand.getValue() && this.mc.getNetworkHandler() != null) {
             String brand = this.mc.getNetworkHandler().getBrand();
             if (brand != null) {
-                brand = brand.replaceAll("\\(.*?\\)", "");
+                brand = BRAND_PATTERN.matcher(brand).replaceAll("");
                 infoMap.put("Server " + (DateUtil.isAprilFools() ? "Engine" : "Brand"), brand);
             }
         }
