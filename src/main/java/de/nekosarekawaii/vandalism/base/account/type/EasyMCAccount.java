@@ -27,6 +27,7 @@ import net.minecraft.client.session.Session;
 import java.util.Optional;
 import java.util.UUID;
 
+@Deprecated
 public class EasyMCAccount extends AbstractTokenBasedAccount {
 
     public EasyMCAccount() { // Java is bad, we are worse

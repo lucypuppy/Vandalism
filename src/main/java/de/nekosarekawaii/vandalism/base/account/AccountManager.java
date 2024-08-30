@@ -24,7 +24,6 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.account.config.AccountsConfig;
 import de.nekosarekawaii.vandalism.base.account.gui.AccountsClientWindow;
 import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
-import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSCredentialsAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSDeviceCodeAccount;
@@ -52,9 +51,9 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
 
                 new MSDeviceCodeAccount(),
                 new MSLocalWebserverAccount(),
-                new MSCredentialsAccount(),
+                new MSCredentialsAccount()
 
-                new EasyMCAccount()
+                // new EasyMCAccount() | R.I.P. EasyMC :c
         ).forEach(account -> ACCOUNT_TYPES.put(account, account.factory()));
         configManager.add(new AccountsConfig(this));
         clientWindowManager.add(new AccountsClientWindow(this));
