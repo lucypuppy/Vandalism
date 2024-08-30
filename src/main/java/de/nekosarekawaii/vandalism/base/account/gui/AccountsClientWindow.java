@@ -24,7 +24,6 @@ import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
-import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
@@ -227,15 +226,15 @@ public class AccountsClientWindow extends ClientWindow {
             }
             if (ImGui.beginTabItem("Add Account")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
-                    if (!(account instanceof EasyMCAccount)) {
-                        if (ImGui.treeNodeEx(account.getType() + id + account.getType() + "addAccount")) {
-                            factory.displayFactory();
-                            if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                                this.recallAccount(factory, this.accountManager::add);
-                            }
-                            ImGui.treePop();
+                    // if (!(account instanceof EasyMCAccount)) { | R.I.P EasyMC :c
+                    if (ImGui.treeNodeEx(account.getType() + id + account.getType() + "addAccount")) {
+                        factory.displayFactory();
+                        if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                            this.recallAccount(factory, this.accountManager::add);
                         }
+                        ImGui.treePop();
                     }
+                    // }
                 });
                 ImGui.endTabItem();
             }
