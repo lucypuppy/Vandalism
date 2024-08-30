@@ -28,12 +28,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public abstract class Feature implements IName, MinecraftWrapper {
 
     private final String name;
+
     @Getter
     private final @Nullable String description;
+
     @Getter
     private final Category category;
+
     @Getter
     private final VersionRange supportedVersions;
+
     @Getter
     private boolean experimental;
 

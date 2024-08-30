@@ -28,8 +28,6 @@ import imgui.type.ImString;
 import net.lenni0451.mcping.ServerAddress;
 import net.minecraft.client.gui.DrawContext;
 
-import java.util.concurrent.Executors;
-
 public class ServerAddressResolverClientWindow extends ClientWindow implements IPFieldWidget {
 
     private final ImString ip = this.createImIP();
@@ -48,7 +46,7 @@ public class ServerAddressResolverClientWindow extends ClientWindow implements I
             if (StringUtils.containsLetter(ip)) {
                 if (ImUtils.subButton("Resolve Server Address" + id + "resolveAddress")) {
                     this.lastData.clear();
-                    Executors.newSingleThreadExecutor().submit(() -> {
+                    new Thread(() -> {
                         try {
                             final ServerAddress serverAddress = ServerAddress.parse(ip, 25565);
                             String oldAddress = serverAddress.getSocketAddress().toString();
@@ -62,7 +60,7 @@ public class ServerAddressResolverClientWindow extends ClientWindow implements I
                         } catch (final Exception e) {
                             this.lastData.set("Error: " + e.getMessage());
                         }
-                    });
+                    }).start();
                 }
             }
         }

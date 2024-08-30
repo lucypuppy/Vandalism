@@ -28,8 +28,6 @@ import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandSource;
 
-import java.util.concurrent.Executors;
-
 public class SpamCommand extends AbstractCommand {
 
     private static boolean IS_RUNNING = false;
@@ -54,7 +52,7 @@ public class SpamCommand extends AbstractCommand {
                                     final int times = IntegerArgumentType.getInteger(context, "times");
                                     final int delay = IntegerArgumentType.getInteger(context, "delay");
                                     final String message = StringArgumentType.getString(context, "message");
-                                    Executors.newSingleThreadExecutor().submit(() -> {
+                            new Thread(() -> {
                                         IS_RUNNING = true;
                                         for (int i = 0; i < times; i++) {
                                             final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
@@ -70,7 +68,7 @@ public class SpamCommand extends AbstractCommand {
                                             }
                                         }
                                         IS_RUNNING = false;
-                                    });
+                            }).start();
                                     return SINGLE_SUCCESS;
                                 })
                         ))
