@@ -1,7 +1,7 @@
 # gradle
 
 .gradle/
-gradle/wrapper/
+#gradle/wrapper/
 build/
 out/
 classes/
@@ -44,8 +44,10 @@ replay_*.log
 /output/*
 
 # smile emoji
+
 binaries
 Wurst7/
 
 # special - remove this when you add new addons
+
 settings.gradle
