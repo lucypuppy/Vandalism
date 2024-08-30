@@ -34,15 +34,15 @@
   ],
   "accessWidener": "vandalism.accesswidener",
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "minecraft": "1.21",
+    "fabricloader": ">=0.16.3",
+    "minecraft": "1.21.1",
     "java": ">=21",
     "fabric-api-base": ">=0.4.35",
     "fabric-resource-loader-v0": ">=0.11.14",
     "fabric-networking-api-v1": ">=3.1.1",
     "fabric-registry-sync-v0": ">=4.0.13",
     "fabric-item-group-api-v1": ">=4.0.20",
-    "viafabricplus": ">=3.4.0"
+    "viafabricplus": ">=3.4.5"
   },
   "custom": {
     "afl:unmixer": {
