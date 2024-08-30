@@ -9,8 +9,6 @@ pluginManagement {
 
 includeBuild "build-logic"
 
-include "addon-third-party"
-
 setupBinaryProject("addon-wurst", "Wurst")
 setupBinaryProject("addon-baritone", "baritone")
 
