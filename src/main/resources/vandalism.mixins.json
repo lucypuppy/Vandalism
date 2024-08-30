@@ -82,6 +82,7 @@
     "fix.minecraft.MixinOptionsScreen",
     "fix.minecraft.MixinScanningEntry",
     "fix.minecraft.MixinWindow",
+    "fix.worldtools.MixinEvents",
     "integration.MixinClientPlayerEntity",
     "integration.MixinEntity",
     "integration.MixinLivingEntity",

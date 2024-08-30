@@ -32,7 +32,9 @@ import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.ServerDiscoveryManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
+import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import lombok.Getter;
@@ -58,7 +60,6 @@ import java.io.File;
  *  - Fix spotify menu control buttons
  *  - Add anti vanish via. the player list hud
  *  - Add Proxy manager
- *  - Restructure addon system/loader
  *  - Networking optimizations and fixes
  * <br><br>
  * TODO: FooFieOwO <br>
@@ -114,6 +115,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ServerListManager serverListManager;
     private FriendsManager friendsManager;
     private HUDManager hudManager;
+    private SpotifyManager spotifyManager;
+    private ServerDiscoveryManager serverDiscoveryManager;
 
     // Features
     private ModuleManager moduleManager;
@@ -187,6 +190,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.hudManager = new HUDManager(this.configManager, this.clientWindowManager, this.runDirectory);
         this.hudManager.init();
+
+        this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager, this.clientWindowManager);
+
+        this.serverDiscoveryManager = new ServerDiscoveryManager(this.clientWindowManager);
 
         // Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientWindowManager);

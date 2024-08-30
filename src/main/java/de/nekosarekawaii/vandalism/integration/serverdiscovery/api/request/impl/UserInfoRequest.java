@@ -16,19 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.game;
+package de.nekosarekawaii.vandalism.integration.serverdiscovery.api.request.impl;
 
-public class MinecraftConstants {
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.request.Request;
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.impl.UserInfoResponse;
 
-    public static final int MAX_USERNAME_LENGTH = 16;
-    public static final int MIN_USERNAME_LENGTH = 3;
+public class UserInfoRequest extends Request<UserInfoResponse> {
 
-    @Deprecated // those constant gets used in shitty anti cheats with no proper collision handling, posY % const == 0 = ground True
-    public static final double MAGIC_ON_GROUND_MODULO_FACTOR = 0.015625;
-
-    public static final int FIRST_SLOT_IN_HOTBAR = 36;
-    public static final int LAST_SLOT_IN_HOTBAR = 44;
-
-    public static final String TEXTURE_ENDPOINT = "textures.minecraft.net";
+    public UserInfoRequest() {
+        super(UserInfoResponse.class, "user_info");
+    }
 
 }
