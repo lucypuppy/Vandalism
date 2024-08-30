@@ -13,7 +13,7 @@ loom {
 
 dependencies {
     // https://github.com/FlorianMichael/AsmFabricLoader
-    modJij "de.florianmichael:AsmFabricLoader:1.1.2-SNAPSHOT"
+    modJij "de.florianmichael:AsmFabricLoader:1.1.3-SNAPSHOT"
 
     // https://github.com/FlorianMichael/DietrichEvents2
     jij "de.florianmichael:DietrichEvents2:1.2.0"
