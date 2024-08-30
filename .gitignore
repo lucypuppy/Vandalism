@@ -1,7 +1,7 @@
 # gradle
 
 .gradle/
-#gradle/wrapper/
+gradle/wrapper/
 build/
 out/
 classes/
