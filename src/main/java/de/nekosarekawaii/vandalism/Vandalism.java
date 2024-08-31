@@ -159,7 +159,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         FabricBootstrap.MOD_LOGO = Identifier.of(FabricBootstrap.MOD_ID, "textures/logo.png");
         FabricBootstrap.MOD_ICON = Identifier.of(FabricBootstrap.MOD_ID, "textures/icon/icon_1024x1024.png");
 
-        this.runDirectory = new File(this.runDirectory, FabricBootstrap.MOD_ID);
+        this.runDirectory = new File(mc.runDirectory, FabricBootstrap.MOD_ID);
 
         this.isFirstTime = !this.runDirectory.exists();
 
