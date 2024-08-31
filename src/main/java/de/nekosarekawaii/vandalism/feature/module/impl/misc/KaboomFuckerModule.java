@@ -217,19 +217,21 @@ public class KaboomFuckerModule extends AbstractModule implements PlayerUpdateLi
                 ));
             } else {
                 final List<PlayerListEntry> players = this.mc.getNetworkHandler().getPlayerList().stream().filter(p -> !p.getProfile().getName().equals(username)).toList();
-                final String randomPlayer = players.get(ThreadLocalRandom.current().nextInt(players.size())).getProfile().getName();
-                commands.addAll(Arrays.asList(
-                        "deop @a[name=!" + username + "]",
-                        "gamemode adventure @a[name=!" + username + "]",
-                        "clear @a[name=!" + username + "]",
-                        "essentials:mute " + randomPlayer,
-                        "execute as @a[name=!" + username + "] run playsound minecraft:ui.toast.challenge_complete block @a[name=!" + username + "] ~ ~ ~ 100 1",
-                        "de",
-                        "effect give @a[name=!" + username + "] minecraft:darkness infinite 255 true",
-                        "sudo " + randomPlayer + " god off",
-                        "sudo " + randomPlayer + " v off",
-                        "sudo " + randomPlayer + " suicide"
-                ));
+                if (!players.isEmpty()) {
+                    final String randomPlayer = players.get(ThreadLocalRandom.current().nextInt(players.size())).getProfile().getName();
+                    commands.addAll(Arrays.asList(
+                            "deop @a[name=!" + username + "]",
+                            "gamemode adventure @a[name=!" + username + "]",
+                            "clear @a[name=!" + username + "]",
+                            "essentials:mute " + randomPlayer,
+                            "execute as @a[name=!" + username + "] run playsound minecraft:ui.toast.challenge_complete block @a[name=!" + username + "] ~ ~ ~ 100 1",
+                            "de",
+                            "effect give @a[name=!" + username + "] minecraft:darkness infinite 255 true",
+                            "sudo " + randomPlayer + " god off",
+                            "sudo " + randomPlayer + " v off",
+                            "sudo " + randomPlayer + " suicide"
+                    ));
+                }
             }
         }
 
