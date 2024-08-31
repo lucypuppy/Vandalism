@@ -235,7 +235,7 @@ public class KaboomFuckerModule extends AbstractModule implements PlayerUpdateLi
             }
         }
 
-        if (!this.commandBlocks.isEmpty()) {
+        if (!this.commandBlocks.isEmpty() && !commands.isEmpty()) {
             this.mc.getNetworkHandler().getConnection().send(new UpdateCommandBlockC2SPacket(
                     this.commandBlocks.get(this.current),
                     commands.get(ThreadLocalRandom.current().nextInt(commands.size())),
