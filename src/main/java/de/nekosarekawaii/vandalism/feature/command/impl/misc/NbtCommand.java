@@ -24,7 +24,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.serialization.DataResult;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ComponentMapArgumentType;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
@@ -72,8 +71,6 @@ public class NbtCommand extends AbstractCommand {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
-
         builder.then(literal("add").then(argument("component", ComponentMapArgumentType.componentMap(REGISTRY_ACCESS)).executes(ctx -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -177,7 +174,7 @@ public class NbtCommand extends AbstractCommand {
                     copyButton.setStyle(
                             copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
                                     Vandalism.getInstance().getCommandManager().generateClickEvent(
-                                            chatSettings.commandPrefix.getValue() + "nbt copy-entity"
+                                            "nbt copy-entity"
                                     )
                             ).withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard.")
@@ -206,7 +203,7 @@ public class NbtCommand extends AbstractCommand {
                     copyButton.setStyle(
                             copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
                                     Vandalism.getInstance().getCommandManager().generateClickEvent(
-                                            chatSettings.commandPrefix.getValue() + "nbt copy-block-entity"
+                                            "nbt copy-block-entity"
                                     )
                             ).withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard.")

@@ -102,7 +102,11 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void emptyChatMessage() {
-        chatMessage(Text.literal(" "));
+        emptyChatMessage(true);
+    }
+
+    public static void emptyChatMessage(final boolean prefix) {
+        chatMessage(Text.literal(" "), prefix);
     }
 
     public static void chatMessage(final String message) {
