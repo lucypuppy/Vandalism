@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.SkinOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -38,7 +39,7 @@ public abstract class MixinSkinOptionsScreen extends Screen {
         super.init();
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().skinsDirectoryButton.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.of("\uD83D\uDCC1"), button -> {
-                Util.getOperatingSystem().open(Vandalism.getInstance().getRunArgs().directories.assetDir.toPath().resolve("skins"));
+                Util.getOperatingSystem().open(FabricBootstrap.RUN_ARGS.directories.assetDir.toPath().resolve("skins"));
             }).position(4, 4).width(20).build());
         }
     }

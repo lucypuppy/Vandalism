@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
@@ -52,7 +53,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void scrapeRunArgs(final RunArgs args, final CallbackInfo ci) {
-        Vandalism.getInstance().setRunArgs(args); // Stores the run args in vandalism
+        FabricBootstrap.RUN_ARGS = args;
     }
 
     @Inject(method = "onFinishedLoading", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;collectLoadTimes(Lnet/minecraft/client/MinecraftClient$LoadingContext;)V", shift = At.Shift.AFTER))

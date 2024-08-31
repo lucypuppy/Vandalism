@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
@@ -60,7 +61,7 @@ public abstract class MixinOptionsScreen extends Screen {
     private void addRunDirButton(final CallbackInfo ci) {
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().runDirectoryButton.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.of("\uD83D\uDCC1"), button -> {
-                Util.getOperatingSystem().open(Vandalism.getInstance().getRunArgs().directories.runDir);
+                Util.getOperatingSystem().open(FabricBootstrap.RUN_ARGS.directories.runDir);
             }).position(4, 4).width(20).build());
         }
     }

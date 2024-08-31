@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.util.game.SoundHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
+import net.minecraft.client.RunArgs;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -39,6 +40,7 @@ public class FabricBootstrap implements ClientModInitializer {
     public static boolean IS_DEV_ENVIRONMENT;
     public static boolean INITIALIZED = false;
     public static boolean SHUTTING_DOWN = false;
+    public static RunArgs RUN_ARGS;
 
     private void tryRenderDoc() {
         final Util.OperatingSystem os = Util.getOperatingSystem();
