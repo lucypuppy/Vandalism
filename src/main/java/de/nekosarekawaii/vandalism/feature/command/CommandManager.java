@@ -101,6 +101,9 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new CrashSkullCommand(),
                 new KaboomKickCommand()
         );
+
+        // This should always be the last command
+        this.add(new HelpCommand());
     }
 
     public ClickEvent generateClickEvent(final String command) {
