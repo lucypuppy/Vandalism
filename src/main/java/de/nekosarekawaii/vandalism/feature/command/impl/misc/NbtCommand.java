@@ -35,11 +35,7 @@ import net.minecraft.command.DataCommandObject;
 import net.minecraft.command.EntityDataObject;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.command.argument.RegistryKeyArgumentType;
-import net.minecraft.component.Component;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentMapImpl;
-import net.minecraft.component.ComponentType;
+import net.minecraft.component.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -48,7 +44,6 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -151,7 +146,9 @@ public class NbtCommand extends AbstractCommand {
                 final MutableText copyButton = Text.literal("NBT");
                 copyButton.setStyle(
                         copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
-                                new ClickEvent(ClickEvent.Action.RUN_COMMAND, chatSettings.commandPrefix.getValue() + "nbt copy")
+                                Vandalism.getInstance().getCommandManager().generateClickEvent(
+                                        "nbt copy"
+                                )
                         ).withHoverEvent(new HoverEvent(
                                 HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard.")
                         ))
@@ -179,7 +176,9 @@ public class NbtCommand extends AbstractCommand {
                     final MutableText copyButton = Text.literal("NBT");
                     copyButton.setStyle(
                             copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
-                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, chatSettings.commandPrefix.getValue() + "nbt copy-entity")
+                                    Vandalism.getInstance().getCommandManager().generateClickEvent(
+                                            chatSettings.commandPrefix.getValue() + "nbt copy-entity"
+                                    )
                             ).withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard.")
                             ))
@@ -206,7 +205,9 @@ public class NbtCommand extends AbstractCommand {
                     final MutableText copyButton = Text.literal("NBT");
                     copyButton.setStyle(
                             copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
-                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, chatSettings.commandPrefix.getValue() + "nbt copy-block-entity")
+                                    Vandalism.getInstance().getCommandManager().generateClickEvent(
+                                            chatSettings.commandPrefix.getValue() + "nbt copy-block-entity"
+                                    )
                             ).withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard.")
                             ))
