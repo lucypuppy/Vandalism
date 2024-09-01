@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
@@ -56,10 +57,15 @@ public class UsernameCommand extends AbstractCommand {
             this.login(StringArgumentType.getString(context, "name"));
             return SINGLE_SUCCESS;
         })));
-        // TODO: Add delay to prevent old username from being used when reconnecting
         builder.then(literal("change-and-reconnect").then(argument("name", StringArgumentType.word()).executes(context -> {
             this.login(StringArgumentType.getString(context, "name"));
-            ServerUtil.connectToLastServer();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1500);
+                } catch (final InterruptedException ignored) {
+                }
+                RenderSystem.recordRenderCall(ServerUtil::connectToLastServer);
+            }).start();
             return SINGLE_SUCCESS;
         })));
     }
