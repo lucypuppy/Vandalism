@@ -56,6 +56,7 @@ public class UsernameCommand extends AbstractCommand {
             this.login(StringArgumentType.getString(context, "name"));
             return SINGLE_SUCCESS;
         })));
+        // TODO: Add delay to prevent old username from being used when reconnecting
         builder.then(literal("change-and-reconnect").then(argument("name", StringArgumentType.word()).executes(context -> {
             this.login(StringArgumentType.getString(context, "name"));
             ServerUtil.connectToLastServer();
