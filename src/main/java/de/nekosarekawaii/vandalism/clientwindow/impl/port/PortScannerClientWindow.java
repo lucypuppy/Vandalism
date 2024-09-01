@@ -42,6 +42,9 @@ import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+// TODO: Add alternative mode (like this website https://www.ipfingerprints.com/portscan.php)
+// TODO: Add tabs like the tabs from the server discovery
+// TODO: Add port scan randomization to bypass some firewalls
 public class PortScannerClientWindow extends StateClientWindow implements DataListWidget, IPFieldWidget {
 
     private final ImString ip = this.createImIP();
