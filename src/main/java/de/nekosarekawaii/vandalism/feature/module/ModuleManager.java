@@ -87,6 +87,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private NoFriendsModule noFriendsModule;
     private SoundBlockerModule soundBlockerModule;
     private ResourcePackSpooferModule resourcePackSpooferModule;
+    private StepModule stepModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -124,6 +125,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.noFriendsModule = new NoFriendsModule(),
                 this.soundBlockerModule = new SoundBlockerModule(),
                 this.resourcePackSpooferModule = new ResourcePackSpooferModule(),
+                this.stepModule = new StepModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),
@@ -176,7 +178,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new NoSlowModule(),
                 new PushVelocityModule(),
                 new ScaffoldModule(),
-                new StepModule(),
                 new StrafeModule(),
                 new TeleportModule(),
                 new TimerModule(),
