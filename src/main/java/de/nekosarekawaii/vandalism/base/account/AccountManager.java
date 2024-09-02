@@ -80,12 +80,19 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
                             if (tokenExpirationTime == -1) {
                                 continue;
                             }
+                            if (account.getRefreshAttempts() > 2) {
+                                continue;
+                            }
                             if (tokenExpirationTime - System.currentTimeMillis() <= 0) {
                                 Vandalism.getInstance().getLogger().info("Refreshing microsoft account {}...", account.getDisplayName());
                                 try {
                                     account.refresh();
                                 } catch (final Throwable throwable) {
                                     Vandalism.getInstance().getLogger().error("Failed to refresh microsoft account: " + account.getDisplayName(), throwable);
+                                }
+                                account.increaseRefreshAttempts();
+                                if (account.getRefreshAttempts() > 2) {
+                                    Vandalism.getInstance().getLogger().warn("Microsoft account {} has reached the maximum amount of refresh attempts.", account.getDisplayName());
                                 }
                             }
                         }

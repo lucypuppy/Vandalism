@@ -48,6 +48,9 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
     @Getter
     private long tokenExpirationTime = -1;
 
+    @Getter
+    private int refreshAttempts = 0;
+
     public AbstractMicrosoftAccount(final String name, final AccountFactory factory) {
         super("Microsoft (" + name + ")"); // Java is bad, but we are worse
         this.factory = factory;
@@ -74,6 +77,10 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
                 }
             }
         }
+    }
+
+    public void increaseRefreshAttempts() {
+        this.refreshAttempts++;
     }
 
     public void refresh() throws Throwable {
