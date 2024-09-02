@@ -1,0 +1,8 @@
+{
+  "package": "de.nekosarekawaii.vandalism.injection.transformer",
+  "java": [
+  ],
+  "mixins": [
+    "TransformerMixinEntity"
+  ]
+}

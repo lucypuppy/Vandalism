@@ -45,6 +45,7 @@
     "viafabricplus": ">=3.4.5"
   },
   "custom": {
+    "afl:classtransform": "vandalism.classtransform.json",
     "afl:unmixer": {
       "de.florianmichael.viafabricplus.injection.mixin.base.integration": [
         "MixinMultiplayerServerListWidget_ServerEntry"
