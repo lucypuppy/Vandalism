@@ -77,15 +77,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class NoteBotModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener, Render2DListener, Render3DListener {
 
-    private final IntegerValue scanRange = new IntegerValue(
-            this,
-            "Scan Range",
-            "The range to scan for note blocks.",
-            6,
-            3,
-            10
-    );
-
     private final EnumModeValue<Mode> mode = new EnumModeValue<>(
             this,
             "Mode",
@@ -93,6 +84,15 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             Mode.COMMAND,
             Mode.values()
     );
+
+    private final IntegerValue scanRange = new IntegerValue(
+            this,
+            "Scan Range",
+            "The range to scan for note blocks.",
+            6,
+            3,
+            10
+    ).visibleCondition(() -> this.mode.getValue() == Mode.BLOCKS);
 
     private final IntegerValue maxConcurrentTuneBlocks = new IntegerValue(
             this,
