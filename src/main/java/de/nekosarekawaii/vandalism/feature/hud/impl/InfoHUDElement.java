@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
@@ -43,6 +44,7 @@ import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
@@ -62,7 +64,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class InfoHUDElement extends HUDElement implements IncomingPacketListener, PlayerUpdateListener {
+public class InfoHUDElement extends HUDElement implements IncomingPacketListener, PlayerUpdateListener, DisconnectListener {
 
     private static final Pattern BRAND_PATTERN = Pattern.compile("\\(.*?\\)");
 
@@ -298,7 +300,12 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
     public InfoHUDElement() {
         super("Info", true, AlignmentX.LEFT, AlignmentY.MIDDLE);
-        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID, DisconnectEvent.ID);
+    }
+
+    @Override
+    public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
+        this.serverVersionValue = "";
     }
 
     @Override
