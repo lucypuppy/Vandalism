@@ -562,7 +562,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                     ping = playerListEntry.getLatency();
                 }
             }
-            if (ping != 0) {
+            if (ping > 0) {
                 infoMap.put("Ping", ping + " ms");
             }
         }
