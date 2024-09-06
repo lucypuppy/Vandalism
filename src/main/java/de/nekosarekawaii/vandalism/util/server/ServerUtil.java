@@ -339,6 +339,25 @@ public class ServerUtil implements MinecraftWrapper {
     }
 
     /**
+     * Split the server address.
+     *
+     * @param address The address to split.
+     * @return The split server address as a pair (address, port).
+     */
+    public static Pair<String, Integer> splitServerAddress(String address) {
+        if (address.contains(":")) {
+            final String[] data = address.split(":");
+            if (data.length == 2) {
+                try {
+                    return new Pair<>(data[0], Integer.parseInt(data[1]));
+                } catch (final Exception ignored) {
+                }
+            }
+        }
+        return new Pair<>(address, 25565);
+    }
+
+    /**
      * Resolve the server address.
      *
      * @param hostname The hostname to resolve.

@@ -23,12 +23,14 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;
 import net.lenni0451.mcping.exception.DataReadException;
 import net.lenni0451.mcping.exception.PacketReadException;
 import net.lenni0451.mcping.responses.MCPingResponse;
+import net.lenni0451.mcping.responses.QueryPingResponse;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -45,8 +47,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Pair;
 
-import java.awt.Color;
+import java.awt.*;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -81,6 +84,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
     private static final int GRAY = Color.GRAY.getRGB();
     private static final int GREEN = Color.GREEN.getRGB();
 
+    private static final CopyOnWriteArrayList<String> PLUGIN_DATA = new CopyOnWriteArrayList<>();
     private static final CopyOnWriteArrayList<String> FORGE_MOD_DATA = new CopyOnWriteArrayList<>();
 
     private static void setServerInfo(final ServerInfo serverInfo) {
@@ -123,6 +127,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
             if (tooltip != null) {
                 final List<OrderedText> lines = new ArrayList<>(tooltip.tooltip());
                 if (!lines.isEmpty()) {
+                    for (final String line : PLUGIN_DATA) lines.add(Text.literal(line).asOrderedText());
                     for (final String line : FORGE_MOD_DATA) lines.add(Text.literal(line).asOrderedText());
                     context.drawTooltip(mc.textRenderer, lines, tooltip.positioner(), mouseX, mouseY);
                 }
@@ -146,11 +151,38 @@ public class ServerPingerWidget implements MinecraftWrapper {
             currentServerInfo.setFavicon(null);
             setServerInfo(currentServerInfo);
             final int serverPingerWidgetDelay = enhancedServerListSettings.serverPingerWidgetDelay.getValue();
+            final String address = currentServerInfo.address;
             try {
-                MCPing.pingModern(SharedConstants.getProtocolVersion())
-                        .address(currentServerInfo.address)
+                final Pair<String, Integer> addressParts = ServerUtil.splitServerAddress(address);
+                MCPing.pingQuery()
+                        .address(addressParts.getLeft(), enhancedServerListSettings.serverPingerQueryPingPort.getValue())
                         .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
                         .exceptionHandler(t -> {
+                            PLUGIN_DATA.clear();
+                            Vandalism.getInstance().getLogger().error("Failed to query ping server: {}", address, t);
+                        })
+                        .finishHandler(response -> {
+                            PLUGIN_DATA.clear();
+                            final int maxPlugins = 20;
+                            final QueryPingResponse.Plugins plugins = response.plugins;
+                            if (plugins != null) {
+                                PLUGIN_DATA.add("Plugins:");
+                                final String[] pluginData = plugins.sample;
+                                for (int i = 0; i < pluginData.length; i++) {
+                                    final String plugin = pluginData[i];
+                                    PLUGIN_DATA.add(" " + plugin);
+                                    if (i == maxPlugins) {
+                                        PLUGIN_DATA.add(" and " + (pluginData.length - maxPlugins) + " more plugins...");
+                                        break;
+                                    }
+                                }
+                            }
+                        }).getAsync();
+                MCPing.pingModern(SharedConstants.getProtocolVersion())
+                        .address(address)
+                        .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
+                        .exceptionHandler(t -> {
+                            FORGE_MOD_DATA.clear();
                             currentServerInfo.ping = -1L;
                             switch (t) {
                                 case UnknownHostException unknownHostException ->
@@ -165,7 +197,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                                         currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.PACKET_READ_FAILED.getMessage());
                                 case null, default -> {
                                     currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.FAILED.getMessage());
-                                    Vandalism.getInstance().getLogger().error("Failed to ping server: {}", currentServerInfo.address, t);
+                                    Vandalism.getInstance().getLogger().error("Failed to ping server: {}", address, t);
                                 }
                             }
                             setServerInfo(currentServerInfo);
@@ -185,14 +217,14 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             final String base64FaviconString = response.favicon;
                             if (base64FaviconString != null) {
                                 if (!base64FaviconString.startsWith(BASE64_START)) {
-                                    Vandalism.getInstance().getLogger().error("Server {} has responded with an unknown base64 server icon format.", currentServerInfo.address);
+                                    Vandalism.getInstance().getLogger().error("Server {} has responded with an unknown base64 server icon format.", address);
                                 } else {
                                     try {
                                         final String faviconString = base64FaviconString.substring(BASE64_START.length()).replaceAll("\n", "");
                                         final byte[] faviconBytes = Base64.getDecoder().decode(faviconString.getBytes(StandardCharsets.UTF_8));
                                         currentServerInfo.setFavicon(faviconBytes.length < 1 ? null : faviconBytes);
                                     } catch (IllegalArgumentException e) {
-                                        Vandalism.getInstance().getLogger().error("Server {} has responded with an malformed base64 server icon.", currentServerInfo.address, e);
+                                        Vandalism.getInstance().getLogger().error("Server {} has responded with an malformed base64 server icon.", address, e);
                                     }
                                 }
                             }
@@ -254,7 +286,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                 currentServerInfo.ping = -1L;
                 currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.FAILED.getMessage());
                 setServerInfo(currentServerInfo);
-                Vandalism.getInstance().getLogger().error("Failed to ping server: {}", currentServerInfo.address, t);
+                Vandalism.getInstance().getLogger().error("Failed to ping server: {}", address, t);
             }
             PING_TIMER.reset();
             IN_USE = false;
