@@ -90,6 +90,15 @@ public class EnhancedServerListSettings extends ValueGroup {
             30000
     ).visibleCondition(() -> this.enhancedServerList.getValue() && this.serverPingerWidget.getValue());
 
+    public final IntegerValue serverPingerQueryPingPort = new IntegerValue(
+            this,
+            "Server Pinger Query Ping Port",
+            "The port used to query ping the server to get additional infos like the plugins.",
+            25565,
+            1,
+            65535
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.serverPingerWidget.getValue());
+
     public final BooleanValue morePingTooltipServerInformation = new BooleanValue(
             this,
             "More Ping Tooltip Server Information",
