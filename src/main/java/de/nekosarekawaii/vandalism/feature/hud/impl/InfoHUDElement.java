@@ -25,7 +25,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
@@ -44,10 +43,13 @@ import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
+import net.minecraft.network.packet.s2c.config.SelectKnownPacksS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
+import net.minecraft.registry.VersionedIdentifier;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -153,29 +155,22 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
-
-    private final ValueGroup positionElements = new ValueGroup(
-            this,
-            "Position Elements",
-            "Elements that are shown in the position category."
-    );
-
     private final BooleanValue position = new BooleanValue(
-            this.positionElements,
+            this,
             "Position",
             "Shows the current position.",
             true
     );
 
     private final BooleanValue dimensionalPosition = new BooleanValue(
-            this.positionElements,
+            this,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
             true
     );
 
     private final IntegerValue positionDecimalPlaces = new IntegerValue(
-            this.positionElements,
+            this,
             "Position Decimal Places",
             "Allows you to change the viewable amount of decimal places from the x/y/z position.",
             2,
@@ -204,21 +199,22 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
-    private final ValueGroup serverElements = new ValueGroup(
+    private final BooleanValue serverVersion = new BooleanValue(
             this,
-            "Server Elements",
-            "Elements that are shown in the server category."
+            "Server Version",
+            "Shows the current server version.",
+            true
     );
 
     private final BooleanValue serverBrand = new BooleanValue(
-            this.serverElements,
+            this,
             "Server Brand",
             "Shows the current server brand.",
             true
     );
 
     private final BooleanValue serverAddress = new BooleanValue(
-            this.serverElements,
+            this,
             "Server Address",
             "Shows the current server address.",
             true
@@ -284,14 +280,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
-    private final ValueGroup debugElements = new ValueGroup(
-            this,
-            "Debug Elements",
-            "Elements that are shown in the debug category."
-    );
-
     private final BooleanValue clientTPS = new BooleanValue(
-            this.debugElements,
+            this,
             "Client TPS",
             "Shows the current client TPS.",
             false
@@ -304,6 +294,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private long lastPing = -1;
     private long clientPing = -1;
 
+    private String serverVersionValue = "";
+
     public InfoHUDElement() {
         super("Info", true, AlignmentX.LEFT, AlignmentY.MIDDLE);
         Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
@@ -311,17 +303,29 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
+        final Packet<?> packet = event.packet;
         final long now = System.currentTimeMillis();
 
-        if (event.packet instanceof KeepAliveS2CPacket || event.packet instanceof WorldTimeUpdateS2CPacket) {
+        if (packet instanceof KeepAliveS2CPacket || packet instanceof WorldTimeUpdateS2CPacket) {
             this.lastUpdate = now;
         }
 
-        if (event.packet instanceof final PingResultS2CPacket packet &&
+        if (
+                packet instanceof final PingResultS2CPacket pingResultS2CPacket &&
                 this.ping.getValue() &&
                 this.fasterPings.getValue() &&
-                !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
-            this.clientPing = now - packet.startTime();
+                        !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)
+        ) {
+            this.clientPing = now - pingResultS2CPacket.startTime();
+        }
+
+        if (packet instanceof final SelectKnownPacksS2CPacket selectKnownPacksS2CPacket) {
+            for (final VersionedIdentifier knownPack : selectKnownPacksS2CPacket.knownPacks()) {
+                if (knownPack.isVanilla() && knownPack.id().equals("core")) {
+                    this.serverVersionValue = knownPack.version();
+                    break;
+                }
+            }
         }
     }
 
@@ -517,6 +521,12 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         "Permissions Level",
                         String.valueOf(permissionLevel)
                 );
+            }
+        }
+
+        if (this.serverVersion.getValue() && this.mc.getNetworkHandler() != null) {
+            if (this.serverVersionValue != null && !this.serverVersionValue.isEmpty()) {
+                infoMap.put("Server Version", this.serverVersionValue);
             }
         }
 
