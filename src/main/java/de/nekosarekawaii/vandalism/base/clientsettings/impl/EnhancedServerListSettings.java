@@ -94,7 +94,7 @@ public class EnhancedServerListSettings extends ValueGroup {
             this,
             "Server Pinger Query Ping",
             "If activated the client pings the server with a query ping to get additional infos like the plugins.",
-            true
+            false
     ).visibleCondition(() -> this.enhancedServerList.getValue() && this.serverPingerWidget.getValue());
 
     public final IntegerValue serverPingerQueryPingPort = new IntegerValue(
