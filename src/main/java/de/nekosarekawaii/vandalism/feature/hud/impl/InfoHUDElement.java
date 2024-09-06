@@ -201,17 +201,17 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
-    private final BooleanValue serverVersion = new BooleanValue(
-            this,
-            "Server Version",
-            "Shows the current server version.",
-            true
-    );
-
     private final BooleanValue serverBrand = new BooleanValue(
             this,
             "Server Brand",
             "Shows the current server brand.",
+            true
+    );
+
+    private final BooleanValue serverVersion = new BooleanValue(
+            this,
+            "Server Version",
+            "Shows the current server version.",
             true
     );
 
@@ -531,17 +531,17 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
         }
 
-        if (this.serverVersion.getValue() && this.mc.getNetworkHandler() != null) {
-            if (this.serverVersionValue != null && !this.serverVersionValue.isEmpty()) {
-                infoMap.put("Server Version", this.serverVersionValue);
-            }
-        }
-
         if (this.serverBrand.getValue() && this.mc.getNetworkHandler() != null) {
             String brand = this.mc.getNetworkHandler().getBrand();
             if (brand != null) {
                 brand = BRAND_PATTERN.matcher(brand).replaceAll("");
                 infoMap.put("Server " + (DateUtil.isAprilFools() ? "Engine" : "Brand"), brand);
+            }
+        }
+
+        if (this.serverVersion.getValue() && this.mc.getNetworkHandler() != null) {
+            if (this.serverVersionValue != null && !this.serverVersionValue.isEmpty()) {
+                infoMap.put("Server Version", this.serverVersionValue);
             }
         }
 
