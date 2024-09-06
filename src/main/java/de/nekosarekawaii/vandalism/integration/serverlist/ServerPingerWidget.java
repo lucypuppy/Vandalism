@@ -153,31 +153,30 @@ public class ServerPingerWidget implements MinecraftWrapper {
             final int serverPingerWidgetDelay = enhancedServerListSettings.serverPingerWidgetDelay.getValue();
             final String address = currentServerInfo.address;
             try {
-                final Pair<String, Integer> addressParts = ServerUtil.splitServerAddress(address);
-                MCPing.pingQuery()
-                        .address(addressParts.getLeft(), enhancedServerListSettings.serverPingerQueryPingPort.getValue())
-                        .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
-                        .exceptionHandler(t -> {
-                            PLUGIN_DATA.clear();
-                            Vandalism.getInstance().getLogger().error("Failed to query ping server: {}", address, t);
-                        })
-                        .finishHandler(response -> {
-                            PLUGIN_DATA.clear();
-                            final int maxPlugins = 20;
-                            final QueryPingResponse.Plugins plugins = response.plugins;
-                            if (plugins != null) {
-                                PLUGIN_DATA.add("Plugins:");
-                                final String[] pluginData = plugins.sample;
-                                for (int i = 0; i < pluginData.length; i++) {
-                                    final String plugin = pluginData[i];
-                                    PLUGIN_DATA.add(" " + plugin);
-                                    if (i == maxPlugins) {
-                                        PLUGIN_DATA.add(" and " + (pluginData.length - maxPlugins) + " more plugins...");
-                                        break;
+                PLUGIN_DATA.clear();
+                if (enhancedServerListSettings.serverPingerQueryPing.getValue()) {
+                    final Pair<String, Integer> addressParts = ServerUtil.splitServerAddress(address);
+                    MCPing.pingQuery()
+                            .address(addressParts.getLeft(), enhancedServerListSettings.serverPingerQueryPingPort.getValue())
+                            .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
+                            .exceptionHandler(t -> Vandalism.getInstance().getLogger().error("Failed to query ping server: {}", address, t))
+                            .finishHandler(response -> {
+                                final int maxPlugins = 20;
+                                final QueryPingResponse.Plugins plugins = response.plugins;
+                                if (plugins != null) {
+                                    PLUGIN_DATA.add("Plugins:");
+                                    final String[] pluginData = plugins.sample;
+                                    for (int i = 0; i < pluginData.length; i++) {
+                                        final String plugin = pluginData[i];
+                                        PLUGIN_DATA.add(" " + plugin);
+                                        if (i == maxPlugins) {
+                                            PLUGIN_DATA.add(" and " + (pluginData.length - maxPlugins) + " more plugins...");
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                        }).getAsync();
+                            }).getAsync();
+                }
                 MCPing.pingModern(SharedConstants.getProtocolVersion())
                         .address(address)
                         .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
