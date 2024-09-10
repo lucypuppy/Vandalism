@@ -108,14 +108,22 @@ public class MultiModeValue extends Value<List<String>> {
             }
             ImGui.checkbox("Only Show Selected (" + selectedCount + ")", this.onlyShowSelected);
             if (ImGui.button("Select All" + id + "selectAll", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
-                this.getValue().clear();
                 if (this.searchInput.isEmpty()) {
+                    this.getValue().clear();
                     this.getValue().addAll(this.options);
                 } else {
+                    final List<String> oldValues = new ArrayList<>(this.getValue());
+                    this.getValue().clear();
                     for (final String value : this.options) {
                         if (StringUtils.contains(value, this.searchInput.get())) {
                             this.getValue().add(value);
                         }
+                    }
+                    for (final String oldValue : oldValues) {
+                        if (this.getValue().contains(oldValue)) {
+                            continue;
+                        }
+                        this.getValue().add(oldValue);
                     }
                 }
             }
