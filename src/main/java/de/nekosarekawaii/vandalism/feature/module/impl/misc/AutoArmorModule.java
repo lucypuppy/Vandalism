@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -80,7 +81,7 @@ public class AutoArmorModule extends Module implements PlayerUpdateListener {
                     mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 1, SlotActionType.THROW, mc.player);
                 }
             }
-            for(int i = 9; i <= 44; i++) {
+            for (int i = 9; i <= MinecraftConstants.LAST_SLOT_IN_HOTBAR; i++) {
                 ItemStack stack = screen.getScreenHandler().slots.get(i).getStack();
                 if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem) || !InventoryUtil.isBestArmor(stack)) {
                     continue;
