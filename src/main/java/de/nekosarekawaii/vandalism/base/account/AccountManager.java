@@ -31,7 +31,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.event.internal.UpdateSessionListener;
 import de.nekosarekawaii.vandalism.injection.access.ISession;
-import de.nekosarekawaii.vandalism.util.Storage;
+import de.nekosarekawaii.vandalism.util.storage.Storage;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.session.Session;

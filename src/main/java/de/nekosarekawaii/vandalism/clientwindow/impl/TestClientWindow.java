@@ -16,25 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.misc;
+package de.nekosarekawaii.vandalism.clientwindow.impl;
 
-import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import net.minecraft.client.gui.DrawContext;
 
-public class TestModule extends Module {
+public class TestClientWindow extends ClientWindow {
 
-    public TestModule() {
-        super("Test", "Just for development purposes.", Category.MISC);
+    public TestClientWindow() {
+        super("Test", Category.MISC, 600f, 500f);
     }
 
     @Override
-    protected void onActivate() {
-        ChatUtil.infoChatMessage("Hello from " + this.getName() + " Module ;3");
-    }
-
-    @Override
-    protected void onDeactivate() {
-        ChatUtil.infoChatMessage("Goodbye from " + this.getName() + " Module ;c");
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
     }
 
 }

@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.integration.cheatdetection;
 
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.impl.TestDetection;
-import de.nekosarekawaii.vandalism.util.NamedStorage;
+import de.nekosarekawaii.vandalism.util.storage.NamedStorage;
 
 public class DetectManager extends NamedStorage<Detection> {
 

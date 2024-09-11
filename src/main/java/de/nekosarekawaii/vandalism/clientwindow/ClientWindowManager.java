@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.clientwindow;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
@@ -32,8 +33,8 @@ import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortScannerClientWindo
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.Storage;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
+import de.nekosarekawaii.vandalism.util.storage.Storage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.MessageScreen;
@@ -65,6 +66,9 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
 
     @Override
     public void init() {
+        if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
+            this.add(new TestClientWindow());
+        }
         this.add(
                 new ConfigsClientWindow(),
                 new GlobalSearchClientWindow(),

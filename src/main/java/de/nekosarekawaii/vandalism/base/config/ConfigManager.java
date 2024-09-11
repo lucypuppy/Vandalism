@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.config;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.util.Storage;
+import de.nekosarekawaii.vandalism.util.storage.Storage;
 
 public class ConfigManager extends Storage<Config<?>> {
 

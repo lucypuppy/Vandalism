@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.storage;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -26,12 +26,12 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.util.AlignmentX;
-import de.nekosarekawaii.vandalism.util.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
+import de.nekosarekawaii.vandalism.util.render.util.AlignmentX;
+import de.nekosarekawaii.vandalism.util.render.util.AlignmentY;
 import net.minecraft.client.gui.DrawContext;
 import org.joml.Vector2f;
 
