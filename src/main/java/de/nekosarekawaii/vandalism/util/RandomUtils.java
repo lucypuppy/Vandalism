@@ -151,7 +151,7 @@ public final class RandomUtils {
      * @return A random byte array with a random length between minLength and maxLength.
      */
     public static byte[] randomBytes(final int minLength, final int maxLength) {
-        final byte[] bytes = new byte[ThreadLocalRandom.current().nextInt(minLength, maxLength)];
+        final byte[] bytes = new byte[randomInt(minLength, maxLength - 1)];
         SECURE_RANDOM.nextBytes(bytes);
         return bytes;
     }
