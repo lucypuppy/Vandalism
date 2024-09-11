@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
-import de.nekosarekawaii.vandalism.util.math.AESEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 
 public class SpotifyConfig extends AbstractConfig<JsonObject> {
 

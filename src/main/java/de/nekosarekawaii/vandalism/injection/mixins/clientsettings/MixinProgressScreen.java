@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ProgressScreen;
 import net.minecraft.client.gui.screen.Screen;

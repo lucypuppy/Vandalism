@@ -21,10 +21,6 @@ dependencies {
     // https://github.com/FlorianMichael/WaybackAuthLib
     jij "de.florianmichael:WaybackAuthLib:1.0.1"
 
-    // https://github.com/FlorianMichael/rclasses
-    jij "de.florianmichael.rclasses:main:2.4.1"
-    jij "de.florianmichael.rclasses:io:2.4.1"
-
     // https://github.com/Lenni0451/MCPing
     jij "net.lenni0451:MCPing:1.4.1"
 

@@ -25,7 +25,7 @@ import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

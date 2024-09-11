@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.event.game.SmoothCameraRotationsListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.math.Easing;
+import de.nekosarekawaii.vandalism.util.Easing;
 
 public class ZoomModule extends AbstractModule implements MouseInputListener, SmoothCameraRotationsListener {
 
@@ -47,9 +47,9 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
 
     @Override
     public void onActivate() {
+        this.scrollAmount = 0.0;
         Vandalism.getInstance().getEventSystem().subscribe(this, MouseEvent.ID);
         Vandalism.getInstance().getEventSystem().subscribe(this, SmoothCameraRotationsEvent.ID);
-        this.scrollAmount = 0.0;
         final long now = System.currentTimeMillis();
         final long animEnd = this.animTime + this.animationDuration.getValue();
         if (animEnd < now) {
@@ -97,7 +97,6 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
 
     /**
      * Not using CameraFOVEvent because it's not called when zooming out, because the event is only called when the module is enabled
-     * // TODO: maybe zoom shouldn't be bound to module state?
      */
     public double getFov(final double fov) {
         if (this.zoomFov.getValue() - this.scrollAmount < this.zoomFov.getMinValue()) {

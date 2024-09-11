@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ComponentMapArgumentType;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
+import de.nekosarekawaii.vandalism.util.ItemStackUtil;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.DataCommandObject;

@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -34,6 +33,7 @@ import de.nekosarekawaii.vandalism.feature.command.arguments.ConfigArgumentType;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import net.minecraft.command.CommandSource;
 
 import java.io.File;

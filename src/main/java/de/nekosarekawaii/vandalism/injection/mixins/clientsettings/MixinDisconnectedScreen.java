@@ -18,21 +18,16 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.LoadingDisplay;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.MultilineTextWidget;
-import net.minecraft.client.gui.widget.Positioner;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;

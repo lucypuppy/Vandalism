@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.PacketHelper;
+import de.nekosarekawaii.vandalism.util.PacketHelper;
 import net.minecraft.network.packet.Packet;
 
 import java.util.concurrent.ConcurrentLinkedQueue;

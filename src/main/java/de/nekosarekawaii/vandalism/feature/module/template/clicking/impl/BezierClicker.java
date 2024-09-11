@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template.clicking.impl;
 
-import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
+import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.RandomUtils;
 import lombok.Setter;
 
 import java.util.concurrent.ThreadLocalRandom;

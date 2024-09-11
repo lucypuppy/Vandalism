@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;

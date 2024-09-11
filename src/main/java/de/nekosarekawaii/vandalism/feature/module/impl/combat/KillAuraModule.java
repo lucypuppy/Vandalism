@@ -19,10 +19,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.math.timer.MSTimer;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
@@ -55,14 +51,9 @@ import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entit
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.Randomizer;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.RandomizerModeValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.SimplexRandomizer;
-import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -78,7 +69,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

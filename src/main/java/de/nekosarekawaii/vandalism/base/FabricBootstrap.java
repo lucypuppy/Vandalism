@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.event.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
-import de.nekosarekawaii.vandalism.util.game.SoundHooks;
+import de.nekosarekawaii.vandalism.util.SoundHooks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;

@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.PlayerData;
-import de.nekosarekawaii.vandalism.util.math.MathUtil;
+import de.nekosarekawaii.vandalism.util.MathUtil;
 import lombok.Getter;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 

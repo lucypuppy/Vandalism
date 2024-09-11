@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation.randomizer;
 
-import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.util.IName;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Random;

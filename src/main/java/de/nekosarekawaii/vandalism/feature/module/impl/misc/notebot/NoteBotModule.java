@@ -20,10 +20,6 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc.notebot;
 
 import com.google.common.io.Files;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.math.timer.MSTimer;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -35,8 +31,8 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.type.ImString;
 import lombok.Getter;
@@ -72,7 +68,6 @@ import net.raphimc.noteblocklib.util.MinecraftDefinitions;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NoteBotModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener, Render2DListener, Render3DListener {
@@ -270,7 +265,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     private void playRandomSong(final boolean shouldDeactivateFirst) {
         final List<File> files = this.getAllFiles(NOTE_BLOCK_SONGS_DIR);
         if (!files.isEmpty()) {
-            this.playSong(files.get(ThreadLocalRandom.current().nextInt(files.size())), shouldDeactivateFirst);
+            this.playSong(files.get(RandomUtils.randomInt(files.size())), shouldDeactivateFirst);
         }
     }
 

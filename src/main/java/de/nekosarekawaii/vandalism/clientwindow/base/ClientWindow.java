@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.base;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.pattern.functional.IName;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import lombok.Getter;
 import net.minecraft.client.gui.DrawContext;

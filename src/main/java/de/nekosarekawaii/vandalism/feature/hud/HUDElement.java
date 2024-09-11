@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.hud;
 
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -26,9 +25,10 @@ import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.util.AlignmentX;
+import de.nekosarekawaii.vandalism.util.AlignmentY;
+import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.math.AlignmentX;
-import de.nekosarekawaii.vandalism.util.math.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;

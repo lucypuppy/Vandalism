@@ -24,7 +24,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import de.nekosarekawaii.vandalism.util.game.ComponentMapReader;
+import de.nekosarekawaii.vandalism.util.ComponentMapReader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.component.ComponentMap;

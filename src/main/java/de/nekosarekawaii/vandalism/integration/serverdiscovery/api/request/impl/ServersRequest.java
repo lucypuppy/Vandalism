@@ -20,10 +20,10 @@ package de.nekosarekawaii.vandalism.integration.serverdiscovery.api.request.impl
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.Country;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.request.Request;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.impl.ServersResponse;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import lombok.Getter;
 
 public class ServersRequest extends Request<ServersResponse> {

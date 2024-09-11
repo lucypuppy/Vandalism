@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.step.impl;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
@@ -26,6 +25,7 @@ import de.nekosarekawaii.vandalism.event.player.StepListener;
 import de.nekosarekawaii.vandalism.event.player.StepSuccessListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.StepModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
+import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;

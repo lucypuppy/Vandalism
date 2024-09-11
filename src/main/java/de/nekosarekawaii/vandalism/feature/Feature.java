@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.feature;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import lombok.Getter;
 import net.raphimc.vialoader.util.VersionRange;
 import org.checkerframework.checker.nullness.qual.Nullable;

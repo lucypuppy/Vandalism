@@ -19,13 +19,13 @@
 package de.nekosarekawaii.vandalism.clientwindow.impl.port;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.game.PingState;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.PingState;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import lombok.Getter;
 import net.lenni0451.mcping.MCPing;

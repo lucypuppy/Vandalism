@@ -34,7 +34,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
+import static de.nekosarekawaii.vandalism.util.ItemStackUtil.withClientSide;
 
 public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
 

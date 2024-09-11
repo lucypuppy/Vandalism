@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.render.text;
 
+import de.nekosarekawaii.vandalism.util.RandomUtils;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumer;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.util.render.gl.render.passes.Passes;
@@ -35,7 +36,6 @@ import org.joml.Matrix4fc;
 import org.joml.Vector2f;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
 @Setter
@@ -317,7 +317,7 @@ public class AtlasFontRenderer {
             if (style.isObfuscated() && cp != ' ') {
                 final List<? extends GlyphInfo> glyphsByWidth = this.renderer.font.getGlyphInfoByWidth(glyph.getObfuscationWidth());
                 if (glyphsByWidth != null) {
-                    cp = glyphsByWidth.get(ThreadLocalRandom.current().nextInt(glyphsByWidth.size())).getCodePoint();
+                    cp = glyphsByWidth.get(RandomUtils.randomInt(glyphsByWidth.size())).getCodePoint();
                     glyph = this.renderer.font.getGlyphInfo(cp);
                 }
             }

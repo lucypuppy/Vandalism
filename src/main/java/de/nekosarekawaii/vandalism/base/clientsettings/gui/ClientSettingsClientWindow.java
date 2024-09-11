@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.type.ImString;

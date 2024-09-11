@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist;
 
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;

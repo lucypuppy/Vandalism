@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.inventory.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
