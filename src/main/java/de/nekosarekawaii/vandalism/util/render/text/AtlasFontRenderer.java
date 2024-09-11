@@ -317,7 +317,7 @@ public class AtlasFontRenderer {
             if (style.isObfuscated() && cp != ' ') {
                 final List<? extends GlyphInfo> glyphsByWidth = this.renderer.font.getGlyphInfoByWidth(glyph.getObfuscationWidth());
                 if (glyphsByWidth != null) {
-                    cp = glyphsByWidth.get(RandomUtils.randomInt(glyphsByWidth.size())).getCodePoint();
+                    cp = glyphsByWidth.get(RandomUtils.randomInt(glyphsByWidth.size() - 1)).getCodePoint();
                     glyph = this.renderer.font.getGlyphInfo(cp);
                 }
             }

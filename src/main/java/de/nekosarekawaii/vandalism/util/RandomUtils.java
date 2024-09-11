@@ -93,7 +93,7 @@ public final class RandomUtils {
     /**
      * @param min The minimum value.
      * @param max The maximum value.
-     * @return A random byte between min and max .
+     * @return A random byte between min and max.
      */
     public static byte randomByte(final byte min, final byte max) {
         if (min >= max) return min;
@@ -103,7 +103,7 @@ public final class RandomUtils {
     /**
      * @param min The minimum value.
      * @param max The maximum value.
-     * @return A random char between min and max .
+     * @return A random char between min and max.
      */
     public static char randomChar(final char min, final char max) {
         if (min >= max) return min;
@@ -124,7 +124,7 @@ public final class RandomUtils {
      */
     public static <T> T randomElement(final T[] array) {
         if (array.length == 0) return null;
-        return array[randomInt(0, array.length)];
+        return array[ThreadLocalRandom.current().nextInt(0, array.length)];
     }
 
     /**
@@ -134,7 +134,7 @@ public final class RandomUtils {
      */
     public static <T> T randomElement(final List<T> list) {
         if (list.isEmpty()) return null;
-        return list.get(randomInt(0, list.size()));
+        return list.get(ThreadLocalRandom.current().nextInt(0, list.size()));
     }
 
     /**
@@ -148,10 +148,10 @@ public final class RandomUtils {
     /**
      * @param minLength The minimum length of the byte array.
      * @param maxLength The maximum length of the byte array.
-     * @return A random byte array with a random length between minLength and maxLength .
+     * @return A random byte array with a random length between minLength and maxLength.
      */
     public static byte[] randomBytes(final int minLength, final int maxLength) {
-        final byte[] bytes = new byte[randomInt(minLength, maxLength)];
+        final byte[] bytes = new byte[ThreadLocalRandom.current().nextInt(minLength, maxLength)];
         SECURE_RANDOM.nextBytes(bytes);
         return bytes;
     }

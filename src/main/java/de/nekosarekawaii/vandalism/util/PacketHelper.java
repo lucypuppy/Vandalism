@@ -150,7 +150,7 @@ public class PacketHelper {
     }
 
     public static String getRandomIpPart() {
-        return String.valueOf(RandomUtils.randomInt(256));
+        return String.valueOf(RandomUtils.randomInt(255));
     }
 
     public static byte[] readBuffer(ByteBuf in) {
