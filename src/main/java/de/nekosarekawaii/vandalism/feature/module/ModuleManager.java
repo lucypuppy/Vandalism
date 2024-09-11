@@ -88,6 +88,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private SoundBlockerModule soundBlockerModule;
     private ResourcePackSpooferModule resourcePackSpooferModule;
     private StepModule stepModule;
+    private UnfocusedFPSModule unfocusedFPSModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -126,6 +127,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.soundBlockerModule = new SoundBlockerModule(),
                 this.resourcePackSpooferModule = new ResourcePackSpooferModule(),
                 this.stepModule = new StepModule(),
+                this.unfocusedFPSModule = new UnfocusedFPSModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),

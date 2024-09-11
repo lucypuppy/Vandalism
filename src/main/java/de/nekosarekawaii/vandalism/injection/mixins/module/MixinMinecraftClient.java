@@ -21,10 +21,14 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastPlaceModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.ESPModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.render.UnfocusedFPSModule;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.entity.Entity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,6 +37,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = MinecraftClient.class)
 public abstract class MixinMinecraftClient implements MinecraftWrapper {
+
+    @Shadow
+    public abstract boolean isWindowFocused();
+
+    @Shadow
+    @Final
+    public GameOptions options;
 
     @Inject(method = "hasOutline", at = @At("RETURN"), cancellable = true)
     private void hookESP(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
@@ -47,6 +58,14 @@ public abstract class MixinMinecraftClient implements MinecraftWrapper {
         final FastPlaceModule fastPlaceModule = Vandalism.getInstance().getModuleManager().getFastPlaceModule();
         if (fastPlaceModule.isActive()) return fastPlaceModule.cooldown.getValue();
         return value;
+    }
+
+    @Inject(method = "getFramerateLimit", at = @At("HEAD"), cancellable = true)
+    private void hookUnfocusedFPS(final CallbackInfoReturnable<Integer> info) {
+        final UnfocusedFPSModule unfocusedFPSModule = Vandalism.getInstance().getModuleManager().getUnfocusedFPSModule();
+        if (unfocusedFPSModule.isActive() && !isWindowFocused()) {
+            info.setReturnValue(Math.min(unfocusedFPSModule.maxFPS.getValue(), this.options.getMaxFps().getValue()));
+        }
     }
 
 }
