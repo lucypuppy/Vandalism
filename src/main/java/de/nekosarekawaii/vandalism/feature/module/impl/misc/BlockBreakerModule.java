@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.block.Block;
@@ -41,7 +41,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.Arrays;
 
-public class BlockBreakerModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
+public class BlockBreakerModule extends Module implements PlayerUpdateListener, IncomingPacketListener {
 
     private final MultiRegistryBlacklistValue<Block> affectedBlocks = new MultiRegistryBlacklistValue<>(
             this,

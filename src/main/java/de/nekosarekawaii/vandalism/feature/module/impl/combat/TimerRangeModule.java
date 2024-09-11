@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.TickTimeListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class TimerRangeModule extends AbstractModule implements TickTimeListener {
+public class TimerRangeModule extends Module implements TickTimeListener {
 
     public TimerRangeModule() {
         super("Timer Range", "Automatically speeds up the speed of the game.", Category.COMBAT);

@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -36,7 +36,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;
 
-public class GhostHandModule extends AbstractModule implements PlayerUpdateListener {
+public class GhostHandModule extends Module implements PlayerUpdateListener {
 
     public final MultiRegistryBlacklistValue<Block> blockList = new MultiRegistryBlacklistValue<>(
             this,

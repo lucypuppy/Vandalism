@@ -20,11 +20,11 @@ package de.nekosarekawaii.vandalism.integration.spotify.config;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
+import de.nekosarekawaii.vandalism.base.config.Config;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 
-public class SpotifyConfig extends AbstractConfig<JsonObject> {
+public class SpotifyConfig extends Config<JsonObject> {
 
     private final SpotifyManager spotifyManager;
 

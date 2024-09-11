@@ -40,7 +40,7 @@ import net.minecraft.text.Text;
 
 import java.util.UUID;
 
-public class CreativeTabManager extends Storage<AbstractCreativeTab> implements OutgoingPacketListener {
+public class CreativeTabManager extends Storage<CreativeTab> implements OutgoingPacketListener {
 
     public static final String CLIENTSIDE_NAME = UUID.randomUUID().toString();
     public static final String CLIENTSIDE_GLINT = UUID.randomUUID().toString();
@@ -50,7 +50,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
 
     @Override
     public void init() {
-        this.setAddConsumer(AbstractCreativeTab::publish);
+        this.setAddConsumer(CreativeTab::publish);
         this.add(
                 // new CrashItemsCreativeTab(),
                 // new KickItemsCreativeTab(),

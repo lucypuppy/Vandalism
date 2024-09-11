@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.event.game.BlockStateUpdateListener;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import net.minecraft.block.Block;
@@ -48,13 +48,13 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ESPModule extends AbstractModule implements BlockStateListener, BlockStateUpdateListener, WorldListener, DisconnectListener, Render3DListener {
+public class ESPModule extends Module implements BlockStateListener, BlockStateUpdateListener, WorldListener, DisconnectListener, Render3DListener {
 
     private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.");
 

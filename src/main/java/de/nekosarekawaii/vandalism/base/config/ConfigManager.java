@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.Storage;
 
-public class ConfigManager extends Storage<AbstractConfig<?>> {
+public class ConfigManager extends Storage<Config<?>> {
 
     private final Thread autoSaveThread;
 
@@ -34,10 +34,10 @@ public class ConfigManager extends Storage<AbstractConfig<?>> {
                 } catch (final InterruptedException ignored) {
                 }
                 if (FabricBootstrap.INITIALIZED && !FabricBootstrap.SHUTTING_DOWN) {
-                    for (final AbstractConfig<?> abstractConfig : this.getList()) {
-                        if (abstractConfig.isModified()) {
-                            abstractConfig.save();
-                            Vandalism.getInstance().getLogger().info("Auto saved config {}", abstractConfig.getFile().getName());
+                    for (final Config<?> config : this.getList()) {
+                        if (config.isModified()) {
+                            config.save();
+                            Vandalism.getInstance().getLogger().info("Auto saved config {}", config.getFile().getName());
                         }
                     }
                 }
@@ -47,12 +47,12 @@ public class ConfigManager extends Storage<AbstractConfig<?>> {
 
     @Override
     public void init() {
-        this.getList().forEach(AbstractConfig::load);
+        this.getList().forEach(Config::load);
         this.autoSaveThread.start();
     }
 
     public void save() {
-        this.getList().forEach(AbstractConfig::save);
+        this.getList().forEach(Config::save);
     }
 
 }

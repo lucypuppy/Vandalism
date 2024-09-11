@@ -18,14 +18,14 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
-import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class KickItemsCreativeTab extends AbstractCreativeTab {
+public class KickItemsCreativeTab extends CreativeTab {
 
     // TODO: Fix
 

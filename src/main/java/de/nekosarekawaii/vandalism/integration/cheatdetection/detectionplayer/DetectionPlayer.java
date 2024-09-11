@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer;
 
-import de.nekosarekawaii.vandalism.integration.cheatdetection.AbstractDetection;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.DetectManager;
+import de.nekosarekawaii.vandalism.integration.cheatdetection.Detection;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.impl.RotationData;
 import lombok.Getter;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,12 +42,12 @@ public class DetectionPlayer {
 
     public void onActivate() {
         this.rotationData.onActivate();
-        this.detectManager.getList().forEach(AbstractDetection::onActivate);
+        this.detectManager.getList().forEach(Detection::onActivate);
     }
 
     public void onDeactivate() {
         this.rotationData.onDeactivate();
-        this.detectManager.getList().forEach(AbstractDetection::onDeactivate);
+        this.detectManager.getList().forEach(Detection::onDeactivate);
     }
 
 }

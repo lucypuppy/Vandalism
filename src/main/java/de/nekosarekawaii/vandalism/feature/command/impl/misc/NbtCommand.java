@@ -24,7 +24,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.serialization.DataResult;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ComponentMapArgumentType;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.ItemStackUtil;
@@ -57,7 +57,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-public class NbtCommand extends AbstractCommand {
+public class NbtCommand extends Command {
 
     private static final DynamicCommandExceptionType MALFORMED_ITEM_EXCEPTION = new DynamicCommandExceptionType(
             error -> Text.stringifiedTranslatable("arguments.item.malformed", error)

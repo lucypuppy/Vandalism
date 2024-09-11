@@ -23,12 +23,12 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 
-public class AmbienceModule extends AbstractModule implements IncomingPacketListener, PlayerUpdateListener {
+public class AmbienceModule extends Module implements IncomingPacketListener, PlayerUpdateListener {
 
     private final BooleanValue overwriteWorldTime = new BooleanValue(
             this,

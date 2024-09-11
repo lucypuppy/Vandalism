@@ -19,11 +19,11 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class TestCommand extends AbstractCommand {
+public class TestCommand extends Command {
 
     public TestCommand() {
         super("Just for development purposes.", Category.MISC, "test");

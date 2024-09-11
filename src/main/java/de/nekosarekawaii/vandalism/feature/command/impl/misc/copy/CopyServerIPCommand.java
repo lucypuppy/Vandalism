@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.ServerUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -31,7 +31,7 @@ import net.minecraft.util.Pair;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class CopyServerIPCommand extends AbstractCommand {
+public class CopyServerIPCommand extends Command {
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 

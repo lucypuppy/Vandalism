@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.AlignmentX;
 import de.nekosarekawaii.vandalism.util.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
@@ -194,8 +194,8 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         if (this.sort) {
             this.sort = false;
             this.activatedModules.clear();
-            final List<AbstractModule> modules = Vandalism.getInstance().getModuleManager().getList();
-            for (final AbstractModule module : modules) {
+            final List<Module> modules = Vandalism.getInstance().getModuleManager().getList();
+            for (final Module module : modules) {
                 if (module.isActive() && module.isShowInHUD()) {
                     this.activatedModules.add(module.getName());
                 }

@@ -21,14 +21,14 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.arguments.FriendArgumentType;
 import de.nekosarekawaii.vandalism.feature.command.arguments.PlayerArgumentType;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class FriendsCommand extends AbstractCommand {
+public class FriendsCommand extends Command {
 
     public FriendsCommand() {
         super("Manage your client friends.", Category.MISC, "friends", "friend");

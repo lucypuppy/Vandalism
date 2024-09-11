@@ -18,12 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus;
 
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl.StaticModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl.VulcanModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
-public class JesusModule extends AbstractModule {
+public class JesusModule extends Module {
 
     private final ModuleModeValue<JesusModule> mode = new ModuleModeValue<>(
             this,

@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
@@ -104,7 +104,7 @@ public class ModulesClientWindow extends ClientWindow {
             ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
             final String searchInput = this.searchInput.get();
             if (!searchInput.isBlank()) {
-                for (final AbstractModule module : moduleManager.getList()) {
+                for (final Module module : moduleManager.getList()) {
                     if (menuSettings.hideExperimentalModules.getValue() && module.isExperimental()) {
                         continue;
                     }
@@ -118,8 +118,8 @@ public class ModulesClientWindow extends ClientWindow {
             ImGui.endChild();
             ImGui.separator();
             ImGui.end();
-            final List<AbstractModule> favoriteModules = new ArrayList<>();
-            for (final AbstractModule module : moduleManager.getList()) {
+            final List<Module> favoriteModules = new ArrayList<>();
+            for (final Module module : moduleManager.getList()) {
                 if (module.isFavorite()) {
                     favoriteModules.add(module);
                 }
@@ -138,7 +138,7 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.inputText(modulesFavoritesIdentifier + "input", this.favoriteModulesSearchInput);
                 ImGui.separator();
                 ImGui.beginChild(modulesFavoritesIdentifier + "scrolllist", -1, -1, true);
-                for (final AbstractModule module : favoriteModules) {
+                for (final Module module : favoriteModules) {
                     if (!this.favoriteModulesSearchInput.get().isBlank()) {
                         if (!(StringUtils.contains(module.getName(), this.favoriteModulesSearchInput.get()) ||
                                 (module.getDescription() != null && StringUtils.contains(module.getDescription(), this.favoriteModulesSearchInput.get())))) {
@@ -151,8 +151,8 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.separator();
                 ImGui.end();
             }
-            final List<AbstractModule> activatedModules = new ArrayList<>();
-            for (final AbstractModule module : moduleManager.getList()) {
+            final List<Module> activatedModules = new ArrayList<>();
+            for (final Module module : moduleManager.getList()) {
                 if (module.isActive()) {
                     activatedModules.add(module);
                 }
@@ -170,7 +170,7 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.inputText(modulesActivatedIdentifier + "input", this.activatedModulesSearchInput);
                 ImGui.separator();
                 ImGui.beginChild(modulesActivatedIdentifier + "scrolllist", -1, -1, true);
-                for (final AbstractModule module : activatedModules) {
+                for (final Module module : activatedModules) {
                     if (!this.activatedModulesSearchInput.get().isBlank()) {
                         if (!(StringUtils.contains(module.getName(), this.activatedModulesSearchInput.get()) ||
                                 (module.getDescription() != null && StringUtils.contains(module.getDescription(), this.activatedModulesSearchInput.get())))) {
@@ -189,7 +189,7 @@ public class ModulesClientWindow extends ClientWindow {
                 }
             }
             for (final Feature.Category featureCategory : Feature.Category.values()) {
-                final List<AbstractModule> modulesByCategory = moduleManager.getByCategory(featureCategory);
+                final List<Module> modulesByCategory = moduleManager.getByCategory(featureCategory);
                 if (modulesByCategory.isEmpty()) continue;
                 final String featureCategoryIdentifier = "##" + featureCategory.getName() + "modulesfeaturecategory";
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
@@ -201,7 +201,7 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.begin(featureCategory.getName() + " Modules" + featureCategoryIdentifier, windowFlags);
                 ImGui.separator();
                 ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
-                for (final AbstractModule module : modulesByCategory) {
+                for (final Module module : modulesByCategory) {
                     if (menuSettings.hideExperimentalModules.getValue() && module.isExperimental()) {
                         continue;
                     }
@@ -215,7 +215,7 @@ public class ModulesClientWindow extends ClientWindow {
         }
     }
 
-    private void renderModule(final AbstractModule module, final String id) {
+    private void renderModule(final Module module, final String id) {
         final String moduleId = "##" + id + module.getCategory().getName() + "module" + module.getName();
         final boolean isActive = module.isActive();
         if (isActive) {
@@ -313,7 +313,7 @@ public class ModulesClientWindow extends ClientWindow {
         }
     }
 
-    private void renderModuleInfo(final AbstractModule module, final boolean wrapText) {
+    private void renderModuleInfo(final Module module, final boolean wrapText) {
         final String description = module.getDescription();
         if (description == null) {
             return;
@@ -323,15 +323,15 @@ public class ModulesClientWindow extends ClientWindow {
         if (module.isExperimental()) {
             ImGui.spacing();
             ImGui.pushStyleColor(ImGuiCol.Text, 0.8f, 0.1f, 0.1f, 1f);
-            if (wrapText) ImGui.textWrapped(AbstractModule.EXPERIMENTAL_WARNING_TEXT);
-            else ImGui.text(AbstractModule.EXPERIMENTAL_WARNING_TEXT);
+            if (wrapText) ImGui.textWrapped(Module.EXPERIMENTAL_WARNING_TEXT);
+            else ImGui.text(Module.EXPERIMENTAL_WARNING_TEXT);
             ImGui.popStyleColor();
         }
         final VersionRange supportedVersions = module.getSupportedVersions();
         if (supportedVersions != null) {
             ImGui.spacing();
-            if (wrapText) ImGui.textWrapped(AbstractModule.SUPPORTED_VERSIONS_TEXT);
-            else ImGui.text(AbstractModule.SUPPORTED_VERSIONS_TEXT);
+            if (wrapText) ImGui.textWrapped(Module.SUPPORTED_VERSIONS_TEXT);
+            else ImGui.text(Module.SUPPORTED_VERSIONS_TEXT);
             if (wrapText) ImGui.textWrapped(supportedVersions.toString());
             else ImGui.text(supportedVersions.toString());
         }

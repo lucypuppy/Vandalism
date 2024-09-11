@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.ItemStackUtil;
 import net.minecraft.command.CommandSource;
@@ -31,7 +31,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 
-public class EnchantCommand extends AbstractCommand {
+public class EnchantCommand extends Command {
 
     public EnchantCommand() {
         super(

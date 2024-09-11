@@ -26,14 +26,14 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
-public abstract class AbstractDetection implements IName, MinecraftWrapper {
+public abstract class Detection implements IName, MinecraftWrapper {
 
     protected final DetectionPlayer player;
     private final String name;
 
     private boolean experimental = false;
 
-    public AbstractDetection(final DetectionPlayer player, String name) {
+    public Detection(final DetectionPlayer player, String name) {
         this.player = player;
         this.name = name;
     }

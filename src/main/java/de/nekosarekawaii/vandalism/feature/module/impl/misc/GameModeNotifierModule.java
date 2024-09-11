@@ -22,7 +22,7 @@ import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +33,7 @@ import net.minecraft.world.GameMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameModeNotifierModule extends AbstractModule implements WorldListener, PlayerUpdateListener {
+public class GameModeNotifierModule extends Module implements WorldListener, PlayerUpdateListener {
 
     private final List<PlayerEntry> playerEntries = new ArrayList<>();
 

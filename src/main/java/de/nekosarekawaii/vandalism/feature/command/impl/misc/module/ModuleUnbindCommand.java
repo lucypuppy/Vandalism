@@ -19,13 +19,13 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class ModuleUnbindCommand extends AbstractCommand {
+public class ModuleUnbindCommand extends Command {
 
     public ModuleUnbindCommand() {
         super("Lets you unbind modules.", Category.MISC, "moduleunbind", "unbind");
@@ -34,7 +34,7 @@ public class ModuleUnbindCommand extends AbstractCommand {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("module", ModuleArgumentType.create()).executes(context -> {
-            final AbstractModule module = ModuleArgumentType.get(context);
+            final Module module = ModuleArgumentType.get(context);
             if (module.getKeyBind().isValid()) {
                 module.getKeyBind().resetValue();
                 ChatUtil.infoChatMessage("Unbound module " + module.getName() + ".");

@@ -21,14 +21,14 @@ package de.nekosarekawaii.vandalism.base.account.type;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.Environment;
-import de.nekosarekawaii.vandalism.base.account.template.AbstractTokenBasedAccount;
+import de.nekosarekawaii.vandalism.base.account.template.TokenBasedAccount;
 import net.minecraft.client.session.Session;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Deprecated
-public class EasyMCAccount extends AbstractTokenBasedAccount {
+public class EasyMCAccount extends TokenBasedAccount {
 
     public EasyMCAccount() { // Java is bad, we are worse
         this(null);
@@ -44,7 +44,7 @@ public class EasyMCAccount extends AbstractTokenBasedAccount {
     }
 
     @Override
-    public AbstractTokenBasedAccount create(final String token) {
+    public TokenBasedAccount create(final String token) {
         return new EasyMCAccount(token);
     }
 

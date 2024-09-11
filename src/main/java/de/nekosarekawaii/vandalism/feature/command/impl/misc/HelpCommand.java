@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.ClickEvent;
@@ -30,7 +30,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class HelpCommand extends AbstractCommand {
+public class HelpCommand extends Command {
 
     public HelpCommand() {
         super(
@@ -64,7 +64,7 @@ public class HelpCommand extends AbstractCommand {
         ChatUtil.emptyChatMessage(false);
         final String commandPrefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
         for (int i = page * maxCommandsPerPage; i < Math.min((page + 1) * maxCommandsPerPage, totalCommands); i++) {
-            final AbstractCommand command = Vandalism.getInstance().getCommandManager().getList().get(i);
+            final Command command = Vandalism.getInstance().getCommandManager().getList().get(i);
             final MutableText commandText = Text.literal(commandPrefix + String.join(" | ", command.getAliases()));
             commandText.formatted(Formatting.YELLOW);
             commandText.append(Text.literal(" > ").formatted(Formatting.DARK_GRAY));

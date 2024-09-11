@@ -20,11 +20,11 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.google.common.collect.Lists;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
 
-public class SoundBlockerModule extends AbstractModule {
+public class SoundBlockerModule extends Module {
 
     public final MultiRegistryBlacklistValue<SoundEvent> blockedSounds = new MultiRegistryBlacklistValue<>(
             this,

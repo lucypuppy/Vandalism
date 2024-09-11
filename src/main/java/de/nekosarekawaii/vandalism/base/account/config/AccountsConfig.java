@@ -22,11 +22,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
-import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
+import de.nekosarekawaii.vandalism.base.config.Config;
 
-public class AccountsConfig extends AbstractConfig<JsonObject> {
+public class AccountsConfig extends Config<JsonObject> {
 
     private final AccountManager accountManager;
 
@@ -35,7 +35,7 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
         this.accountManager = accountManager;
     }
 
-    private void saveAccount(final JsonObject accountNode, final AbstractAccount account) {
+    private void saveAccount(final JsonObject accountNode, final Account account) {
         accountNode.addProperty("type", account.getType());
         try {
             account.save(accountNode);
@@ -48,13 +48,13 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
     public JsonObject save0() {
         final JsonObject mainNode = new JsonObject();
         final JsonArray accountsNode = new JsonArray();
-        for (final AbstractAccount account : this.accountManager.getList()) {
+        for (final Account account : this.accountManager.getList()) {
             final JsonObject accountNode = new JsonObject();
             this.saveAccount(accountNode, account);
             accountsNode.add(accountNode);
         }
         mainNode.add("accounts", accountsNode);
-        final AbstractAccount account = this.accountManager.getCurrentAccount();
+        final Account account = this.accountManager.getCurrentAccount();
         if (account != null) {
             final JsonObject currentAccountNode = new JsonObject();
             this.saveAccount(currentAccountNode, account);
@@ -63,13 +63,13 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
         return mainNode;
     }
 
-    private AbstractAccount loadAccount(final JsonObject accountNode) {
+    private Account loadAccount(final JsonObject accountNode) {
         if (accountNode.has("type")) {
             final String type = accountNode.get("type").getAsString();
-            for (final AbstractAccount accountType : AccountManager.ACCOUNT_TYPES.keySet()) {
+            for (final Account accountType : AccountManager.ACCOUNT_TYPES.keySet()) {
                 if (accountType.getType().equals(type)) {
                     try {
-                        final AbstractAccount account = accountType.getClass().getDeclaredConstructor().newInstance();
+                        final Account account = accountType.getClass().getDeclaredConstructor().newInstance();
                         account.load(accountNode);
                         return account;
                     } catch (Throwable t) {
@@ -86,14 +86,14 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
         if (mainNode.has("accounts")) {
             final JsonArray accountsNode = mainNode.get("accounts").getAsJsonArray();
             accountsNode.asList().stream().map(JsonElement::getAsJsonObject).forEach(accountNode -> {
-                final AbstractAccount account = this.loadAccount(accountNode);
+                final Account account = this.loadAccount(accountNode);
                 if (account != null) {
                     this.accountManager.add(account);
                 }
             });
         }
         if (mainNode.has("lastAccount")) {
-            final AbstractAccount lastAccount = this.loadAccount(mainNode.get("lastAccount").getAsJsonObject());
+            final Account lastAccount = this.loadAccount(mainNode.get("lastAccount").getAsJsonObject());
             if (lastAccount != null) {
                 try {
                     lastAccount.login();

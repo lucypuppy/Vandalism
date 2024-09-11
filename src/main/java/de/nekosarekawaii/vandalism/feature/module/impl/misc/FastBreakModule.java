@@ -23,12 +23,12 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.BlockBreakListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class FastBreakModule extends AbstractModule implements BlockBreakListener, PlayerUpdateListener {
+public class FastBreakModule extends Module implements BlockBreakListener, PlayerUpdateListener {
 
     private BlockPos lastPos;
     private Direction lastDirection;

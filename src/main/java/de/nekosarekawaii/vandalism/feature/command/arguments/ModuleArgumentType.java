@@ -26,14 +26,14 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
 import java.util.concurrent.CompletableFuture;
 
 
-public class ModuleArgumentType implements ArgumentType<AbstractModule> {
+public class ModuleArgumentType implements ArgumentType<Module> {
 
     private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No module with the name " + name + " has been found!")
@@ -43,14 +43,14 @@ public class ModuleArgumentType implements ArgumentType<AbstractModule> {
         return new ModuleArgumentType();
     }
 
-    public static AbstractModule get(final CommandContext<?> context) {
-        return context.getArgument("module", AbstractModule.class);
+    public static Module get(final CommandContext<?> context) {
+        return context.getArgument("module", Module.class);
     }
 
     @Override
-    public AbstractModule parse(final StringReader reader) throws CommandSyntaxException {
+    public Module parse(final StringReader reader) throws CommandSyntaxException {
         final String argument = reader.readString().replace("-", " ").replace("_", "-");
-        final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(argument, true);
+        final Module module = Vandalism.getInstance().getModuleManager().getByName(argument, true);
         if (module == null) {
             throw NOT_EXISTING.create(argument);
         }

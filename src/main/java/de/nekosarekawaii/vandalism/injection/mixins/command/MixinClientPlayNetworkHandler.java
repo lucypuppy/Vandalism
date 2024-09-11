@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.command;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.injection.access.IClientPlayNetworkHandler;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
@@ -50,7 +50,7 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayNetwor
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
         if (message.startsWith(prefix) && this.mc.currentScreen instanceof ChatScreen) {
             try {
-                Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(message.substring(prefix.length()), AbstractCommand.COMMAND_SOURCE);
+                Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(message.substring(prefix.length()), Command.COMMAND_SOURCE);
             } catch (CommandSyntaxException e) {
                 ChatUtil.errorChatMessage(e.getMessage());
             }

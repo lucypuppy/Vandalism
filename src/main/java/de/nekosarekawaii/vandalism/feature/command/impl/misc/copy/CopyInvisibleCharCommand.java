@@ -19,11 +19,11 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class CopyInvisibleCharCommand extends AbstractCommand {
+public class CopyInvisibleCharCommand extends Command {
 
     public CopyInvisibleCharCommand() {
         super(

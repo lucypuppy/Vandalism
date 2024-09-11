@@ -21,10 +21,10 @@ package de.nekosarekawaii.vandalism.feature.module.template.module;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 
-public abstract class MultiExecutionModuleMode<M extends AbstractModule> extends SingleExecutionModuleMode<M> implements PlayerUpdateListener {
+public abstract class MultiExecutionModuleMode<M extends Module> extends SingleExecutionModuleMode<M> implements PlayerUpdateListener {
 
     private final IntegerValue delay = new IntegerValue(
             this,

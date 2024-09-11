@@ -22,9 +22,9 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class AutoSprintModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoSprintModule extends Module implements PlayerUpdateListener {
 
     private final BooleanValue legit = new BooleanValue(
             this,

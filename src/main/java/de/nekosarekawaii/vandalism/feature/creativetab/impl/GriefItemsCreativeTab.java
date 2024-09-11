@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
-import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTab;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ import java.util.List;
 import static de.nekosarekawaii.vandalism.util.ItemStackUtil.createSpawnEggItemStack;
 import static de.nekosarekawaii.vandalism.util.ItemStackUtil.withClientSide;
 
-public class GriefItemsCreativeTab extends AbstractCreativeTab {
+public class GriefItemsCreativeTab extends CreativeTab {
 
     public GriefItemsCreativeTab() {
         super(Text.literal("Grief Items"), Items.TNT);

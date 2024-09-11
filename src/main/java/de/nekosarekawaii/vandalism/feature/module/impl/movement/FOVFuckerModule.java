@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.RandomUtils;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -34,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListener {
+public class FOVFuckerModule extends Module implements PlayerUpdateListener {
 
     private final FloatValue maxDistance = new FloatValue(
             this,

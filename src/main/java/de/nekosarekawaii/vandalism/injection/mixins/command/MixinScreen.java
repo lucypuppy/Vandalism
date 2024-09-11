@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.command;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -43,7 +43,7 @@ public abstract class MixinScreen {
                 final String value = clickEvent.getValue(), secret = CommandManager.COMMAND_SECRET;
                 if (value.startsWith(secret) && MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
                     try {
-                        Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(value.replaceFirst(secret, ""), AbstractCommand.COMMAND_SOURCE);
+                        Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(value.replaceFirst(secret, ""), Command.COMMAND_SOURCE);
                         cir.setReturnValue(true);
                     } catch (CommandSyntaxException e) {
                         Vandalism.getInstance().getLogger().error("Failed to run command.", e);

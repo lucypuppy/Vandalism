@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.block.FallingBlock;
@@ -34,7 +34,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ChestStealerModule extends AbstractModule implements PlayerUpdateListener {
+public class ChestStealerModule extends Module implements PlayerUpdateListener {
 
     private MSTimer timer;
     private MSTimer startTimer;

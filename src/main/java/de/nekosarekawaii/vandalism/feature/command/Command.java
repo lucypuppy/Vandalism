@@ -34,7 +34,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.raphimc.vialoader.util.VersionRange;
 
 @Getter
-public abstract class AbstractCommand extends Feature {
+public abstract class Command extends Feature {
 
     public static final int SINGLE_SUCCESS = com.mojang.brigadier.Command.SINGLE_SUCCESS;
     public static final CommandRegistryAccess REGISTRY_ACCESS = CommandManager.createRegistryAccess(BuiltinRegistries.createWrapperLookup());
@@ -42,13 +42,13 @@ public abstract class AbstractCommand extends Feature {
 
     private final String[] aliases;
 
-    public AbstractCommand(String description, Category category, String... aliases) {
+    public Command(String description, Category category, String... aliases) {
         super(null, description, category);
 
         this.aliases = aliases;
     }
 
-    public AbstractCommand(String description, Category category, VersionRange supportedVersions, String... aliases) {
+    public Command(String description, Category category, VersionRange supportedVersions, String... aliases) {
         super(null, description, category, supportedVersions);
 
         this.aliases = aliases;

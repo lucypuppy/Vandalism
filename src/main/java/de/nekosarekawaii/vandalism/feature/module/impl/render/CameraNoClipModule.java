@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.render.CameraClipRaytraceListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class CameraNoClipModule extends AbstractModule implements CameraClipRaytraceListener {
+public class CameraNoClipModule extends Module implements CameraClipRaytraceListener {
 
     public CameraNoClipModule() {
         super("Camera No Clip", "Disables camera block collision and lets you see trough blocks.", Category.RENDER);

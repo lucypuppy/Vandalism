@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.base.account.type.microsoft;
 
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
+import de.nekosarekawaii.vandalism.base.account.template.MicrosoftAccount;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -31,7 +31,7 @@ import net.raphimc.minecraftauth.step.msa.StepCredentialsMsaCode;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MSCredentialsAccount extends AbstractMicrosoftAccount {
+public class MSCredentialsAccount extends MicrosoftAccount {
 
     private static final AccountFactory FACTORY = new AccountFactory() {
 
@@ -63,7 +63,7 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
         }
 
         @Override
-        public CompletableFuture<AbstractAccount> make() {
+        public CompletableFuture<Account> make() {
             this.state = "";
             return CompletableFuture.supplyAsync(() -> {
                 try {

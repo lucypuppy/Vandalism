@@ -21,13 +21,13 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import net.minecraft.command.CommandSource;
 
 import java.io.File;
 import java.io.IOException;
 
-public class ChatClearCommand extends AbstractCommand {
+public class ChatClearCommand extends Command {
 
     public ChatClearCommand() {
         super("Clears your clientside chat (also allows you to clear your sent history).", Category.MISC, "chatclear", "clearchat", "cc");

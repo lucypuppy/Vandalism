@@ -31,14 +31,14 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractCreativeTab {
+public abstract class CreativeTab {
 
     private final List<ItemStack> TEMP_ITEMS = new ArrayList<>();
 
     private final Text name;
     private final ItemStack icon;
 
-    public AbstractCreativeTab(final Text name, final Item icon) {
+    public CreativeTab(final Text name, final Item icon) {
         this.name = name;
         this.icon = new ItemStack(icon);
     }

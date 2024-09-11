@@ -28,9 +28,9 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ConfigArgumentType;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.StringUtils;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ConfigCommand extends AbstractCommand {
+public class ConfigCommand extends Command {
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -77,7 +77,7 @@ public class ConfigCommand extends AbstractCommand {
                     file.createNewFile();
                     final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
                     final JsonObject modulesJsonObject = new JsonObject();
-                    for (final AbstractModule module : moduleManager.getList()) {
+                    for (final Module module : moduleManager.getList()) {
                         if (module.getCategory() == Category.RENDER) {
                             continue;
                         }
@@ -149,7 +149,7 @@ public class ConfigCommand extends AbstractCommand {
             try (final FileReader fr = new FileReader(file)) {
                 final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
                 final JsonObject jsonObject = GSON.fromJson(fr, JsonObject.class);
-                for (final AbstractModule module : moduleManager.getList()) {
+                for (final Module module : moduleManager.getList()) {
                     if (module.getCategory() == Category.RENDER) {
                         continue;
                     }

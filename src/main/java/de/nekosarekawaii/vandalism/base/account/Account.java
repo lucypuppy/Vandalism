@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AbstractAccount implements MinecraftWrapper {
+public abstract class Account implements MinecraftWrapper {
 
     private final String type;
 
@@ -44,7 +44,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
 
     private String lastLogin;
 
-    public AbstractAccount(final String type) {
+    public Account(final String type) {
         this.type = type;
     }
 

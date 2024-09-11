@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
-import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTab;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BeehiveBlockEntity;
 import net.minecraft.component.DataComponentTypes;
@@ -36,7 +36,7 @@ import java.util.List;
 
 import static de.nekosarekawaii.vandalism.util.ItemStackUtil.withClientSide;
 
-public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
+public class ConsoleSpamItemsCreativeTab extends CreativeTab {
 
     public ConsoleSpamItemsCreativeTab() {
         super(Text.literal("Console Spam Items"), Items.SPECTRAL_ARROW);

@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.gl.render.*;
@@ -45,7 +45,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class TestModule extends AbstractModule implements Render2DListener, Render3DListener {
+public class TestModule extends Module implements Render2DListener, Render3DListener {
 
     private AtlasFont testFont;
 

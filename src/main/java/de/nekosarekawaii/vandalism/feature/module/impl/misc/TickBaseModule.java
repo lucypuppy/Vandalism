@@ -24,13 +24,13 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import org.lwjgl.glfw.GLFW;
 
-public class TickBaseModule extends AbstractModule implements TimeTravelListener, IncomingPacketListener {
+public class TickBaseModule extends Module implements TimeTravelListener, IncomingPacketListener {
 
     private boolean shouldCharge, unCharge;
     private long prevTime;

@@ -19,11 +19,11 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
 import net.minecraft.command.CommandSource;
 
-public class ModuleToggleCommand extends AbstractCommand {
+public class ModuleToggleCommand extends Command {
 
     public ModuleToggleCommand() {
         super("Lets you toggle modules.", Category.MISC, "moduletoggle", "toggle", "t");

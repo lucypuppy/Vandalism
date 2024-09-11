@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -32,7 +32,7 @@ import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AutoArmorModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoArmorModule extends Module implements PlayerUpdateListener {
 
     private MSTimer timer;
     private MSTimer startTimer;

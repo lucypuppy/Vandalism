@@ -27,17 +27,11 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.event.player.ShouldSlowdownListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.ShieldItem;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.TridentItem;
+import net.minecraft.item.*;
 
-public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener, CanSprintListener, ShouldSlowdownListener {
+public class NoSlowModule extends Module implements PlayerSlowdownListener, CanSprintListener, ShouldSlowdownListener {
 
     private static final String FORWARD = "Forward";
 

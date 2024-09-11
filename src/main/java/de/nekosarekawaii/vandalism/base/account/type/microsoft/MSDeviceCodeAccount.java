@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.base.account.type.microsoft;
 
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
+import de.nekosarekawaii.vandalism.base.account.template.MicrosoftAccount;
 import imgui.ImGui;
 import net.minecraft.util.Util;
 import net.raphimc.minecraftauth.MinecraftAuth;
@@ -30,7 +30,7 @@ import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
+public class MSDeviceCodeAccount extends MicrosoftAccount {
 
     private static final String OPEN_URL = "Please open the url: ";
 
@@ -57,7 +57,7 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
         }
 
         @Override
-        public CompletableFuture<AbstractAccount> make() {
+        public CompletableFuture<Account> make() {
             this.state = "";
             return CompletableFuture.supplyAsync(() -> {
                 try {

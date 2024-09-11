@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.account.config.AccountsConfig;
 import de.nekosarekawaii.vandalism.base.account.gui.AccountsClientWindow;
-import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
+import de.nekosarekawaii.vandalism.base.account.template.MicrosoftAccount;
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSCredentialsAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSDeviceCodeAccount;
@@ -41,9 +41,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Getter
-public class AccountManager extends Storage<AbstractAccount> implements UpdateSessionListener {
+public class AccountManager extends Storage<Account> implements UpdateSessionListener {
 
-    public static final Map<AbstractAccount, AccountFactory> ACCOUNT_TYPES = new LinkedHashMap<>();
+    public static final Map<Account, AccountFactory> ACCOUNT_TYPES = new LinkedHashMap<>();
 
     public AccountManager(final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         Arrays.asList(
@@ -59,10 +59,10 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
         clientWindowManager.add(new AccountsClientWindow(this));
     }
 
-    private AbstractAccount firstAccount;
+    private Account firstAccount;
 
     @Setter
-    private AbstractAccount currentAccount;
+    private Account currentAccount;
 
     @Override
     public void init() {
@@ -74,8 +74,8 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
                 } catch (final InterruptedException ignored) {
                 }
                 if (FabricBootstrap.INITIALIZED) {
-                    for (final AbstractAccount abstractAccount : this.getList()) {
-                        if (abstractAccount instanceof final AbstractMicrosoftAccount account) {
+                    for (final Account abstractAccount : this.getList()) {
+                        if (abstractAccount instanceof final MicrosoftAccount account) {
                             final long tokenExpirationTime = account.getTokenExpirationTime();
                             if (tokenExpirationTime == -1) {
                                 continue;
@@ -111,7 +111,7 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
         }
     }
 
-    private AbstractAccount fromSession(final Session session) {
+    private Account fromSession(final Session session) {
         return new SessionAccount(
                 session.getUsername(),
                 session.getUuidOrNull() != null ? session.getUuidOrNull().toString() : "",

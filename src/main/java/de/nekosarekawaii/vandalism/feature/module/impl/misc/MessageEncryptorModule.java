@@ -21,11 +21,11 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.ChatModifyReceiveListener;
 import de.nekosarekawaii.vandalism.event.player.ChatSendListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
-public class MessageEncryptorModule extends AbstractModule implements ChatSendListener, ChatModifyReceiveListener {
+public class MessageEncryptorModule extends Module implements ChatSendListener, ChatModifyReceiveListener {
 
     private static final MutableText ENCRYPTION_PREFIX = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))

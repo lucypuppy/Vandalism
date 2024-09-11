@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
 import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.client.option.KeyBinding;
@@ -32,7 +32,7 @@ import net.minecraft.entity.LivingEntity;
 
 import java.util.Random;
 
-public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener, CanSprintListener {
+public class WTapModule extends Module implements AttackListener, PlayerUpdateListener, CanSprintListener {
 
     private State state = State.IDLE;
     private final Random random = new Random();

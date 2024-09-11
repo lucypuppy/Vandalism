@@ -21,14 +21,14 @@ package de.nekosarekawaii.vandalism.feature.module.template.module;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.template.ValueModeGeneric;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 
-public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<ModuleMulti<T>> {
+public class ModuleModeValue<T extends Module> extends ValueModeGeneric<ModuleMulti<T>> {
 
     @SafeVarargs
-    public ModuleModeValue(final AbstractModule parent, final String name, final String description, final ModuleMulti<T>... options) {
+    public ModuleModeValue(final Module parent, final String name, final String description, final ModuleMulti<T>... options) {
         super(parent, name, description, ModuleMulti::getName, mn -> {
             for (final ModuleMulti<T> module : options) {
                 if (module.getName().equals(mn)) {

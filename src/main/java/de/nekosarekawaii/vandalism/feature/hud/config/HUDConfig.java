@@ -20,12 +20,12 @@ package de.nekosarekawaii.vandalism.feature.hud.config;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
+import de.nekosarekawaii.vandalism.base.config.Config;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 
-public class HUDConfig extends AbstractConfig<JsonObject> {
+public class HUDConfig extends Config<JsonObject> {
 
     private final HUDManager hudManager;
 

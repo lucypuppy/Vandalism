@@ -24,12 +24,12 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.entity.Entity;
 import org.lwjgl.glfw.GLFW;
 
-public class VehicleControlModule extends AbstractModule implements PlayerUpdateListener {
+public class VehicleControlModule extends Module implements PlayerUpdateListener {
 
     public final BooleanValue alwaysSaddle = new BooleanValue(
             this,

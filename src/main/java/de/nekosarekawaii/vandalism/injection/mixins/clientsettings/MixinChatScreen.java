@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
@@ -30,27 +30,17 @@ import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import java.awt.Color;
+import java.awt.*;
 
 @Mixin(value = ChatScreen.class, priority = 9999)
 public abstract class MixinChatScreen extends Screen implements MinecraftWrapper {
@@ -121,7 +111,7 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
             context.drawText(this.mc.textRenderer, text, x, y, color.getRGB(), true);
         }
         if (chatSettings.displayAccountHead.getValue()) {
-            final AbstractAccount currentAccount = Vandalism.getInstance().getAccountManager().getCurrentAccount();
+            final Account currentAccount = Vandalism.getInstance().getAccountManager().getCurrentAccount();
             if (currentAccount != null) {
                 final PlayerSkinRenderer accountPlayerSkin = currentAccount.getPlayerSkin();
                 if (accountPlayerSkin != null) {

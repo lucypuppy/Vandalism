@@ -22,13 +22,13 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.raphimc.vialoader.util.VersionRange;
 
-public class BowSpammerModule extends AbstractModule implements PlayerUpdateListener {
+public class BowSpammerModule extends Module implements PlayerUpdateListener {
 
     private final IntegerValue maxPacketsPerTick = new IntegerValue(
             this,

@@ -23,13 +23,13 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.PacketHelper;
 import net.minecraft.network.packet.Packet;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class BlinkModule extends AbstractModule implements OutgoingPacketListener, IncomingPacketListener, AttackListener {
+public class BlinkModule extends Module implements OutgoingPacketListener, IncomingPacketListener, AttackListener {
 
     private final BooleanValue delayIncoming = new BooleanValue(this, "Delay Incoming", "Delays incoming packets too.", false);
     private final BooleanValue reSyncOnAttack = new BooleanValue(this, "Resync On Attack", "Resyncs you when attacking.", false);

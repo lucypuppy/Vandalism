@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.event.internal;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
 public interface ModuleToggleListener {
 
@@ -29,10 +29,10 @@ public interface ModuleToggleListener {
 
         public static final int ID = 10;
 
-        public final AbstractModule module;
+        public final Module module;
         public boolean active;
 
-        public ModuleToggleEvent(final AbstractModule module, final boolean active) {
+        public ModuleToggleEvent(final Module module, final boolean active) {
             this.module = module;
             this.active = active;
         }

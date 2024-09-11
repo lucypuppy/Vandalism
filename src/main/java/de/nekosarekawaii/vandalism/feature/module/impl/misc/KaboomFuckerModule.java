@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.block.CommandBlock;
 import net.minecraft.block.entity.CommandBlockBlockEntity;
@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class KaboomFuckerModule extends AbstractModule implements PlayerUpdateListener, WorldListener, DisconnectListener {
+public class KaboomFuckerModule extends Module implements PlayerUpdateListener, WorldListener, DisconnectListener {
 
     private final IntegerValue commandBlockRescanDelay = new IntegerValue(
             this,

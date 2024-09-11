@@ -25,10 +25,10 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.event.game.SmoothCameraRotationsListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.Easing;
 
-public class ZoomModule extends AbstractModule implements MouseInputListener, SmoothCameraRotationsListener {
+public class ZoomModule extends Module implements MouseInputListener, SmoothCameraRotationsListener {
 
     public final DoubleValue zoomFov = new DoubleValue(this, "Zoom FOV", "The FOV to use when zooming in", 30.0, 1.0, 70.0);
     public final EasingTypeValue animationIn = new EasingTypeValue(this, "Zoom-in Animation", "The easing animation to use when zooming in", Easing.LINEAR);

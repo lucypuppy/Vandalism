@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.ConfigCommand;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.util.MathUtil;
 import de.nekosarekawaii.vandalism.util.StringUtils;
@@ -151,7 +151,7 @@ public class ConfigsClientWindow extends ClientWindow {
                 try (final FileReader fr = new FileReader(config)) {
                     final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
                     final JsonObject jsonObject = ConfigCommand.GSON.fromJson(fr, JsonObject.class);
-                    for (final AbstractModule module : moduleManager.getList()) {
+                    for (final Module module : moduleManager.getList()) {
                         if (module.getCategory() == Feature.Category.RENDER) {
                             continue;
                         }
@@ -230,7 +230,7 @@ public class ConfigsClientWindow extends ClientWindow {
                                 file.createNewFile();
                                 final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
                                 final JsonObject modulesJsonObject = new JsonObject();
-                                for (final AbstractModule module : moduleManager.getList()) {
+                                for (final Module module : moduleManager.getList()) {
                                     if (module.getCategory() == Feature.Category.RENDER) {
                                         continue;
                                     }

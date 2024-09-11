@@ -19,12 +19,12 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.render;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 
-public class ClientsideInventoryClearCommand extends AbstractCommand {
+public class ClientsideInventoryClearCommand extends Command {
 
     public ClientsideInventoryClearCommand() {
         super(

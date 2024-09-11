@@ -41,7 +41,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractModule extends Feature implements ValueParent {
+public abstract class Module extends Feature implements ValueParent {
 
     public static final String EXPERIMENTAL_WARNING_TEXT = "Warning: This module is experimental and may not work as expected.";
     public static final String SUPPORTED_VERSIONS_TEXT = "Supported Versions:";
@@ -154,11 +154,11 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             "Settings of this module."
     );
 
-    public AbstractModule(final String name, final String description, final Category category) {
+    public Module(final String name, final String description, final Category category) {
         this(name, description, category, null);
     }
 
-    public AbstractModule(final String name, final String description, final Category category, final VersionRange supportedVersions) {
+    public Module(final String name, final String description, final Category category, final VersionRange supportedVersions) {
         super(name, description, category, supportedVersions);
         this.defaultValues = new ArrayList<>(this.values);
         this.defaultValues.remove(this.deactivationSettings);

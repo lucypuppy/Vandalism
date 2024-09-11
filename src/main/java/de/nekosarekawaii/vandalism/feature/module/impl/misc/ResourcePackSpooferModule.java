@@ -22,7 +22,7 @@ import com.google.common.hash.HashCode;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
@@ -49,7 +49,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ResourcePackSpooferModule extends AbstractModule implements IncomingPacketListener {
+public class ResourcePackSpooferModule extends Module implements IncomingPacketListener {
 
     private final BooleanValue logStatus = new BooleanValue(
             this,

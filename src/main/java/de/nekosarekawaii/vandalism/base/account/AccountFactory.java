@@ -35,6 +35,6 @@ public interface AccountFactory {
      *
      * @return The created account.
      */
-    CompletableFuture<AbstractAccount> make();
+    CompletableFuture<Account> make();
 
 }

@@ -20,11 +20,11 @@ package de.nekosarekawaii.vandalism.feature.command.impl.movement.clip;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.command.CommandSource;
 
-public class VClipCommand extends AbstractCommand {
+public class VClipCommand extends Command {
 
     public VClipCommand() {
         super("Allows you to teleport yourself by vertical offset.", Category.MOVEMENT, "vclip", "vtp", "verticalteleport");

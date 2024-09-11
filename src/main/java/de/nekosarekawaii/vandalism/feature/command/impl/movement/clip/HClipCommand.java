@@ -20,11 +20,11 @@ package de.nekosarekawaii.vandalism.feature.command.impl.movement.clip;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.command.CommandSource;
 
-public class HClipCommand extends AbstractCommand {
+public class HClipCommand extends Command {
 
     public HClipCommand() {
         super("Allows you to teleport yourself by horizontal offset.", Category.MOVEMENT, "hclip", "htp", "horizontalteleport");

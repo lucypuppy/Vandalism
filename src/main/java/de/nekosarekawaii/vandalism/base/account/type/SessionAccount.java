@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.account.type;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.NameGenerationUtil;
 import de.nekosarekawaii.vandalism.util.ObjectTypeChecker;
@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class SessionAccount extends AbstractAccount {
+public class SessionAccount extends Account {
 
     private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -159,7 +159,7 @@ public class SessionAccount extends AbstractAccount {
             }
 
             @Override
-            public CompletableFuture<AbstractAccount> make() {
+            public CompletableFuture<Account> make() {
                 return CompletableFuture.completedFuture(new SessionAccount(this.name.get(), this.uuid.get(), this.accessToken.get(), this.xuid.get(), this.clientId.get()));
             }
 
