@@ -16,18 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.render.util;
+
+import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 
 /**
  * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.
  */
-public enum AlignmentY implements IName {
+public enum AlignmentX implements IName {
 
-    TOP, BOTTOM, MIDDLE;
+    LEFT, RIGHT, MIDDLE;
 
     private final String name;
 
-    AlignmentY() {
+    AlignmentX() {
         this.name = StringUtils.normalizeEnumName(this.name());
     }
 
@@ -36,8 +39,8 @@ public enum AlignmentY implements IName {
         return this.name;
     }
 
-    public static AlignmentY getAlignmentByName(final String name) {
-        for (final AlignmentY alignment : values()) {
+    public static AlignmentX getAlignmentByName(final String name) {
+        for (final AlignmentX alignment : values()) {
             if (alignment.name().equalsIgnoreCase(name)) {
                 return alignment;
             }

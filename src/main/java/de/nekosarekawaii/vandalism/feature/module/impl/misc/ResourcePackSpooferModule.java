@@ -134,7 +134,7 @@ public class ResourcePackSpooferModule extends Module implements IncomingPacketL
     }
 
     @Nullable
-    private PackEntry get(UUID id) {
+    private PackEntry get(final UUID id) {
         return this.packEntries.stream().filter(packEntry -> !packEntry.isDiscarded() && packEntry.id.equals(id)).findFirst().orElse(null);
     }
 
@@ -151,7 +151,7 @@ public class ResourcePackSpooferModule extends Module implements IncomingPacketL
         this.packEntries.clear();
     }
 
-    private void markReplaced(UUID id) {
+    private void markReplaced(final UUID id) {
         this.packEntries.stream().filter(entry -> entry.id.equals(id)).forEach(entry -> entry.discard(ServerResourcePackManager.DiscardReason.SERVER_REPLACED));
     }
 
@@ -233,15 +233,15 @@ public class ResourcePackSpooferModule extends Module implements IncomingPacketL
                 packEntry.status = ServerResourcePackManager.Status.PENDING;
             }
 
-            this.reload(false, availablePacks, unavailablePacks);
+            this.reload(availablePacks, unavailablePacks);
         }
     }
 
-    private void reload(final boolean force, final List<PackEntry> availablePacks, final List<PackEntry> unavailablePacks) {
+    private void reload(final List<PackEntry> availablePacks, final List<PackEntry> unavailablePacks) {
         boolean valid = true;
 
         if (!ResourcePackSpooferModule.valid(availablePacks.stream().map((pack) -> new ReloadScheduler.PackInfo(pack.id, pack.path)).toList())) {
-            this.reloadFail(force, availablePacks);
+            this.reloadFail(availablePacks);
             if (!ResourcePackSpooferModule.valid(availablePacks.stream().map((pack) -> new ReloadScheduler.PackInfo(pack.id, pack.path)).toList())) {
                 valid = false;
             }
@@ -303,7 +303,7 @@ public class ResourcePackSpooferModule extends Module implements IncomingPacketL
         this.onPackChanged();
     }
 
-    private void reloadFail(final boolean force, final List<PackEntry> availablePacks) {
+    private void reloadFail(final List<PackEntry> availablePacks) {
         availablePacks.clear();
 
         for (final PackEntry packEntry : this.packEntries) {

@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTa
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.TrollItemsCreativeTab;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.ItemStackUtil;
-import de.nekosarekawaii.vandalism.util.Storage;
+import de.nekosarekawaii.vandalism.util.storage.Storage;
 import lombok.Getter;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;

@@ -174,3 +174,4 @@ accessible class net/minecraft/client/resource/server/ServerResourcePackManager$
 accessible field net/minecraft/client/resource/server/ServerResourcePackManager$DiscardReason state Lnet/minecraft/client/resource/server/PackStateChangeCallback$FinishState;
 accessible method net/minecraft/client/resource/server/ServerResourcePackLoader toProfiles (Ljava/util/List;)Ljava/util/List;
 accessible method net/minecraft/client/resource/server/ServerResourcePackLoader toHashCode (Ljava/lang/String;)Lcom/google/common/hash/HashCode;
+accessible field com/mojang/blaze3d/systems/RenderSystem modelViewMatrix Lorg/joml/Matrix4f;
