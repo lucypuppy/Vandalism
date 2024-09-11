@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.component.DataComponentTypes;
@@ -77,7 +78,7 @@ public class ChestStealerModule extends Module implements PlayerUpdateListener {
             boolean canClose = true;
 
             // This swaps items directly into the hotbar.
-            for (int i = 0; i < screen.getScreenHandler().slots.size() - 36; i++) {
+            for (int i = 0; i < screen.getScreenHandler().slots.size() - MinecraftConstants.FIRST_SLOT_IN_HOTBAR; i++) {
                 final ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
 
                 if (!itemStack.isEmpty()) {

@@ -75,7 +75,7 @@ public class InventoryUtil implements MinecraftWrapper {
     public static boolean isBestArmor(final ItemStack itemStack) {
         if (mc.currentScreen instanceof InventoryScreen screen) {
             if (itemStack.getItem() instanceof ArmorItem) {
-                for (int i = 5; i <= 44; i++) {
+                for (int i = 5; i <= MinecraftConstants.LAST_SLOT_IN_HOTBAR; i++) {
                     ItemStack stack = screen.getScreenHandler().getSlot(i).getStack();
                     if (!(stack.getItem() instanceof ArmorItem itemToCheck)) continue;
                     final ArmorItem currentItem = (ArmorItem) itemStack.getItem();

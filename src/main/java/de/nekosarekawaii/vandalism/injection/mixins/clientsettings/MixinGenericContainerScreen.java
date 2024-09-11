@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
@@ -47,7 +48,7 @@ public abstract class MixinGenericContainerScreen extends HandledScreen<GenericC
         super.init();
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().manageContainerButtons.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Steal"), b -> InventoryUtil.quickMoveInventory(this, 0, this.rows * 9)).dimensions(this.x + this.backgroundWidth - 108, this.y - 14, 50, 12).build());
-            this.addDrawableChild(ButtonWidget.builder(Text.literal("Store"), b -> InventoryUtil.quickMoveInventory(this, this.rows * 9, this.rows * 9 + 44)).dimensions(this.x + this.backgroundWidth - 56, this.y - 14, 50, 12).build());
+            this.addDrawableChild(ButtonWidget.builder(Text.literal("Store"), b -> InventoryUtil.quickMoveInventory(this, this.rows * 9, this.rows * 9 + MinecraftConstants.LAST_SLOT_IN_HOTBAR)).dimensions(this.x + this.backgroundWidth - 56, this.y - 14, 50, 12).build());
         }
     }
 
