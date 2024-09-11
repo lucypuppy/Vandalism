@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.util.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.render.ResizeScreenListener;
-import de.nekosarekawaii.vandalism.util.math.DateUtil;
+import de.nekosarekawaii.vandalism.util.DateUtil;
 import de.nekosarekawaii.vandalism.util.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.ColorFillEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.GaussianBlurFillEffect;

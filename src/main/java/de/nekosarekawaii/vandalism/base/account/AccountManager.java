@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.base.account;
 
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.account.config.AccountsConfig;
@@ -32,6 +31,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.event.internal.UpdateSessionListener;
 import de.nekosarekawaii.vandalism.injection.access.ISession;
+import de.nekosarekawaii.vandalism.util.Storage;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.session.Session;

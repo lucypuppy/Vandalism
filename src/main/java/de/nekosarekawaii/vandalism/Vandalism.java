@@ -35,7 +35,7 @@ import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.ServerDiscoveryManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
-import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
+import de.nekosarekawaii.vandalism.util.NameGenerationUtil;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;

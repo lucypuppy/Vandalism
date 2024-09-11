@@ -18,23 +18,17 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.inventory.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.AirBlockItem;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.*;
 import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.ArrayList;

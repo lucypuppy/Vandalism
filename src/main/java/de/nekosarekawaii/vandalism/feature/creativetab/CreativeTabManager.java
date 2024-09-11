@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.feature.creativetab;
 
 import de.florianmichael.dietrichevents2.Priorities;
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
@@ -27,7 +26,8 @@ import de.nekosarekawaii.vandalism.feature.creativetab.impl.ConsoleSpamItemsCrea
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.TrollItemsCreativeTab;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
+import de.nekosarekawaii.vandalism.util.ItemStackUtil;
+import de.nekosarekawaii.vandalism.util.Storage;
 import lombok.Getter;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;

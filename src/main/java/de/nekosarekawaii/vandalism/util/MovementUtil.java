@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.util;
 
 import de.nekosarekawaii.vandalism.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;

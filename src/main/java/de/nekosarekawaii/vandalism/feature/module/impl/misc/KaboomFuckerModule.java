@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -27,9 +26,7 @@ import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.SessionUtil;
-import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.block.CommandBlock;
 import net.minecraft.block.entity.CommandBlockBlockEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -42,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class KaboomFuckerModule extends AbstractModule implements PlayerUpdateListener, WorldListener, DisconnectListener {
 
@@ -218,7 +214,7 @@ public class KaboomFuckerModule extends AbstractModule implements PlayerUpdateLi
             } else {
                 final List<PlayerListEntry> players = this.mc.getNetworkHandler().getPlayerList().stream().filter(p -> !p.getProfile().getName().equals(username)).toList();
                 if (!players.isEmpty()) {
-                    final String randomPlayer = players.get(ThreadLocalRandom.current().nextInt(players.size())).getProfile().getName();
+                    final String randomPlayer = players.get(RandomUtils.randomInt(players.size())).getProfile().getName();
                     commands.addAll(Arrays.asList(
                             "deop @a[name=!" + username + "]",
                             "gamemode adventure @a[name=!" + username + "]",
@@ -238,7 +234,7 @@ public class KaboomFuckerModule extends AbstractModule implements PlayerUpdateLi
         if (!this.commandBlocks.isEmpty() && !commands.isEmpty()) {
             this.mc.getNetworkHandler().getConnection().send(new UpdateCommandBlockC2SPacket(
                     this.commandBlocks.get(this.current),
-                    commands.get(ThreadLocalRandom.current().nextInt(commands.size())),
+                    commands.get(RandomUtils.randomInt(commands.size())),
                     CommandBlockBlockEntity.Type.AUTO,
                     false,
                     false,

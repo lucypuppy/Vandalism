@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.inventory.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;

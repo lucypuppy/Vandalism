@@ -26,8 +26,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.ItemStackUtil;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
 import net.minecraft.client.ClientBrandRetriever;
 import org.lwjgl.glfw.GLFW;
 

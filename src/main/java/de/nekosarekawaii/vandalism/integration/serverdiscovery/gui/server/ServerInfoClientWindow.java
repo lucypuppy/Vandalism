@@ -18,20 +18,20 @@
 
 package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.server;
 
-import de.florianmichael.rclasses.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFieldWidget;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.request.impl.ServerInfoRequest;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.impl.ServerInfoResponse;
+import de.nekosarekawaii.vandalism.util.PingState;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
-import de.nekosarekawaii.vandalism.util.game.PingState;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.TimeFormatter;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;

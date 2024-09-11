@@ -30,8 +30,8 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 
-import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.createSpawnEggItemStack;
-import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
+import static de.nekosarekawaii.vandalism.util.ItemStackUtil.createSpawnEggItemStack;
+import static de.nekosarekawaii.vandalism.util.ItemStackUtil.withClientSide;
 
 public class GriefItemsCreativeTab extends AbstractCreativeTab {
 

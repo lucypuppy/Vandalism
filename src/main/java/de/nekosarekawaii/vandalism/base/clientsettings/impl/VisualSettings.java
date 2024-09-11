@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 
 public class VisualSettings extends ValueGroup {
 

@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -30,7 +29,8 @@ import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
-import de.nekosarekawaii.vandalism.util.game.Prediction;
+import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.Prediction;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.profiler.Profiler;

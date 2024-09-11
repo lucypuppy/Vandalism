@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPFieldWidget;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;

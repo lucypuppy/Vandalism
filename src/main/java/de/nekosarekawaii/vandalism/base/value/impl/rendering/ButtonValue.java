@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.value.impl.rendering;
 
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.template.ValueNoOpConfig;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 
 import java.util.function.Consumer;

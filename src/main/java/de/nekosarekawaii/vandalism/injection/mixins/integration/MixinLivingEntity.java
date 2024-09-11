@@ -19,16 +19,44 @@
 package de.nekosarekawaii.vandalism.injection.mixins.integration;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.injection.access.ILivingEntity;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity implements MinecraftWrapper {
+public abstract class MixinLivingEntity implements MinecraftWrapper, ILivingEntity {
+
+    @Shadow
+    public double serverX;
+
+    @Shadow
+    public double serverY;
+
+    @Shadow
+    public double serverZ;
+
+    @Unique
+    private Vec3d vandalism$prevServerPos;
+
+    @Inject(method = "updateTrackedPositionAndAngles", at = @At("HEAD"))
+    private void storePrevServerPos(final double x, final double y, final double z, final float yaw, final float pitch, final int interpolationSteps, final CallbackInfo ci) {
+        this.vandalism$prevServerPos = new Vec3d(this.serverX, this.serverY, this.serverZ);
+    }
+
+    @Override
+    public Vec3d vandalism$prevServerPos() {
+        return this.vandalism$prevServerPos;
+    }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"), slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F", ordinal = 1)))
     private float modifyRotationYaw(final LivingEntity instance) {

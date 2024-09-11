@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.integration.friends;
 
 import com.mojang.authlib.GameProfile;
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
@@ -28,6 +27,7 @@ import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.integration.friends.config.FriendsConfig;
 import de.nekosarekawaii.vandalism.integration.friends.gui.FriendsClientWindow;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.Storage;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.StringUtils;
 

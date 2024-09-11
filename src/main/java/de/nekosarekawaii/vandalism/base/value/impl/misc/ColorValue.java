@@ -19,13 +19,13 @@
 package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.util.HSBColor;
 import imgui.ImGui;
@@ -33,7 +33,7 @@ import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiMouseButton;
 import lombok.Getter;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

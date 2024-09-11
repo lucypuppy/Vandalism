@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.base.value.impl.number;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.util.math.MathUtil;
+import de.nekosarekawaii.vandalism.util.MathUtil;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.extension.implot.ImPlot;

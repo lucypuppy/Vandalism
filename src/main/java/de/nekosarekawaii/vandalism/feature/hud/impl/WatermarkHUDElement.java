@@ -18,15 +18,15 @@
 
 package de.nekosarekawaii.vandalism.feature.hud.impl;
 
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.AlignmentX;
+import de.nekosarekawaii.vandalism.util.AlignmentY;
+import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.math.AlignmentX;
-import de.nekosarekawaii.vandalism.util.math.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
 import lombok.Getter;
 import net.minecraft.client.gui.DrawContext;
@@ -34,7 +34,7 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

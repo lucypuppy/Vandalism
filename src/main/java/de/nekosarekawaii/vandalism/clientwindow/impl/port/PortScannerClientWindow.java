@@ -24,9 +24,9 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataLi
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPFieldWidget;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.math.DateUtil;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.DateUtil;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.type.ImInt;
 import imgui.type.ImString;

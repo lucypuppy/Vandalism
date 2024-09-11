@@ -18,13 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.common.StringUtils;
+import com.google.gson.*;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
@@ -32,7 +26,9 @@ import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.Placeholders;
+import de.nekosarekawaii.vandalism.util.Placeholders;
+import de.nekosarekawaii.vandalism.util.RandomUtils;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.network.ClientConnection;

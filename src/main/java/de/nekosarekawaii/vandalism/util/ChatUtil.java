@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.util;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
@@ -31,7 +29,6 @@ import net.minecraft.util.Formatting;
 import java.awt.*;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ChatUtil implements MinecraftWrapper {
 
@@ -172,7 +169,7 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static Formatting getRandomColor() {
-        return Formatting.values()[ThreadLocalRandom.current().nextInt(1, 14)];
+        return Formatting.values()[RandomUtils.randomInt(1, 14)];
     }
 
     public static MutableText interpolateTextColor(final String text, final Color color1, final Color color2) {

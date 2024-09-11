@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.io.debugging.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.ByteCountDataOutput;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.tooltip.CustomContainerScreen;
 import de.nekosarekawaii.vandalism.util.tooltip.impl.BannerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.tooltip.impl.MapTooltipComponent;
@@ -32,12 +32,7 @@ import de.nekosarekawaii.vandalism.util.tooltip.impl.TextTooltipComponent;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LodestoneTrackerComponent;
 import net.minecraft.component.type.MapIdComponent;
-import net.minecraft.item.BannerItem;
-import net.minecraft.item.BannerPatternItem;
-import net.minecraft.item.CompassItem;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipData;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;

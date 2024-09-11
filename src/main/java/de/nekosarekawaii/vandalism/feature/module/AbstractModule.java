@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.SoundHooks;
+import de.nekosarekawaii.vandalism.util.SoundHooks;
 import lombok.Getter;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;

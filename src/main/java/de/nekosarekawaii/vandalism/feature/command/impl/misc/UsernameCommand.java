@@ -22,11 +22,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.SessionUtil;
-import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
-import de.nekosarekawaii.vandalism.util.math.MathUtil;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 

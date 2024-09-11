@@ -18,15 +18,15 @@
 
 package de.nekosarekawaii.vandalism.integration.cheatdetection;
 
-import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.impl.TestDetection;
+import de.nekosarekawaii.vandalism.util.NamedStorage;
 
 public class DetectManager extends NamedStorage<AbstractDetection> {
 
     private final DetectionPlayer player;
 
-    public DetectManager(DetectionPlayer player) {
+    public DetectManager(final DetectionPlayer player) {
         this.player = player;
     }
 

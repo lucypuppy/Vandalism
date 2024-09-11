@@ -24,7 +24,7 @@ import com.google.gson.JsonParser;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.math.AESEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import lombok.Getter;
 import net.minecraft.client.session.Session;
 import net.raphimc.minecraftauth.MinecraftAuth;

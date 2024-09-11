@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.math.AESEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;

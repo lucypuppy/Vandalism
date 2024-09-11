@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.base.value.impl.selection;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.util.IName;
 import imgui.ImGui;
 
 public class ClassModeValue<T extends IName> extends Value<T> {

@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.friends;
 
-import de.nekosarekawaii.vandalism.util.game.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.UUIDUtil;
 import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import lombok.Getter;
 import lombok.Setter;
