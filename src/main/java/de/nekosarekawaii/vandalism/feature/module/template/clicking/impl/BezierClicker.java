@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.feature.module.template.clicking.impl;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.RandomUtils;
 import lombok.Setter;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -64,7 +63,7 @@ public class BezierClicker extends Clicker {
         if (this.msTimer.hasReached(this.delay, true)) {
             this.clickAction.accept(false);
 
-            if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < 3) {
+            if (ThreadLocalRandom.current().nextInt(0, 100) <= this.cpsUpdatePossibility || this.cps < 3) {
                 this.cps = this.value.getValue(this.percentage);
             }
 

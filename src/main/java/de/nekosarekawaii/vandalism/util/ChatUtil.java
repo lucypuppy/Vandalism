@@ -169,7 +169,7 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static Formatting getRandomColor() {
-        return Formatting.values()[RandomUtils.randomInt(1, 14)];
+        return Formatting.values()[RandomUtils.randomInt(1, 13)];
     }
 
     public static MutableText interpolateTextColor(final String text, final Color color1, final Color color2) {

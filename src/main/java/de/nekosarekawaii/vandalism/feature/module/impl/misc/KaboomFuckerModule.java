@@ -234,7 +234,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
         if (!this.commandBlocks.isEmpty() && !commands.isEmpty()) {
             this.mc.getNetworkHandler().getConnection().send(new UpdateCommandBlockC2SPacket(
                     this.commandBlocks.get(this.current),
-                    commands.get(RandomUtils.randomInt(commands.size())),
+                    commands.get(RandomUtils.randomInt(commands.size() - 1)),
                     CommandBlockBlockEntity.Type.AUTO,
                     false,
                     false,
