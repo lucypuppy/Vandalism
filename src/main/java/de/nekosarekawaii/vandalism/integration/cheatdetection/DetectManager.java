@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.De
 import de.nekosarekawaii.vandalism.integration.cheatdetection.impl.TestDetection;
 import de.nekosarekawaii.vandalism.util.NamedStorage;
 
-public class DetectManager extends NamedStorage<AbstractDetection> {
+public class DetectManager extends NamedStorage<Detection> {
 
     private final DetectionPlayer player;
 

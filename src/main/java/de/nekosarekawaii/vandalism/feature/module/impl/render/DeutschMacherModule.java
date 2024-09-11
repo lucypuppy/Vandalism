@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.util.Formatting;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeutschMacherModule extends AbstractModule implements TextDrawListener {
+public class DeutschMacherModule extends Module implements TextDrawListener {
 
     private static final String[] SUFFIX = new String[]{
             "", "tausend",

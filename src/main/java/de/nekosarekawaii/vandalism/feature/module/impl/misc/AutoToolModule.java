@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.PreBlockBreakListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import net.minecraft.block.*;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AutoToolModule extends AbstractModule implements PlayerUpdateListener, PreBlockBreakListener {
+public class AutoToolModule extends Module implements PlayerUpdateListener, PreBlockBreakListener {
 
     private final ModeValue mode = new ModeValue(
             this,

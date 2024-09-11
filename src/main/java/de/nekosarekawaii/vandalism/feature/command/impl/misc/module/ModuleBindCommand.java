@@ -20,10 +20,10 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.arguments.KeyBindArgumentType;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.command.CommandSource;
@@ -32,7 +32,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModuleBindCommand extends AbstractCommand {
+public class ModuleBindCommand extends Command {
 
     public ModuleBindCommand() {
         super("Lets you bind modules.", Category.MISC, "modulebind", "bind");
@@ -41,7 +41,7 @@ public class ModuleBindCommand extends AbstractCommand {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("module", ModuleArgumentType.create()).then(argument("key-bind", KeyBindArgumentType.create()).executes(context -> {
-            final AbstractModule module = ModuleArgumentType.get(context);
+            final Module module = ModuleArgumentType.get(context);
             final int code = KeyBindArgumentType.get(context);
             if (code == GLFW.GLFW_KEY_UNKNOWN && !module.getKeyBind().isValid()) {
                 ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
@@ -52,7 +52,7 @@ public class ModuleBindCommand extends AbstractCommand {
                 return SINGLE_SUCCESS;
             }
             final List<String> boundModules = new ArrayList<>();
-            for (final AbstractModule mod : Vandalism.getInstance().getModuleManager().getList()) {
+            for (final Module mod : Vandalism.getInstance().getModuleManager().getList()) {
                 if (mod.getKeyBind().getValue() == code) {
                     boundModules.add(mod.getName());
                 }

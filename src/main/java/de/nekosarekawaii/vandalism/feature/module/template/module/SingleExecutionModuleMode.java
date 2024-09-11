@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.template.module;
 
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public abstract class SingleExecutionModuleMode<M extends AbstractModule> extends ModuleMulti<M> {
+public abstract class SingleExecutionModuleMode<M extends Module> extends ModuleMulti<M> {
 
     protected final IntegerValue times = new IntegerValue(
             this,

@@ -22,7 +22,7 @@ import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.network.packet.Packet;
@@ -32,7 +32,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.UUID;
 
-public class JoinLeaveNotifierModule extends AbstractModule implements IncomingPacketListener {
+public class JoinLeaveNotifierModule extends Module implements IncomingPacketListener {
 
     private final BooleanValue displayGameModeOnJoin = new BooleanValue(
             this,

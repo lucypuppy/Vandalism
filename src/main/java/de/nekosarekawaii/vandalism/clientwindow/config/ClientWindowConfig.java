@@ -19,11 +19,11 @@
 package de.nekosarekawaii.vandalism.clientwindow.config;
 
 import com.google.gson.JsonObject;
-import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
+import de.nekosarekawaii.vandalism.base.config.Config;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 
-public class ClientWindowConfig extends AbstractConfig<JsonObject> {
+public class ClientWindowConfig extends Config<JsonObject> {
 
     private final ClientWindowManager clientWindowManager;
 

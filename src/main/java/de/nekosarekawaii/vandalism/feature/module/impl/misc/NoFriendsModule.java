@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class NoFriendsModule extends AbstractModule {
+public class NoFriendsModule extends Module {
 
     public NoFriendsModule() {
         super("No Friends", "If enabled friends are also targets.", Category.MISC);

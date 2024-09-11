@@ -25,14 +25,14 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
 
-public class AutoClickerModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
+public class AutoClickerModule extends Module implements PlayerUpdateListener, RotationListener {
 
     private final ClickerModeValue clickType = new ClickerModeValue(
             this,

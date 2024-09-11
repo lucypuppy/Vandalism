@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
@@ -30,7 +30,7 @@ import net.minecraft.world.GameMode;
 
 import java.util.Arrays;
 
-public class FakeGameModeModule extends AbstractModule implements PlayerUpdateListener, OutgoingPacketListener {
+public class FakeGameModeModule extends Module implements PlayerUpdateListener, OutgoingPacketListener {
 
     private final ModeValue mode = new ModeValue(
             this,

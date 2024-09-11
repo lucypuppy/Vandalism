@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.*;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
@@ -70,7 +70,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NoteBotModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener, Render2DListener, Render3DListener {
+public class NoteBotModule extends Module implements PlayerUpdateListener, IncomingPacketListener, Render2DListener, Render3DListener {
 
     private final EnumModeValue<Mode> mode = new EnumModeValue<>(
             this,

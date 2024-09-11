@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
@@ -32,7 +32,7 @@ import net.minecraft.util.hit.HitResult;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class InteractionSpammerModule extends AbstractModule implements PlayerUpdateListener {
+public class InteractionSpammerModule extends Module implements PlayerUpdateListener {
 
     private final IntegerValue maxXReach = new IntegerValue(
             this,

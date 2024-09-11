@@ -23,14 +23,14 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.EntityPushListener;
 import de.nekosarekawaii.vandalism.event.player.FluidPushListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ItemStackUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-public class PushVelocityModule extends AbstractModule implements EntityPushListener, FluidPushListener {
+public class PushVelocityModule extends Module implements EntityPushListener, FluidPushListener {
 
     private final BooleanValue modifyEntityPush = new BooleanValue(
             this,

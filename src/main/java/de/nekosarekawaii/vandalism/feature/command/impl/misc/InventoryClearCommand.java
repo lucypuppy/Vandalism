@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
@@ -27,7 +27,7 @@ import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.collection.DefaultedList;
 
-public class InventoryClearCommand extends AbstractCommand {
+public class InventoryClearCommand extends Command {
 
     public InventoryClearCommand() {
         super("Clears your inventory.", Category.MISC, "inventoryclear", "clearinventory", "invclear", "clearinv");

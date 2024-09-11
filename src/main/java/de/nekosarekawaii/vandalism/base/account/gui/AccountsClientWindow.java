@@ -20,10 +20,10 @@ package de.nekosarekawaii.vandalism.base.account.gui;
 
 import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
-import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
+import de.nekosarekawaii.vandalism.base.account.template.MicrosoftAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.util.NameGenerationUtil;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
@@ -46,14 +46,14 @@ public class AccountsClientWindow extends ClientWindow {
 
     private final AccountManager accountManager;
 
-    private AbstractAccount hoveredAccount;
+    private Account hoveredAccount;
 
     public AccountsClientWindow(final AccountManager accountManager) {
         super("Accounts", Category.CONFIG, 500f, 400f);
         this.accountManager = accountManager;
     }
 
-    private void recallAccount(final AccountFactory factory, final Consumer<AbstractAccount> account) {
+    private void recallAccount(final AccountFactory factory, final Consumer<Account> account) {
         factory.make().whenComplete((abstractAccount, throwable) -> {
             if (abstractAccount == null) {
                 Vandalism.getInstance().getLogger().error("Failed to create account.");
@@ -110,7 +110,7 @@ public class AccountsClientWindow extends ClientWindow {
         }
     }
 
-    private void renderAccount(final String id, final AbstractAccount account, final boolean isEntry) {
+    private void renderAccount(final String id, final Account account, final boolean isEntry) {
         if (account == null) return;
         final Session session = account.getSession();
         if (session == null) return;
@@ -178,7 +178,7 @@ public class AccountsClientWindow extends ClientWindow {
         data.append("\n");
         data.append("Status: ");
         data.append(account.getStatus() == null ? "Idle" : account.getStatus());
-        if (account instanceof final AbstractMicrosoftAccount microsoftAccount) {
+        if (account instanceof final MicrosoftAccount microsoftAccount) {
             final long tokenExpirationTime = microsoftAccount.getTokenExpirationTime();
             if (tokenExpirationTime != -1) {
                 data.append("\n");
@@ -204,7 +204,7 @@ public class AccountsClientWindow extends ClientWindow {
         final String id = "##" + this.getName();
         if (ImGui.beginTabBar(id + "tabBar")) {
             if (ImGui.beginTabItem("Current Account")) {
-                final AbstractAccount currentAccount = this.accountManager.getCurrentAccount();
+                final Account currentAccount = this.accountManager.getCurrentAccount();
                 if (currentAccount != null) {
                     this.renderAccount(id, currentAccount, false);
                     this.renderHoveredAccountPopup(false);
@@ -214,10 +214,10 @@ public class AccountsClientWindow extends ClientWindow {
                 }
                 ImGui.endTabItem();
             }
-            final List<AbstractAccount> list = this.accountManager.getList();
+            final List<Account> list = this.accountManager.getList();
             if (!list.isEmpty()) {
                 if (ImGui.beginTabItem("Accounts")) {
-                    for (final AbstractAccount account : list) {
+                    for (final Account account : list) {
                         this.renderAccount(id, account, true);
                     }
                     this.renderHoveredAccountPopup(true);
@@ -243,7 +243,7 @@ public class AccountsClientWindow extends ClientWindow {
                     if (ImGui.treeNodeEx(account.getType() + id + account.getType() + "directLoginAccount")) {
                         factory.displayFactory();
                         if (ImGui.button("Login", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                            this.recallAccount(factory, AbstractAccount::login);
+                            this.recallAccount(factory, Account::login);
                         }
                         ImGui.treePop();
                     }

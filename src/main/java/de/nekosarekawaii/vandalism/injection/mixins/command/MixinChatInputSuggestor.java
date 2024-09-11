@@ -22,7 +22,7 @@ import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.suggestion.Suggestions;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
@@ -68,7 +68,8 @@ public abstract class MixinChatInputSuggestor {
         final int length = prefix.length();
         if (reader.canRead(length) && reader.getString().startsWith(prefix, reader.getCursor()) && MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
             reader.setCursor(reader.getCursor() + length);
-            if (this.parse == null) this.parse = commandManager.getCommandDispatcher().parse(reader, AbstractCommand.COMMAND_SOURCE);
+            if (this.parse == null)
+                this.parse = commandManager.getCommandDispatcher().parse(reader, Command.COMMAND_SOURCE);
             final int cursor = this.textField.getCursor();
             if (cursor >= length && (this.window == null || !this.completingSuggestions)) {
                 this.pendingSuggestions = commandManager.getCommandDispatcher().getCompletionSuggestions(this.parse, cursor);

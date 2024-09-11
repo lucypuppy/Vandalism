@@ -20,14 +20,14 @@ package de.nekosarekawaii.vandalism.base.config.template;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
+import de.nekosarekawaii.vandalism.base.config.Config;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 
 import java.util.List;
 
-public class ConfigWithValues extends AbstractConfig<JsonObject> {
+public class ConfigWithValues extends Config<JsonObject> {
 
     private final List<? extends ValueParent> keys;
 

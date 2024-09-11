@@ -21,13 +21,13 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-public class AutoSoupModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoSoupModule extends Module implements PlayerUpdateListener {
 
     private int lastSlot;
     @Getter

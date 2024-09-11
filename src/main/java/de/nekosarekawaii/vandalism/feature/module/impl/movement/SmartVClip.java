@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.BlockState;
@@ -30,7 +30,7 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
-public class SmartVClip extends AbstractModule implements KeyboardInputListener {
+public class SmartVClip extends Module implements KeyboardInputListener {
 
     private final KeyBindValue upKey = new KeyBindValue(this, "Up Key", "The key that needs to be pressed to go upward.", GLFW.GLFW_KEY_UP);
     private final KeyBindValue downKey = new KeyBindValue(this, "Down Key", "The key that needs to be pressed to go downward.", GLFW.GLFW_KEY_DOWN);

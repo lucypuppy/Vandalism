@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
@@ -36,7 +36,7 @@ import org.lwjgl.glfw.GLFW;
 import java.awt.*;
 import java.util.HashMap;
 
-public class BetterTabListModule extends AbstractModule implements KeyboardInputListener {
+public class BetterTabListModule extends Module implements KeyboardInputListener {
 
     public final BooleanValue toggleable = new BooleanValue(this, "Toggleable Tab List", "Makes the Tab List toggleable.", false);
 

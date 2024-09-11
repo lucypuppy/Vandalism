@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
@@ -32,14 +32,10 @@ import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 
-public class ScaffoldModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
+public class ScaffoldModule extends Module implements PlayerUpdateListener, RotationListener {
 
     private BlockPos pos = null;
     private Vec3d posVec = null;

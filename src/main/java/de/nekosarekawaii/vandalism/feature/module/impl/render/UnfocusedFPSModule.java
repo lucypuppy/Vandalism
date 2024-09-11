@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class UnfocusedFPSModule extends AbstractModule {
+public class UnfocusedFPSModule extends Module {
 
     public final IntegerValue maxFPS = new IntegerValue(
             this,

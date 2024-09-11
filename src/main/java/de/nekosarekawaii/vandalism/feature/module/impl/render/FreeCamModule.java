@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.CameraOverrideListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MathUtil;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
@@ -38,7 +38,7 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.Vec3d;
 
-public class FreeCamModule extends AbstractModule implements
+public class FreeCamModule extends Module implements
         IncomingPacketListener,
         PlayerUpdateListener, CameraOverrideListener,
         MouseDeltaListener, MoveInputListener {

@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
@@ -48,7 +48,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
-public class IllegalInteractionModule extends AbstractModule implements PlayerUpdateListener, MouseInputListener, Render3DListener {
+public class IllegalInteractionModule extends Module implements PlayerUpdateListener, MouseInputListener, Render3DListener {
 
     private final DoubleValue reach = new DoubleValue(
             this,

@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
-import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTab;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
@@ -43,7 +43,7 @@ import java.util.*;
 
 import static de.nekosarekawaii.vandalism.util.ItemStackUtil.withClientSide;
 
-public class TrollItemsCreativeTab extends AbstractCreativeTab {
+public class TrollItemsCreativeTab extends CreativeTab {
 
     public TrollItemsCreativeTab() {
         super(Text.literal("Troll Items"), Items.END_CRYSTAL);

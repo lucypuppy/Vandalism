@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModPacketBlockerModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
+public class ModPacketBlockerModule extends Module implements IncomingPacketListener, OutgoingPacketListener {
 
     public final BooleanValue unloadFabricAPICallbacks = new BooleanValue(
             this,

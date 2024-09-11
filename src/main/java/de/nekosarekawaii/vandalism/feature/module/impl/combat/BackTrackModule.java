@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.PacketHelper;
 import de.nekosarekawaii.vandalism.util.SyncPosition;
@@ -53,7 +53,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BackTrackModule extends AbstractModule implements PlayerUpdateListener,
+public class BackTrackModule extends Module implements PlayerUpdateListener,
         IncomingPacketListener, Render3DListener, WorldListener {
 
     private final TargetGroup targetGroup = new TargetGroup(this, "Target", "The target to back track.");

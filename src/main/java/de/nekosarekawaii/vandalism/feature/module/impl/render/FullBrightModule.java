@@ -21,12 +21,12 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 
-public class FullBrightModule extends AbstractModule implements PlayerUpdateListener {
+public class FullBrightModule extends Module implements PlayerUpdateListener {
 
     public final BooleanValue useEffect = new BooleanValue(
             this,

@@ -33,7 +33,7 @@ import de.nekosarekawaii.vandalism.event.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.AutoSoupModule;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
@@ -73,7 +73,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KillAuraModule extends AbstractModule implements PlayerUpdateListener, Render2DListener, Render3DListener, RotationListener, RaytraceListener {
+public class KillAuraModule extends Module implements PlayerUpdateListener, Render2DListener, Render3DListener, RotationListener, RaytraceListener {
 
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,

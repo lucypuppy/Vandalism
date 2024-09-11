@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.render.TooltipDrawListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.tooltip.CustomContainerScreen;
@@ -43,7 +43,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
-public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener, OutgoingPacketListener {
+public class BetterTooltipsModule extends Module implements TooltipDrawListener, OutgoingPacketListener {
 
     private final KeyBindValue openContainerKey = new KeyBindValue(
             this,

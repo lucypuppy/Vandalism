@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.event.render.EntityRenderBottomLayerListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import net.minecraft.client.world.ClientWorld;
@@ -30,10 +30,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
 
-public class TrueSightModule extends AbstractModule implements EntityRenderBottomLayerListener {
+public class TrueSightModule extends Module implements EntityRenderBottomLayerListener {
 
     private static final List<Item> MARKER_BLOCK_ITEMS = ClientWorld.BLOCK_MARKER_ITEMS.stream().toList();
 

@@ -29,7 +29,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public abstract class AbstractConfig<T extends JsonElement> {
+public abstract class Config<T extends JsonElement> {
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -40,7 +40,7 @@ public abstract class AbstractConfig<T extends JsonElement> {
     @Getter
     private final File file;
 
-    public AbstractConfig(final Class<T> nodeType, final String name) {
+    public Config(final Class<T> nodeType, final String name) {
         this.nodeType = nodeType;
         this.file = new File(Vandalism.getInstance().getRunDirectory(), name + ".json");
     }

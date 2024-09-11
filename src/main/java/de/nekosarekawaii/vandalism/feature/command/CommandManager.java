@@ -44,7 +44,7 @@ import net.minecraft.text.ClickEvent;
 import java.util.UUID;
 
 @Getter
-public class CommandManager extends Storage<AbstractCommand> implements MinecraftWrapper {
+public class CommandManager extends Storage<Command> implements MinecraftWrapper {
 
     public static final String COMMAND_SECRET = UUID.randomUUID().toString();
 

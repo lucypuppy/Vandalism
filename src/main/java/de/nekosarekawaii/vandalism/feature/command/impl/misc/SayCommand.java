@@ -20,12 +20,12 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.injection.access.IClientPlayNetworkHandler;
 import de.nekosarekawaii.vandalism.util.Placeholders;
 import net.minecraft.command.CommandSource;
 
-public class SayCommand extends AbstractCommand {
+public class SayCommand extends Command {
 
     public SayCommand() {
         super(

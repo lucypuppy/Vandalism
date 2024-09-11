@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.PlayerDamageUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
@@ -32,7 +32,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class TeleportModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
+public class TeleportModule extends Module implements PlayerUpdateListener, IncomingPacketListener {
 
     private final FloatValue maxDistance = new FloatValue(
             this,

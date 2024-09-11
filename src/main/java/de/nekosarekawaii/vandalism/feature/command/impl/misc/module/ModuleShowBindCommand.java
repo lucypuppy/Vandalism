@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.feature.command.arguments.KeyBindArgumentType;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.command.CommandSource;
@@ -30,7 +30,7 @@ import net.minecraft.command.CommandSource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModuleShowBindCommand extends AbstractCommand {
+public class ModuleShowBindCommand extends Command {
 
     public ModuleShowBindCommand() {
         super("Lets you show the bind of modules.", Category.MISC, "moduleshowbind", "showbind");
@@ -41,7 +41,7 @@ public class ModuleShowBindCommand extends AbstractCommand {
         builder.then(argument("key-bind", KeyBindArgumentType.create()).executes(context -> {
             final int code = KeyBindArgumentType.get(context);
             final List<String> boundModules = new ArrayList<>();
-            for (final AbstractModule module : Vandalism.getInstance().getModuleManager().getList()) {
+            for (final Module module : Vandalism.getInstance().getModuleManager().getList()) {
                 if (module.getKeyBind().getValue() == code) {
                     boundModules.add(module.getName());
                 }

@@ -21,12 +21,12 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 
-public class UsernameCommand extends AbstractCommand {
+public class UsernameCommand extends Command {
 
     public UsernameCommand() {
         super(

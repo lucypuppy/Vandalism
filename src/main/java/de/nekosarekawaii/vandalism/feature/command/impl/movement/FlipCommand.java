@@ -19,10 +19,10 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.movement;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.Command;
 import net.minecraft.command.CommandSource;
 
-public class FlipCommand extends AbstractCommand {
+public class FlipCommand extends Command {
 
     public FlipCommand() {
         super(

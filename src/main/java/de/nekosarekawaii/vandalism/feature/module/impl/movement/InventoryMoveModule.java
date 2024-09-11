@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -37,7 +37,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InventoryMoveModule extends AbstractModule implements PlayerUpdateListener, KeyboardInputListener {
+public class InventoryMoveModule extends Module implements PlayerUpdateListener, KeyboardInputListener {
 
     private final BooleanValue allowArrowKeyRotation = new BooleanValue(
             this,

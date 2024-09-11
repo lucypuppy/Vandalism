@@ -18,11 +18,11 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.phase;
 
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.impl.NoClipModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
-public class PhaseModule extends AbstractModule {
+public class PhaseModule extends Module {
 
     public final ModuleModeValue<PhaseModule> mode = new ModuleModeValue<>(
             this,

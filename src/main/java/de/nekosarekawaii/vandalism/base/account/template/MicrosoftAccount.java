@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import lombok.Getter;
@@ -35,7 +35,7 @@ import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractMicrosoftAccount extends AbstractAccount {
+public abstract class MicrosoftAccount extends Account {
 
     private static final Gson GSON = new Gson();
 
@@ -51,12 +51,12 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
     @Getter
     private int refreshAttempts = 0;
 
-    public AbstractMicrosoftAccount(final String name, final AccountFactory factory) {
+    public MicrosoftAccount(final String name, final AccountFactory factory) {
         super("Microsoft (" + name + ")"); // Java is bad, but we are worse
         this.factory = factory;
     }
 
-    public AbstractMicrosoftAccount(final String name, final AccountFactory factory, final String tokenChain) {
+    public MicrosoftAccount(final String name, final AccountFactory factory, final String tokenChain) {
         super("Microsoft (" + name + ")");
         this.factory = factory;
         this.tokenChain = tokenChain;

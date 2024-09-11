@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ArrayUtils;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.lenni0451.reflect.stream.RStream;
@@ -49,7 +49,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PacketManagerModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
+public class PacketManagerModule extends Module implements IncomingPacketListener, OutgoingPacketListener {
 
     private final BooleanValue log = new BooleanValue(
             this,

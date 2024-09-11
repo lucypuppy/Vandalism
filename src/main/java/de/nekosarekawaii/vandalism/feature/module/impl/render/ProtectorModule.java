@@ -22,13 +22,13 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.client.session.Session;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
-public class ProtectorModule extends AbstractModule implements TextDrawListener {
+public class ProtectorModule extends Module implements TextDrawListener {
 
     private final BooleanValue protectUsername = new BooleanValue(
             this,

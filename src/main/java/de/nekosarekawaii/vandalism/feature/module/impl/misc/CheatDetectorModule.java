@@ -19,14 +19,14 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class CheatDetectorModule extends AbstractModule implements WorldListener {
+public class CheatDetectorModule extends Module implements WorldListener {
 
     private final HashMap<UUID, DetectionPlayer> detectionPlayers = new HashMap<>();
 

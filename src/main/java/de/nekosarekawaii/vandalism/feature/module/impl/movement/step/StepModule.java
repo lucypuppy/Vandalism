@@ -18,12 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.step;
 
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.impl.InstantModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.impl.NCPModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
-public class StepModule extends AbstractModule {
+public class StepModule extends Module {
 
     public final ModuleModeValue<StepModule> mode = new ModuleModeValue<>(this, "Mode", "The mode of the step.",
             new InstantModuleMode(),

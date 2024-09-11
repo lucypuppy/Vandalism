@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.account.template;
 
 import com.google.gson.JsonObject;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
-import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import imgui.ImGui;
@@ -35,7 +35,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AbstractTokenBasedAccount extends AbstractAccount {
+public abstract class TokenBasedAccount extends Account {
 
     private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
@@ -44,14 +44,14 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
     private String token;
 
-    public AbstractTokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl) {
+    public TokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl) {
         super(name);
 
         this.serviceUrl = serviceUrl;
         this.redeemUrl = redeemUrl;
     }
 
-    public AbstractTokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl, final String token) {
+    public TokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl, final String token) {
         this(name, serviceUrl, redeemUrl);
 
         this.token = token;
@@ -62,7 +62,7 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
     public abstract Session fromResponse(final String response);
 
-    public abstract AbstractTokenBasedAccount create(final String token);
+    public abstract TokenBasedAccount create(final String token);
 
     @Override
     public String getDisplayName() {
@@ -84,12 +84,12 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
                 ImGui.inputText("##accountToken", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
                 if (ImGui.button("Open service", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                    Util.getOperatingSystem().open(AbstractTokenBasedAccount.this.serviceUrl);
+                    Util.getOperatingSystem().open(TokenBasedAccount.this.serviceUrl);
                 }
             }
 
             @Override
-            public CompletableFuture<AbstractAccount> make() {
+            public CompletableFuture<Account> make() {
                 return CompletableFuture.supplyAsync(() -> create(this.token.get()));
             }
 

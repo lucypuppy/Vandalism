@@ -21,13 +21,13 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 import net.minecraft.network.packet.s2c.login.LoginHelloS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 
-public class FlagDetectorModule extends AbstractModule implements IncomingPacketListener, WorldListener {
+public class FlagDetectorModule extends Module implements IncomingPacketListener, WorldListener {
 
     private int flagCount;
 

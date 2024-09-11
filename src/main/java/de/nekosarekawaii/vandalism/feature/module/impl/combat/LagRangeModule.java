@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.Prediction;
@@ -35,7 +35,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.profiler.Profiler;
 
-public class LagRangeModule extends AbstractModule implements TimeTravelListener, MoveInputListener, PlayerUpdateListener {
+public class LagRangeModule extends Module implements TimeTravelListener, MoveInputListener, PlayerUpdateListener {
 
     private long shifted, prevShifted, prevTime;
     private boolean isCharging, isDone;

@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
@@ -34,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AntiBotsModule extends AbstractModule implements TargetListener, IncomingPacketListener, WorldListener {
+public class AntiBotsModule extends Module implements TargetListener, IncomingPacketListener, WorldListener {
 
     private final BooleanValue movement = new BooleanValue(this, "Movement", "Checks if the entities are moving", true);
     private final BooleanValue sound = new BooleanValue(this, "Sound", "Checks if the entities are playing sounds", false);

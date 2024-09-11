@@ -62,7 +62,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 
 @Getter
-public class ModuleManager extends NamedStorage<AbstractModule> implements
+public class ModuleManager extends NamedStorage<Module> implements
         KeyboardInputListener, MouseInputListener, ShutdownProcessListener,
         DisconnectListener, MinecraftWrapper,
         WorldListener, PlayerUpdateListener, HealthUpdateListener {
@@ -220,7 +220,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
             return;
         }
 
-        for (final AbstractModule module : this.getList()) {
+        for (final Module module : this.getList()) {
             if (action == GLFW.GLFW_PRESS && module.getKeyBind().isPressed(code)) {
                 module.toggle();
             } else if (action == GLFW.GLFW_RELEASE && module.isDeactivateOnRelease() && module.getKeyBind().isReleased(code)) {
@@ -231,27 +231,27 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onShutdownProcess() {
-        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnShutdown()).forEach(AbstractModule::deactivate);
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnShutdown()).forEach(Module::deactivate);
     }
 
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
-        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnQuit()).forEach(Module::deactivate);
     }
 
     @Override
     public void onPreWorldLoad() {
-        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnWorldLoad()).forEach(AbstractModule::deactivate);
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnWorldLoad()).forEach(Module::deactivate);
     }
 
     @Override
     public void onHealthUpdate(final HealthUpdateEvent event) {
         if (event.health <= 0.0F) {
-            this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
+            this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnDeath()).forEach(Module::deactivate);
         }
     }
 
-    public List<AbstractModule> getByCategory(final Feature.Category category) {
+    public List<Module> getByCategory(final Feature.Category category) {
         return this.getList().stream().filter(module -> module.getCategory() == category).toList();
     }
 

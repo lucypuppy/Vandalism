@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.impl.CreativeModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.impl.MotionModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
-public class ElytraFlightModule extends AbstractModule implements PlayerUpdateListener {
+public class ElytraFlightModule extends Module implements PlayerUpdateListener {
 
     private final ModuleModeValue<ElytraFlightModule> mode = new ModuleModeValue<>(
             this,

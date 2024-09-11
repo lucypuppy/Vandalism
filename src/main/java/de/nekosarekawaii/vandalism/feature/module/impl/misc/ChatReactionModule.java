@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.Placeholders;
 import de.nekosarekawaii.vandalism.util.RandomUtils;
 import de.nekosarekawaii.vandalism.util.StringUtils;
@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ChatReactionModule extends AbstractModule implements IncomingPacketListener, PlayerUpdateListener, DisconnectListener {
+public class ChatReactionModule extends Module implements IncomingPacketListener, PlayerUpdateListener, DisconnectListener {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String[], String[]> contentMap = new HashMap<>();

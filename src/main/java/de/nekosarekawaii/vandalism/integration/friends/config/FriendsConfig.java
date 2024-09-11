@@ -21,11 +21,11 @@ package de.nekosarekawaii.vandalism.integration.friends.config;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
+import de.nekosarekawaii.vandalism.base.config.Config;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 
-public class FriendsConfig extends AbstractConfig<JsonObject> {
+public class FriendsConfig extends Config<JsonObject> {
 
     private final FriendsManager friendsManager;
 

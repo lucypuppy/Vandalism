@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.template.module;
 
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import lombok.Getter;
 
@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ModuleMulti<T extends AbstractModule> implements ValueParent, MinecraftWrapper {
+public abstract class ModuleMulti<T extends Module> implements ValueParent, MinecraftWrapper {
 
     private final List<Value<?>> values = new ArrayList<>();
 

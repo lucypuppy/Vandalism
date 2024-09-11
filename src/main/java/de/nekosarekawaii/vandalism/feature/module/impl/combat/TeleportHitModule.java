@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
@@ -33,7 +33,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class TeleportHitModule extends AbstractModule implements PlayerUpdateListener {
+public class TeleportHitModule extends Module implements PlayerUpdateListener {
 
     public TeleportHitModule() {
         super("Teleport Hit", "Allows you to attack enemies from further distances.", Category.COMBAT);

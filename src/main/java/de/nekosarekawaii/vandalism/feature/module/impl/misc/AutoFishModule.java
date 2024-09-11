@@ -21,11 +21,11 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 
-public class AutoFishModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoFishModule extends Module implements PlayerUpdateListener {
 
     public final IntegerValue throwDelayValue = new IntegerValue(
             this,

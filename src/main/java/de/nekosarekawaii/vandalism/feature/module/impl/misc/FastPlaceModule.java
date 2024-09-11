@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class FastPlaceModule extends AbstractModule {
+public class FastPlaceModule extends Module {
 
     public final IntegerValue cooldown = new IntegerValue(
             this,

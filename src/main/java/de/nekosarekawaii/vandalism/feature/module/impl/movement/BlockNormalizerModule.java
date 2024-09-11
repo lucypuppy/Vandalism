@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.BlockCollisionShapeListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -33,7 +33,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockNormalizerModule extends AbstractModule implements BlockCollisionShapeListener {
+public class BlockNormalizerModule extends Module implements BlockCollisionShapeListener {
 
     private static final List<Block> PRESET_BLOCKS = new ArrayList<>();
 

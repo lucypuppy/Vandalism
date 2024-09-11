@@ -22,26 +22,13 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.AutoeyeModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.BukkitModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CollisionModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CreativeModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CubeCraft2ModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CubeCraftModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.MatrixModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.MotionModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.NegativityV2ModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.OldAACModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.SpartanFlagModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.SpartanOMFGLOL;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.SpartanRoflModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.VulcanGlideModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-public class FlightModule extends AbstractModule implements OutgoingPacketListener, PlayerUpdateListener {
+public class FlightModule extends Module implements OutgoingPacketListener, PlayerUpdateListener {
 
     private final ModuleModeValue<FlightModule> mode = new ModuleModeValue<>(
             this,

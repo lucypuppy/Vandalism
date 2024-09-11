@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
@@ -29,7 +29,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import org.lwjgl.glfw.GLFW;
 
-public class MiddleClickFriendsModule extends AbstractModule implements MouseInputListener {
+public class MiddleClickFriendsModule extends Module implements MouseInputListener {
 
     public MiddleClickFriendsModule() {
         super(

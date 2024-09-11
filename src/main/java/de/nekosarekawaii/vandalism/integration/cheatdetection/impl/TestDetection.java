@@ -21,11 +21,11 @@ package de.nekosarekawaii.vandalism.integration.cheatdetection.impl;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.integration.cheatdetection.AbstractDetection;
+import de.nekosarekawaii.vandalism.integration.cheatdetection.Detection;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-public class TestDetection extends AbstractDetection implements OutgoingPacketListener {
+public class TestDetection extends Detection implements OutgoingPacketListener {
 
     public TestDetection(DetectionPlayer player) {
         super(player, "Test");

@@ -22,9 +22,9 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.TickTimeListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class TimerModule extends AbstractModule implements TickTimeListener {
+public class TimerModule extends Module implements TickTimeListener {
 
     private final FloatValue ticksPerSecond = new FloatValue(
             this,

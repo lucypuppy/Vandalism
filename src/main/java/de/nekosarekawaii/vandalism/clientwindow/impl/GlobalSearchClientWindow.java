@@ -25,14 +25,14 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.command.Command;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import imgui.ImGui;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Pair;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GlobalSearchClientWindow extends ClientWindow implements DataListWidget {
@@ -56,17 +56,17 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
                 }
             }
         }
-        for (final AbstractModule abstractModule : Vandalism.getInstance().getModuleManager().getList()) {
+        for (final Module module : Vandalism.getInstance().getModuleManager().getList()) {
             final CopyOnWriteArrayList<Pair<String, String>> modulesList = new CopyOnWriteArrayList<>();
             modulesList.add(new Pair<>("Type", "Module"));
-            modulesList.add(new Pair<>("Category", abstractModule.getCategory().getName()));
-            modulesList.add(new Pair<>("Name", abstractModule.getName()));
-            if (abstractModule.getDescription() != null) {
-                modulesList.add(new Pair<>("Description", abstractModule.getDescription()));
+            modulesList.add(new Pair<>("Category", module.getCategory().getName()));
+            modulesList.add(new Pair<>("Name", module.getName()));
+            if (module.getDescription() != null) {
+                modulesList.add(new Pair<>("Description", module.getDescription()));
             }
             this.searchEntries.add(new ListDataEntry(modulesList));
-            for (int i = 1; i < abstractModule.getValues().size(); i++) {
-                final Value<?> value = abstractModule.getValues().get(i);
+            for (int i = 1; i < module.getValues().size(); i++) {
+                final Value<?> value = module.getValues().get(i);
                 final CopyOnWriteArrayList<Pair<String, String>> valuesList = new CopyOnWriteArrayList<>();
                 valuesList.add(new Pair<>("Type", "Module Value"));
                 valuesList.add(new Pair<>("Module", value.getParent().getName()));
@@ -77,12 +77,12 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
                 this.searchEntries.add(new ListDataEntry(valuesList));
             }
         }
-        for (final AbstractCommand abstractCommand : Vandalism.getInstance().getCommandManager().getList()) {
+        for (final Command command : Vandalism.getInstance().getCommandManager().getList()) {
             final CopyOnWriteArrayList<Pair<String, String>> commandsList = new CopyOnWriteArrayList<>();
             commandsList.add(new Pair<>("Type", "Command"));
-            commandsList.add(new Pair<>("Category", abstractCommand.getCategory().getName()));
-            commandsList.add(new Pair<>("Name", abstractCommand.getName()));
-            String description = abstractCommand.getDescription();
+            commandsList.add(new Pair<>("Category", command.getCategory().getName()));
+            commandsList.add(new Pair<>("Name", command.getName()));
+            String description = command.getDescription();
             if (description != null) {
                 if (description.contains("\n")) {
                     description = description.split("\n")[0];
@@ -111,7 +111,7 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
     public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             if (listDataEntry.getFirst().getRight().equals("Module")) {
-                final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
+                final Module module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
                 if (module != null) {
                     return module.isActive();
                 }
@@ -124,7 +124,7 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
     public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             if (listDataEntry.getFirst().getRight().equals("Module")) {
-                final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
+                final Module module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
                 if (module != null && module.isActive()) {
                     final Color color = Vandalism.getInstance().getClientSettings().getMenuSettings().activatedModuleColor.getColor();
                     return new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
@@ -138,7 +138,7 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
     public void onDataEntryClick(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             if (listDataEntry.getFirst().getRight().equals("Module")) {
-                final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
+                final Module module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
                 if (module != null) {
                     module.toggle();
                 }
@@ -154,14 +154,14 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
             switch (type) {
                 case "Module" -> {
                     ImGui.separator();
-                    final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
+                    final Module module = Vandalism.getInstance().getModuleManager().getByName(listDataEntry.getThird().getRight());
                     if (module != null) {
                         module.renderValues();
                     }
                 }
                 case "Module Value" -> {
                     final String parentName = listDataEntry.getSecond().getRight();
-                    final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(parentName);
+                    final Module module = Vandalism.getInstance().getModuleManager().getByName(parentName);
                     if (module != null) {
                         module.renderValues(listDataEntry.getThird().getRight());
                     }

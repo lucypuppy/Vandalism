@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.network.packet.c2s.common.ClientOptionsC2SPacket;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
@@ -35,7 +35,7 @@ import net.raphimc.vialoader.util.VersionRange;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HandFuckerModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
+public class HandFuckerModule extends Module implements PlayerUpdateListener, IncomingPacketListener {
 
     private final IntegerValue delay = new IntegerValue(
             this, "Delay",

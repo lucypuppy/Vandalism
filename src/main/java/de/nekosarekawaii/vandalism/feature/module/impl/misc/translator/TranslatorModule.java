@@ -24,21 +24,17 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.event.player.ChatSendListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.injection.access.IClientPlayNetworkHandler;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TranslatorModule extends AbstractModule implements ChatSendListener, ChatReceiveListener {
+public class TranslatorModule extends Module implements ChatSendListener, ChatReceiveListener {
 
     private final ValueGroup incomingGroup = new ValueGroup(
             this,
