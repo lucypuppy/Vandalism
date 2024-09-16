@@ -265,7 +265,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
     private void playRandomSong(final boolean shouldDeactivateFirst) {
         final List<File> files = this.getAllFiles(NOTE_BLOCK_SONGS_DIR);
         if (!files.isEmpty()) {
-            this.playSong(files.get(RandomUtils.randomInt(files.size() - 1)), shouldDeactivateFirst);
+            this.playSong(files.get(RandomUtils.randomIndex(files.size())), shouldDeactivateFirst);
         }
     }
 
@@ -576,7 +576,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
                     final List<String> validSounds = Registries.SOUND_EVENT.stream().map(SoundEvent::getId).filter(id -> !id.toString().toLowerCase().contains("music")).map(Object::toString).toList();
                     for (final NoteBlockInstrument mcInstrument : NoteBlockInstrument.values()) {
                         final String input = mcInstrument.getSound().value().getId().toString();
-                        final String output = validSounds.get(RandomUtils.randomInt(0, validSounds.size() - 1));
+                        final String output = validSounds.get(RandomUtils.randomIndex(validSounds.size()));
                         this.customInstruments.put(input, output);
                     }
                 }

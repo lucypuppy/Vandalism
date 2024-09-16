@@ -189,7 +189,7 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
                     this.contentMap.forEach((triggers, responses) -> {
                         for (final String trigger : triggers) {
                             if (StringUtils.contains(Placeholders.applyReplacements(message), trigger)) {
-                                String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomInt(0, responses.length - 1)];
+                                String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomIndex(responses.length)];
                                 answer = Placeholders.applyReplacements(answer);
                                 final String target = targetName.get();
                                 if (answer.contains(targetPlaceholder) && !target.equals(targetPlaceholder)) {
