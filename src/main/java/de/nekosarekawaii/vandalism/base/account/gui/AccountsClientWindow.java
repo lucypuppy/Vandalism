@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.account.template.MicrosoftAccount;
+import de.nekosarekawaii.vandalism.base.account.type.TheAlteningAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.util.NameGenerationUtil;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
@@ -153,12 +154,7 @@ public class AccountsClientWindow extends ClientWindow {
         }
         if (ImGui.button(id + "account" + playerName + account.getType(), ImGui.getColumnWidth(), ImUtils.modulateDimension(HEAD_ENTRY_DIMENSION + 5f))) {
             if (isEntry) {
-                try {
-                    account.login();
-                    account.setStatus("Logged in");
-                } catch (Throwable throwable) {
-                    account.setStatus("Error: " + throwable.getMessage());
-                }
+                account.login();
             }
         }
         if (isCurrentAccount) {
@@ -226,15 +222,15 @@ public class AccountsClientWindow extends ClientWindow {
             }
             if (ImGui.beginTabItem("Add Account")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
-                    // if (!(account instanceof EasyMCAccount)) { | R.I.P EasyMC :c
-                    if (ImGui.treeNodeEx(account.getType() + id + account.getType() + "addAccount")) {
-                        factory.displayFactory();
-                        if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                            this.recallAccount(factory, this.accountManager::add);
+                    if (!(account instanceof TheAlteningAccount)) {
+                        if (ImGui.treeNodeEx(account.getType() + id + account.getType() + "addAccount")) {
+                            factory.displayFactory();
+                            if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                                this.recallAccount(factory, this.accountManager::add);
+                            }
+                            ImGui.treePop();
                         }
-                        ImGui.treePop();
                     }
-                    // }
                 });
                 ImGui.endTabItem();
             }

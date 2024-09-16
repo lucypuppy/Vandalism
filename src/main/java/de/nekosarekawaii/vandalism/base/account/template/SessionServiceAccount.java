@@ -18,51 +18,34 @@
 
 package de.nekosarekawaii.vandalism.base.account.template;
 
-import com.google.gson.JsonObject;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
+import de.florianmichael.waybackauthlib.WaybackAuthLib;
 import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.minecraft.client.session.Session;
 import net.minecraft.util.Util;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class TokenBasedAccount extends Account {
+public abstract class SessionServiceAccount extends Account {
 
-    private static final HttpClient REQUESTER = HttpClient.newHttpClient();
-
+    private final String token;
     private final String serviceUrl;
-    private final String redeemUrl;
 
-    private String token;
-
-    public TokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl) {
+    public SessionServiceAccount(final String name, final String token, final String serviceUrl) {
         super(name);
-
-        this.serviceUrl = serviceUrl;
-        this.redeemUrl = redeemUrl;
-    }
-
-    public TokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl, final String token) {
-        this(name, serviceUrl, redeemUrl);
-
         this.token = token;
         if (token != null && this.getEnvironment() == YggdrasilEnvironment.PROD.getEnvironment()) {
             throw new RuntimeException("You are using the production environment. This is not allowed.");
         }
+        this.serviceUrl = serviceUrl;
     }
 
-    public abstract Session fromResponse(final String response);
-
-    public abstract TokenBasedAccount create(final String token);
+    public abstract SessionServiceAccount create(final String token);
 
     @Override
     public String getDisplayName() {
@@ -84,7 +67,7 @@ public abstract class TokenBasedAccount extends Account {
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
                 ImGui.inputText("##accountToken", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
                 if (ImGui.button("Open Service", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                    Util.getOperatingSystem().open(TokenBasedAccount.this.serviceUrl);
+                    Util.getOperatingSystem().open(SessionServiceAccount.this.serviceUrl);
                 }
             }
 
@@ -103,22 +86,19 @@ public abstract class TokenBasedAccount extends Account {
             this.updateSession(this.session);
             return;
         }
-        final HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(this.redeemUrl))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{\"token\":\"" + this.token + "\"}"))
-                .build();
-        this.updateSession(this.fromResponse(REQUESTER.send(request, HttpResponse.BodyHandlers.ofString()).body()));
-    }
-
-    @Override
-    public void save0(final JsonObject mainNode) throws Throwable {
-        mainNode.addProperty("token", AESEncryptionUtil.encrypt(this.getSession().getUsername(), this.token));
-    }
-
-    @Override
-    public void load0(final JsonObject mainNode) throws Throwable {
-        this.token = AESEncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("token").getAsString());
+        final WaybackAuthLib auth = new WaybackAuthLib(this.getEnvironment().servicesHost());
+        auth.setUsername(this.token);
+        auth.setPassword(" ");
+        auth.logIn();
+        // TODO: Fix skin rendering caused by service
+        this.updateSession(new Session(
+                auth.getCurrentProfile().getName(),
+                auth.getCurrentProfile().getId(),
+                auth.getAccessToken(),
+                Optional.empty(),
+                Optional.empty(),
+                Session.AccountType.MOJANG
+        ));
     }
 
 }
