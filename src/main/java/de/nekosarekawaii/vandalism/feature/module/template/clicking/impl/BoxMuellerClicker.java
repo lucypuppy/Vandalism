@@ -59,7 +59,7 @@ public class BoxMuellerClicker extends Clicker {
 
     @Override
     public void onUpdate() {
-        while (this.clicks + RandomUtils.randomInt(-1, 0) > 0) {
+        while (this.clicks + RandomUtils.randomIndex(-1, 1) > 0) {
             this.clickAction.accept(true);
             this.clicks--;
         }

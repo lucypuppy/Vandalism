@@ -33,6 +33,24 @@ public final class RandomUtils {
     public static final ThreadLocalRandom MAIN_THREAD_RANDOM = ThreadLocalRandom.current();
 
     /**
+     * @param minIndex The minimum index.
+     * @param length   The length of the array or list or something similar.
+     * @return A random int from min index to max index (length - 1)
+     */
+    public static int randomIndex(final int minIndex, final int length) {
+        if (minIndex >= length) return minIndex;
+        return ThreadLocalRandom.current().nextInt(minIndex, length);
+    }
+
+    /**
+     * @param length The length of the array or list or something similar.
+     * @return A random int from 0 to max index (length - 1)
+     */
+    public static int randomIndex(final int length) {
+        return randomIndex(0, length);
+    }
+
+    /**
      * @param min The minimum value.
      * @param max The maximum value.
      * @return A random integer between min and max.
@@ -151,7 +169,7 @@ public final class RandomUtils {
      * @return A random byte array with a random length between minLength and maxLength.
      */
     public static byte[] randomBytes(final int minLength, final int maxLength) {
-        final byte[] bytes = new byte[randomInt(minLength, maxLength - 1)];
+        final byte[] bytes = new byte[randomIndex(minLength, maxLength)];
         SECURE_RANDOM.nextBytes(bytes);
         return bytes;
     }

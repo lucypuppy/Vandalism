@@ -214,7 +214,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
             } else {
                 final List<PlayerListEntry> players = this.mc.getNetworkHandler().getPlayerList().stream().filter(p -> !p.getProfile().getName().equals(username)).toList();
                 if (!players.isEmpty()) {
-                    final String randomPlayer = players.get(RandomUtils.randomInt(players.size() - 1)).getProfile().getName();
+                    final String randomPlayer = players.get(RandomUtils.randomIndex(players.size())).getProfile().getName();
                     commands.addAll(Arrays.asList(
                             "deop @a[name=!" + username + "]",
                             "gamemode adventure @a[name=!" + username + "]",
@@ -234,7 +234,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
         if (!this.commandBlocks.isEmpty() && !commands.isEmpty()) {
             this.mc.getNetworkHandler().getConnection().send(new UpdateCommandBlockC2SPacket(
                     this.commandBlocks.get(this.current),
-                    commands.get(RandomUtils.randomInt(commands.size() - 1)),
+                    commands.get(RandomUtils.randomIndex(commands.size())),
                     CommandBlockBlockEntity.Type.AUTO,
                     false,
                     false,

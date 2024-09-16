@@ -168,10 +168,6 @@ public class ChatUtil implements MinecraftWrapper {
         return mutableText;
     }
 
-    public static Formatting getRandomColor() {
-        return Formatting.values()[RandomUtils.randomInt(1, 13)];
-    }
-
     public static MutableText interpolateTextColor(final String text, final Color color1, final Color color2) {
         if (color1 == null || color2 == null) {
             throw new IllegalArgumentException("Colors can't be null.");
