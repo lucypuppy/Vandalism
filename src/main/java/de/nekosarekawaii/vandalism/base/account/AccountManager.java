@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.account.config.AccountsConfig;
 import de.nekosarekawaii.vandalism.base.account.gui.AccountsClientWindow;
 import de.nekosarekawaii.vandalism.base.account.template.MicrosoftAccount;
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
+import de.nekosarekawaii.vandalism.base.account.type.TheAlteningAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSCredentialsAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSDeviceCodeAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSLocalWebserverAccount;
@@ -39,6 +40,7 @@ import net.minecraft.client.session.Session;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class AccountManager extends Storage<Account> implements UpdateSessionListener {
@@ -48,12 +50,10 @@ public class AccountManager extends Storage<Account> implements UpdateSessionLis
     public AccountManager(final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         Arrays.asList(
                 new SessionAccount(),
-
                 new MSDeviceCodeAccount(),
                 new MSLocalWebserverAccount(),
-                new MSCredentialsAccount()
-
-                // new EasyMCAccount() | R.I.P. EasyMC :c
+                new MSCredentialsAccount(),
+                new TheAlteningAccount()
         ).forEach(account -> ACCOUNT_TYPES.put(account, account.factory()));
         configManager.add(new AccountsConfig(this));
         clientWindowManager.add(new AccountsClientWindow(this));
@@ -87,8 +87,20 @@ public class AccountManager extends Storage<Account> implements UpdateSessionLis
                                 Vandalism.getInstance().getLogger().info("Refreshing microsoft account {}...", account.getDisplayName());
                                 try {
                                     account.refresh();
+                                    final Session currentSession = this.currentAccount.getSession();
+                                    if (currentSession != null) {
+                                        final Session accountSession = account.getSession();
+                                        if (currentSession.getUsername().equals(accountSession.getUsername())) {
+                                            final UUID currentUUID = currentSession.getUuidOrNull();
+                                            final UUID accountUUID = accountSession.getUuidOrNull();
+                                            if (currentUUID != null && currentUUID.equals(accountUUID) && this.currentAccount instanceof SessionAccount) {
+                                                Vandalism.getInstance().getLogger().info("Fixing current session and logging in with refreshed Microsoft account {}...", account.getDisplayName());
+                                                account.login();
+                                            }
+                                        }
+                                    }
                                 } catch (final Throwable throwable) {
-                                    Vandalism.getInstance().getLogger().error("Failed to refresh microsoft account: " + account.getDisplayName(), throwable);
+                                    Vandalism.getInstance().getLogger().error("Failed to refresh Microsoft account: " + account.getDisplayName(), throwable);
                                 }
                                 account.increaseRefreshAttempts();
                                 if (account.getRefreshAttempts() > 2) {
@@ -103,7 +115,7 @@ public class AccountManager extends Storage<Account> implements UpdateSessionLis
     }
 
     @Override
-    public void onUpdateSession(UpdateSessionEvent event) {
+    public void onUpdateSession(final UpdateSessionEvent event) {
         if (this.firstAccount == null) {
             this.firstAccount = this.currentAccount = fromSession(event.newSession);
         } else if (!((ISession) event.newSession).vandalism$isSelfInflicted()) {

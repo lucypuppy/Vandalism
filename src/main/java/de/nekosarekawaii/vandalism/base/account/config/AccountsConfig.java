@@ -95,11 +95,7 @@ public class AccountsConfig extends Config<JsonObject> {
         if (mainNode.has("lastAccount")) {
             final Account lastAccount = this.loadAccount(mainNode.get("lastAccount").getAsJsonObject());
             if (lastAccount != null) {
-                try {
-                    lastAccount.login();
-                } catch (Throwable t) {
-                    Vandalism.getInstance().getLogger().error("Failed to log into the last account: " + lastAccount.getDisplayName(), t);
-                }
+                lastAccount.login();
             } else {
                 Vandalism.getInstance().getLogger().error("Failed to load the last account!");
             }

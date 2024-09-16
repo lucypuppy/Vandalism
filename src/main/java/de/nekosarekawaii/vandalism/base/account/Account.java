@@ -118,6 +118,7 @@ public abstract class Account implements MinecraftWrapper {
     public void login() {
         CompletableFuture.runAsync(() -> {
             try {
+                Vandalism.getInstance().getLogger().info("Logging in as {}", this.getDisplayName());
                 this.login0(); // Set the game session and reload the skins
                 if (SessionUtil.reloadProfileKeys(this.session, getEnvironment())) {
                     this.setStatus("Updated session and logged in");
@@ -126,8 +127,9 @@ public abstract class Account implements MinecraftWrapper {
                 }
                 Vandalism.getInstance().getAccountManager().setCurrentAccount(this);
                 Vandalism.getInstance().getLogger().info("Logged in as {}", this.getDisplayName());
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
+            } catch (final Throwable throwable) {
+                this.setStatus("Failed to login: " + throwable);
+                Vandalism.getInstance().getLogger().error("Failed to login as {}: {}", this.getDisplayName(), throwable);
             }
         });
     }
