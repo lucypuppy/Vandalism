@@ -33,7 +33,7 @@ public final class RandomUtils {
     public static final ThreadLocalRandom MAIN_THREAD_RANDOM = ThreadLocalRandom.current();
 
     /**
-     * @param minIndex The minimum index.
+     * @param minIndex The min index.
      * @param length   The length of the array or list or something similar.
      * @return A random int from min index to max index (length - 1)
      */
@@ -51,8 +51,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param min The minimum value.
-     * @param max The maximum value.
+     * @param min The min value.
+     * @param max The max value.
      * @return A random integer between min and max.
      */
     public static int randomInt(final int min, final int max) {
@@ -61,7 +61,7 @@ public final class RandomUtils {
     }
 
     /**
-     * @param max The maximum value.
+     * @param max The max value.
      * @return A random integer between 0 and max.
      */
     public static int randomInt(final int max) {
@@ -69,8 +69,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param min The minimum value.
-     * @param max The maximum value.
+     * @param min The min value.
+     * @param max The max value.
      * @return A random double between min and max.
      */
     public static double randomDouble(final double min, final double max) {
@@ -79,8 +79,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param min The minimum value.
-     * @param max The maximum value.
+     * @param min The min value.
+     * @param max The max value.
      * @return A random float between min and max.
      */
     public static float randomFloat(final float min, final float max) {
@@ -89,8 +89,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param min The minimum value.
-     * @param max The maximum value.
+     * @param min The min value.
+     * @param max The max value.
      * @return A random long between min and max.
      */
     public static long randomLong(final long min, final long max) {
@@ -99,8 +99,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param min The minimum value.
-     * @param max The maximum value.
+     * @param min The min value.
+     * @param max The max value.
      * @return A random short between min and max.
      */
     public static short randomShort(final short min, final short max) {
@@ -109,8 +109,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param min The minimum value.
-     * @param max The maximum value.
+     * @param min The min value.
+     * @param max The max value.
      * @return A random byte between min and max.
      */
     public static byte randomByte(final byte min, final byte max) {
@@ -119,8 +119,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param min The minimum value.
-     * @param max The maximum value.
+     * @param min The min value.
+     * @param max The max value.
      * @return A random char between min and max.
      */
     public static char randomChar(final char min, final char max) {
@@ -164,8 +164,8 @@ public final class RandomUtils {
     }
 
     /**
-     * @param minLength The minimum length of the byte array.
-     * @param maxLength The maximum length of the byte array.
+     * @param minLength The min length of the byte array.
+     * @param maxLength The max length of the byte array.
      * @return A random byte array with a random length between minLength and maxLength.
      */
     public static byte[] randomBytes(final int minLength, final int maxLength) {
@@ -177,8 +177,8 @@ public final class RandomUtils {
     /**
      * Generates a random string with the specified length and characters. If all the boolean parameters are false, lowercase will be set to true.
      *
-     * @param minLength The minimum length of the string.
-     * @param maxLength The maximum length of the string.
+     * @param minLength The min length of the string.
+     * @param maxLength The max length of the string.
      * @param lowercase Whether to include lowercase characters.
      * @param uppercase Whether to include uppercase characters.
      * @param number    Whether to include number characters.
