@@ -150,8 +150,8 @@ public class WatermarkHUDElement extends HUDElement {
                         this.identifier,
                         new NativeImageBackedTexture(NativeImage.read(fileInputStream))
                 );
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
         }
 
         public LogoSelection() {
