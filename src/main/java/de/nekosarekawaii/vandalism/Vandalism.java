@@ -31,6 +31,7 @@ import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
+import de.nekosarekawaii.vandalism.integration.minigames.MinigamesManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.ServerDiscoveryManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
@@ -115,6 +116,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private HUDManager hudManager;
     private SpotifyManager spotifyManager;
     private ServerDiscoveryManager serverDiscoveryManager;
+    private MinigamesManager minigamesManager;
 
     // Features
     private ModuleManager moduleManager;
@@ -189,6 +191,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager, this.clientWindowManager);
 
         this.serverDiscoveryManager = new ServerDiscoveryManager(this.clientWindowManager);
+
+        this.minigamesManager = new MinigamesManager(this.configManager, this.clientWindowManager);
+        this.minigamesManager.init();
 
         // Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientWindowManager);
