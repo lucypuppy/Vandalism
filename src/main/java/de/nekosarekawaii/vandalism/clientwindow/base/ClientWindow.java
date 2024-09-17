@@ -33,9 +33,9 @@ public class ClientWindow implements IName, MinecraftWrapper {
     @Getter
     private final Category category;
 
-    private final float width;
-    private final float height;
-    private final int windowFlags;
+    protected final float width;
+    protected final float height;
+    protected final int windowFlags;
 
     @Getter
     private boolean active;

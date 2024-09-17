@@ -21,6 +21,8 @@ package de.nekosarekawaii.vandalism.util;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -36,20 +38,66 @@ public class SoundHooks {
     private static final Identifier MODULE_DEACTIVATE_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":module_deactivate");
     private static final SoundEvent MODULE_DEACTIVATE_SOUND_EVENT = SoundEvent.of(MODULE_DEACTIVATE_SOUND);
 
+    private static final Identifier GLEICHMITTE_RICHTIG_SAUER_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":gleichmitte_richtig_sauer");
+    private static final SoundEvent GLEICHMITTE_RICHTIG_SAUER_SOUND_EVENT = SoundEvent.of(GLEICHMITTE_RICHTIG_SAUER_SOUND);
+
+    private static final Identifier GLEICHMITTE_SCHEISSE_MAN_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":gleichmitte_scheisse_man");
+    private static final SoundEvent GLEICHMITTE_SCHEISSE_MAN_SOUND_EVENT = SoundEvent.of(GLEICHMITTE_SCHEISSE_MAN_SOUND);
+
+    private static final Identifier GLEICHMITTE_DU_HURENSOHN_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":gleichmitte_du_hurensohn");
+    private static final SoundEvent GLEICHMITTE_DU_HURENSOHN_SOUND_EVENT = SoundEvent.of(GLEICHMITTE_DU_HURENSOHN_SOUND);
+
+    private static final Identifier GLEICHMITTE_FICK_DICH_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":gleichmitte_fick_dich");
+    private static final SoundEvent GLEICHMITTE_FICK_DICH_SOUND_EVENT = SoundEvent.of(GLEICHMITTE_FICK_DICH_SOUND);
+
+    private static final Identifier GLEICHMITTE_ZUFRIEDEN_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":gleichmitte_zufrieden");
+    private static final SoundEvent GLEICHMITTE_ZUFRIEDEN_SOUND_EVENT = SoundEvent.of(GLEICHMITTE_ZUFRIEDEN_SOUND);
+
     public static void register() {
         Registry.register(Registries.SOUND_EVENT, MODULE_ACTIVATE_SOUND, MODULE_ACTIVATE_SOUND_EVENT);
         Registry.register(Registries.SOUND_EVENT, MODULE_DEACTIVATE_SOUND, MODULE_DEACTIVATE_SOUND_EVENT);
+        Registry.register(Registries.SOUND_EVENT, GLEICHMITTE_RICHTIG_SAUER_SOUND, GLEICHMITTE_RICHTIG_SAUER_SOUND_EVENT);
+        Registry.register(Registries.SOUND_EVENT, GLEICHMITTE_SCHEISSE_MAN_SOUND, GLEICHMITTE_SCHEISSE_MAN_SOUND_EVENT);
+        Registry.register(Registries.SOUND_EVENT, GLEICHMITTE_SCHEISSE_MAN_SOUND, GLEICHMITTE_DU_HURENSOHN_SOUND_EVENT);
+        Registry.register(Registries.SOUND_EVENT, GLEICHMITTE_FICK_DICH_SOUND, GLEICHMITTE_FICK_DICH_SOUND_EVENT);
+        Registry.register(Registries.SOUND_EVENT, GLEICHMITTE_ZUFRIEDEN_SOUND, GLEICHMITTE_ZUFRIEDEN_SOUND_EVENT);
     }
 
     public static void playModuleActivate() {
-        playSound(MODULE_ACTIVATE_SOUND_EVENT);
+        playInGameSound(MODULE_ACTIVATE_SOUND_EVENT);
     }
 
     public static void playModuleDeactivate() {
-        playSound(MODULE_DEACTIVATE_SOUND_EVENT);
+        playInGameSound(MODULE_DEACTIVATE_SOUND_EVENT);
     }
 
-    private static void playSound(final SoundEvent event) {
+    public static void playGleichMitteRichtigSauer() {
+        playSound(GLEICHMITTE_RICHTIG_SAUER_SOUND_EVENT);
+    }
+
+    public static void playGleichMitteScheisseMan() {
+        playSound(GLEICHMITTE_SCHEISSE_MAN_SOUND_EVENT);
+    }
+
+    public static void playGleichMitteDuHurensohn() {
+        playSound(GLEICHMITTE_DU_HURENSOHN_SOUND_EVENT);
+    }
+
+    public static void playGleichMitteFickDich() {
+        playSound(GLEICHMITTE_FICK_DICH_SOUND_EVENT);
+    }
+
+    public static void playGleichMitteZufrieden() {
+        playSound(GLEICHMITTE_ZUFRIEDEN_SOUND_EVENT);
+    }
+
+    private static void playSound(final SoundEvent soundEvent) {
+        final SoundManager soundManager = MinecraftClient.getInstance().getSoundManager();
+        if (soundManager == null) return;
+        soundManager.play(PositionedSoundInstance.master(soundEvent, 1f, 0.5f));
+    }
+
+    private static void playInGameSound(final SoundEvent event) {
         final ClientWorld world = MinecraftClient.getInstance().world;
         if (world == null) return;
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;

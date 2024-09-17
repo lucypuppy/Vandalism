@@ -8,5 +8,30 @@
     "sounds": [
       "vandalism:module_deactivate"
     ]
+  },
+  "gleichmitte_richtig_sauer": {
+    "sounds": [
+      "vandalism:gleichmitte_richtig_sauer"
+    ]
+  },
+  "gleichmitte_scheisse_man": {
+    "sounds": [
+      "vandalism:gleichmitte_scheisse_man"
+    ]
+  },
+  "gleichmitte_du_hurensohn": {
+    "sounds": [
+      "vandalism:gleichmitte_du_hurensohn"
+    ]
+  },
+  "gleichmitte_fick_dich": {
+    "sounds": [
+      "vandalism:gleichmitte_fick_dich"
+    ]
+  },
+  "gleichmitte_zufrieden": {
+    "sounds": [
+      "vandalism:gleichmitte_zufrieden"
+    ]
   }
 }
