@@ -16,33 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.base.clientsettings.impl;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 
-public class MovementSettings extends ValueGroup {
+public class RiptideBoosterModule extends Module {
 
-    public final BooleanValue customizeRiptideBoostMultiplier = new BooleanValue(
+    public final FloatValue multiplier = new FloatValue(
             this,
-            "Customize Riptide Boost Multiplier",
-            "If activated shows you a slider to modify the riptide boost multiplier.",
-            false
-    );
-
-    public final FloatValue riptideBoostMultiplier = new FloatValue(
-            this,
-            "Riptide Boost Multiplier",
-            "Lets you modify the riptide boost multiplier.",
+            "Multiplier",
+            "The multiplier for the riptide boost.",
             1.0f,
             -5.0f,
             5.0f
-    ).visibleCondition(this.customizeRiptideBoostMultiplier::getValue);
+    );
 
-    public MovementSettings(final ClientSettings parent) {
-        super(parent, "Movement", "Movement related settings.");
+    public RiptideBoosterModule() {
+        super(
+                "Riptide Booster",
+                "Modifies the riptide boost multiplier.",
+                Category.MOVEMENT
+        );
     }
 
 }

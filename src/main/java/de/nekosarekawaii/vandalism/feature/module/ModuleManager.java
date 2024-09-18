@@ -64,8 +64,8 @@ import java.util.List;
 @Getter
 public class ModuleManager extends NamedStorage<Module> implements
         KeyboardInputListener, MouseInputListener, ShutdownProcessListener,
-        DisconnectListener, MinecraftWrapper,
-        WorldListener, PlayerUpdateListener, HealthUpdateListener {
+        DisconnectListener, MinecraftWrapper, WorldListener,
+        PlayerUpdateListener, HealthUpdateListener {
 
     private final ConfigManager configManager;
 
@@ -89,6 +89,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private ResourcePackSpooferModule resourcePackSpooferModule;
     private StepModule stepModule;
     private UnfocusedFPSModule unfocusedFPSModule;
+    private RiptideBoosterModule riptideBoosterModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -128,6 +129,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.resourcePackSpooferModule = new ResourcePackSpooferModule(),
                 this.stepModule = new StepModule(),
                 this.unfocusedFPSModule = new UnfocusedFPSModule(),
+                this.riptideBoosterModule = new RiptideBoosterModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),
