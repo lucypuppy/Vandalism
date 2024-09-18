@@ -51,7 +51,11 @@ public abstract class Minigame implements IName, MinecraftWrapper {
 
     public abstract void onRender(final DrawContext context, final int mouseX, final int mouseY, final float startX, final float startY, final float endX, final float endY, final int width, final int height);
 
-    public void onMouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
+    public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
+    }
+
+    public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
+        return true;
     }
 
     public void startPlaying() {

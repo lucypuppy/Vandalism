@@ -31,7 +31,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
-import de.nekosarekawaii.vandalism.util.CPSTracker;
+import de.nekosarekawaii.vandalism.integration.CPSTracker;
 import de.nekosarekawaii.vandalism.util.DateUtil;
 import de.nekosarekawaii.vandalism.util.ServerUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
@@ -289,9 +289,6 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             false
     );
 
-    public final CPSTracker leftClick = new CPSTracker();
-    public final CPSTracker rightClick = new CPSTracker();
-
     private long lastUpdate = System.currentTimeMillis();
     private long lastPing = -1;
     private long clientPing = -1;
@@ -447,9 +444,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.cps.getValue()) {
-            this.leftClick.update();
-            this.rightClick.update();
-            infoMap.put("CPS", this.leftClick.clicks() + " | " + this.rightClick.clicks());
+            final CPSTracker cpsTracker = Vandalism.getInstance().getCpsTracker();
+            infoMap.put("CPS", cpsTracker.getLeftClicks() + " | " + cpsTracker.getRightClicks());
         }
 
         if (this.username.getValue()) {

@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.integration.minigames.impl.mittebekommttritt
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.integration.minigames.Minigame;
 import de.nekosarekawaii.vandalism.integration.minigames.impl.mittebekommttritte.shoe.Shoe;
@@ -41,7 +42,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -184,8 +184,6 @@ public class MitteBekommtTritteMinigame extends Minigame {
     public void onRender(final DrawContext context, final int mouseX, final int mouseY, final float startX, final float startY, final float endX, final float endY, final int width, final int height) {
         final String id = "##mitteBekommtTritte";
         final Matrix4f oldMatrix = RenderSystem.modelViewMatrix;
-        ImGui.text("Tritte in die Mitte: " + this.count);
-        ImGui.sameLine();
         ImGui.checkbox("Commentary" + id + "Commentary", this.commentary);
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
@@ -212,10 +210,9 @@ public class MitteBekommtTritteMinigame extends Minigame {
         }
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
-            ImGui.text(!this.shop ? "Open the shop to unlock new shoes." : "Close the shop to continue playing.");
+            ImGui.text(!this.shop ? "Open the shop where you can unlock or select other shoes." : "Close the shop to continue playing.");
             ImGui.endTooltip();
         }
-        ;
         if (this.shop) {
             final Color shopBackground = Color.GRAY;
             context.setShaderColor(
@@ -273,6 +270,15 @@ public class MitteBekommtTritteMinigame extends Minigame {
                 );
             }
         }
+        final String kps = Formatting.WHITE.toString() + Vandalism.getInstance().getCpsTracker().getLeftClicks() + " « Tritte pro Sekunde";
+        context.drawText(
+                this.mc.textRenderer,
+                kps,
+                width - this.mc.textRenderer.getWidth(kps) - 2,
+                height - 12,
+                -1,
+                false
+        );
         int currentShoeX = width / 2, currentShoeY = height / 2;
         final int currentShoeMoveX = currentShoeX - 140;
         final int currentShoeMoveY = currentShoeY - 40;
@@ -304,6 +310,14 @@ public class MitteBekommtTritteMinigame extends Minigame {
         GLStateTracker.BLEND.revert();
         RenderSystem.modelViewMatrix = oldMatrix;
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        context.drawText(
+                this.mc.textRenderer,
+                Formatting.WHITE + "Tritte in die Mitte » " + this.count,
+                2,
+                height - 12,
+                -1,
+                false
+        );
         if (this.shop) {
             int x = 2;
             int y = 10;
@@ -372,9 +386,19 @@ public class MitteBekommtTritteMinigame extends Minigame {
     }
 
     @Override
-    public void onMouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
-        if (release || button != GLFW.GLFW_MOUSE_BUTTON_1) return;
+    public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
+        if (release || button != this.mc.options.attackKey.boundKey.getCode()) {
+            return;
+        }
         this.clicked = true;
+    }
+
+    @Override
+    public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
+        if (!release && key == this.mc.options.attackKey.boundKey.getCode()) {
+            this.clicked = true;
+        }
+        return super.keyPressed(key, scanCode, modifiers, release);
     }
 
 }

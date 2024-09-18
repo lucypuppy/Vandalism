@@ -51,8 +51,17 @@ public class MinigamesClientWindow extends ClientWindow {
     public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
         final Minigame currentMinigame = this.minigamesManager.getCurrentMinigame();
         if (currentMinigame != null) {
-            currentMinigame.onMouseClicked(mouseX, mouseY, button, release);
+            currentMinigame.mouseClicked(mouseX, mouseY, button, release);
         }
+    }
+
+    @Override
+    public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
+        final Minigame currentMinigame = this.minigamesManager.getCurrentMinigame();
+        if (currentMinigame != null) {
+            currentMinigame.keyPressed(key, scanCode, modifiers, release);
+        }
+        return super.keyPressed(key, scanCode, modifiers, release);
     }
 
     @Override
