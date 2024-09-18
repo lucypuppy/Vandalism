@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -27,6 +28,22 @@ import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.StringUtils;
 
 public class VisualSettings extends ValueGroup {
+
+    public final BooleanValue unfocusedFPS = new BooleanValue(
+            this,
+            "Unfocused FPS",
+            "Decreases the max fps of the game when the window isn't focused.",
+            true
+    );
+
+    public final IntegerValue maxUnfocusedFPS = new IntegerValue(
+            this,
+            "Max Unfocused FPS",
+            "The max fps when the window isn't focused.",
+            10,
+            1,
+            30
+    ).visibleCondition(this.unfocusedFPS::getValue);
 
     public final BooleanValue fixTitleTextsOnConnect = new BooleanValue(
             this,
