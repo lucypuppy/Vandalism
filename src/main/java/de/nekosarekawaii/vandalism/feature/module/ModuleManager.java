@@ -189,7 +189,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new DeutschMacherModule(),
                 new ProtectorModule(),
                 new GameModeNotifierModule(),
-                new SmartVClip(),
+                new SmartVClipModule(),
                 new CheatDetectorModule(),
                 new FreeCamModule(),
                 new AutoToolModule(),
