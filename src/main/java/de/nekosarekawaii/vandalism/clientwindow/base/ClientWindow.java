@@ -92,7 +92,7 @@ public class ClientWindow implements IName, MinecraftWrapper {
     }
 
     public void toggle() {
-        setActive(!isActive());
+        this.setActive(!this.isActive());
     }
 
     @Override

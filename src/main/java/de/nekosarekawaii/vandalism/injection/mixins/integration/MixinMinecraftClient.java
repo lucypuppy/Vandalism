@@ -72,13 +72,13 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "doAttack", at = @At("HEAD"))
-    public void doAttack(final CallbackInfoReturnable<Boolean> cir) {
-        Vandalism.getInstance().getHudManager().infoHUDElement.leftClick.click();
+    public void countLeftClick(final CallbackInfoReturnable<Boolean> cir) {
+        Vandalism.getInstance().getCpsTracker().leftClick();
     }
 
     @Inject(method = "doItemUse", at = @At("HEAD"))
-    public void doItemUse(final CallbackInfo ci) {
-        Vandalism.getInstance().getHudManager().infoHUDElement.rightClick.click();
+    public void countRightClick(final CallbackInfo ci) {
+        Vandalism.getInstance().getCpsTracker().rightClick();
     }
 
     @Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Ljava/lang/IllegalStateException;<init>(Ljava/lang/String;)V", shift = At.Shift.BEFORE, remap = false), cancellable = true)
@@ -94,6 +94,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "render", at = @At("HEAD"))
     public void onDrawFrame(final boolean tick, final CallbackInfo ci) {
+        Vandalism.getInstance().getCpsTracker().update();
         RenderUtil.drawFrame();
     }
 
