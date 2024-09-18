@@ -24,6 +24,7 @@
     "clientsetting.MixinHopperScreen",
     "clientsetting.MixinInGameHud",
     "clientsetting.MixinItemGroup",
+    "clientsetting.MixinMinecraftClient",
     "clientsetting.MixinMultiplayerScreen",
     "clientsetting.MixinMultiplayerServerListWidget",
     "clientsetting.MixinOptionsScreen",
