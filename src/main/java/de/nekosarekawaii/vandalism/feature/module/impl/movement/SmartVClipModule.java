@@ -30,13 +30,13 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
-public class SmartVClip extends Module implements KeyboardInputListener {
+public class SmartVClipModule extends Module implements KeyboardInputListener {
 
     private final KeyBindValue upKey = new KeyBindValue(this, "Up Key", "The key that needs to be pressed to go upward.", GLFW.GLFW_KEY_UP);
     private final KeyBindValue downKey = new KeyBindValue(this, "Down Key", "The key that needs to be pressed to go downward.", GLFW.GLFW_KEY_DOWN);
     private final IntegerValue maxScanRange = new IntegerValue(this, "Max Scan Range", "The maximum range to port to.", 9, 3, 100);
 
-    public SmartVClip() {
+    public SmartVClipModule() {
         super("Smart V Clip", "A automatic v-clip module.", Category.MOVEMENT);
     }
 
