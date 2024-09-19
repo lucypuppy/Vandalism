@@ -68,7 +68,7 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new FriendsCommand(),
                 new ConfigCommand(),
                 new SayCommand(),
-                new NbtCommand(),
+                new ComponentCommand(),
                 new PluginsCommand(),
                 new GiveCommand(),
                 new CommandBlockStateCommand(),
@@ -99,7 +99,8 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new SpamCommand(),
                 new CreateEntitySpawnEggCommand(),
                 new CrashSkullCommand(),
-                new KaboomKickCommand()
+                new KaboomKickCommand(),
+                new PlaceholdersCommand()
         );
 
         // This should always be the last command

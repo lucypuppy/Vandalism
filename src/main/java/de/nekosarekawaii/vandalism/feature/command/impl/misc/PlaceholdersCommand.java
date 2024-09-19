@@ -23,6 +23,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.Placeholders;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -30,59 +31,59 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class HelpCommand extends Command {
+public class PlaceholdersCommand extends Command {
 
-    public HelpCommand() {
+    public PlaceholdersCommand() {
         super(
-                "Shows information about all available commands.",
+                "Shows a list of all available placeholders that you can use in some commands or modules.",
                 Category.MISC,
-                "help",
-                "commandlist",
-                "commands",
-                "cmds",
-                "?"
+                "placeholders",
+                "placeholderlist",
+                "listplaceholders",
+                "showplaceholders"
         );
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.executes(context -> this.help(1));
-        builder.then(argument("page", IntegerArgumentType.integer(0)).executes(context -> this.help(IntegerArgumentType.getInteger(context, "page"))));
+        builder.executes(context -> this.placeholders(1));
+        builder.then(argument("page", IntegerArgumentType.integer(0)).executes(context -> this.placeholders(IntegerArgumentType.getInteger(context, "page"))));
     }
 
-    private int help(final int pageInput) {
-        final int maxCommandsPerPage = 5;
-        final int totalCommands = Vandalism.getInstance().getCommandManager().getList().size();
-        int maxPages = (int) Math.ceil((double) totalCommands / maxCommandsPerPage) - 1;
+    private int placeholders(final int pageInput) {
+        final int maxPlaceholdersPerPage = 5;
+        final int totalPlaceholders = Placeholders.values().length;
+        int maxPages = (int) Math.ceil((double) totalPlaceholders / maxPlaceholdersPerPage) - 1;
         int page = Math.max(0, Math.min(pageInput - 1, maxPages));
         ChatUtil.emptyChatMessage(false);
         ChatUtil.chatMessage(Text.literal(
                 Formatting.DARK_GRAY + "[" + Formatting.GOLD + "Page " +
                         Formatting.DARK_AQUA + (page + 1) + Formatting.GRAY + " / " + Formatting.DARK_AQUA + (maxPages + 1) +
-                        Formatting.DARK_GRAY + " | " + Formatting.GOLD + "Commands" + Formatting.GRAY + ": " + Formatting.DARK_AQUA + totalCommands + Formatting.DARK_GRAY + "]"
+                        Formatting.DARK_GRAY + " | " + Formatting.GOLD + "Placeholders" + Formatting.GRAY + ": " + Formatting.DARK_AQUA + totalPlaceholders + Formatting.DARK_GRAY + "]"
         ));
         ChatUtil.emptyChatMessage(false);
-        final String commandPrefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
-        for (int i = page * maxCommandsPerPage; i < Math.min((page + 1) * maxCommandsPerPage, totalCommands); i++) {
-            final Command command = Vandalism.getInstance().getCommandManager().getList().get(i);
-            final MutableText commandText = Text.literal(commandPrefix + String.join(" | ", command.getAliases()));
-            commandText.formatted(Formatting.YELLOW);
-            commandText.append(Text.literal(" > ").formatted(Formatting.DARK_GRAY));
-            commandText.styled(style ->
+        final String placeholderChar = Placeholders.PLACEHOLDER_CHAR;
+        for (int i = page * maxPlaceholdersPerPage; i < Math.min((page + 1) * maxPlaceholdersPerPage, totalPlaceholders); i++) {
+            final Placeholders placeholder = Placeholders.values()[i];
+            final String placeholderValue = placeholderChar + placeholder.name().toLowerCase() + placeholderChar;
+            final MutableText placeholderText = Text.literal(placeholderValue);
+            placeholderText.formatted(Formatting.YELLOW);
+            placeholderText.append(Text.literal(" > ").formatted(Formatting.DARK_GRAY));
+            placeholderText.styled(style ->
                     style.withClickEvent(new ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
-                            commandPrefix + command.getAliases()[0]
+                            ClickEvent.Action.COPY_TO_CLIPBOARD,
+                            placeholderValue
                     )).withHoverEvent(new HoverEvent(
                             HoverEvent.Action.SHOW_TEXT,
-                            Text.literal("Insert the command into the chat field")
+                            Text.literal("Copy the placeholder to your clipboard")
                     ))
             );
-            String description = command.getDescription();
-            if (description == null || description.isEmpty()) {
+            String description = placeholder.getDescription();
+            if (description.isEmpty()) {
                 description = "No description available.";
             }
-            commandText.append(Text.literal(description).formatted(Formatting.GRAY));
-            ChatUtil.chatMessage(commandText);
+            placeholderText.append(Text.literal(description).formatted(Formatting.GRAY));
+            ChatUtil.chatMessage(placeholderText);
         }
         page++;
         maxPages += 2;
@@ -93,7 +94,7 @@ public class HelpCommand extends Command {
             final MutableText prevPageButton = Text.literal("<< Previous Page")
                     .formatted(Formatting.RED)
                     .styled(style -> style
-                            .withClickEvent(Vandalism.getInstance().getCommandManager().generateClickEvent("help " + prevPage))
+                            .withClickEvent(Vandalism.getInstance().getCommandManager().generateClickEvent("placeholders " + prevPage))
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT, Text.literal("Go to page " + prevPage))
                             )
@@ -107,7 +108,7 @@ public class HelpCommand extends Command {
             final MutableText nextPageButton = Text.literal("Next Page >>")
                     .formatted(Formatting.GREEN)
                     .styled(style -> style
-                            .withClickEvent(Vandalism.getInstance().getCommandManager().generateClickEvent("help " + nextPage))
+                            .withClickEvent(Vandalism.getInstance().getCommandManager().generateClickEvent("placeholders " + nextPage))
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT, Text.literal("Go to page " + nextPage))
                             )

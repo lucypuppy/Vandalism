@@ -33,46 +33,38 @@ public class SpamCommand extends Command {
     private static boolean IS_RUNNING = false;
 
     public SpamCommand() {
-        super(
-                "Allows you to spam in the chat.",
-                Category.MISC,
-                "spam"
-        );
+        super("Allows you to spam in the chat.", Category.MISC, "spam");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("times", IntegerArgumentType.integer(2, 2000)).
-                then(argument("delay", IntegerArgumentType.integer(0, 10000)).
-                        then(argument("message", StringArgumentType.greedyString()).executes(context -> {
-                                    if (IS_RUNNING) {
-                                        ChatUtil.errorChatMessage("Already spamming!");
-                                        return SINGLE_SUCCESS;
-                                    }
-                                    final int times = IntegerArgumentType.getInteger(context, "times");
-                                    final int delay = IntegerArgumentType.getInteger(context, "delay");
-                                    final String message = StringArgumentType.getString(context, "message");
-                            new Thread(() -> {
-                                        IS_RUNNING = true;
-                                        for (int i = 0; i < times; i++) {
-                                            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-                                            if (networkHandler == null) break;
-                                            if (message.startsWith("/") && message.length() > 1) {
-                                                this.mc.getNetworkHandler().sendChatCommand(Placeholders.applyReplacements(message.substring(1)));
-                                            } else {
-                                                ((IClientPlayNetworkHandler) this.mc.getNetworkHandler()).vandalism$sendChatMessage(Placeholders.applyReplacements(message));
-                                            }
-                                            try {
-                                                Thread.sleep(delay);
-                                            } catch (InterruptedException ignored) {
-                                            }
-                                        }
-                                        IS_RUNNING = false;
-                            }).start();
-                                    return SINGLE_SUCCESS;
-                                })
-                        ))
-        );
+        builder.then(argument("times", IntegerArgumentType.integer(2, 2000)).then(argument("delay", IntegerArgumentType.integer(0, 10000)).then(argument("message", StringArgumentType.greedyString()).executes(context -> {
+            if (IS_RUNNING) {
+                ChatUtil.errorChatMessage("Already spamming!");
+                return SINGLE_SUCCESS;
+            }
+            final int times = IntegerArgumentType.getInteger(context, "times");
+            final int delay = IntegerArgumentType.getInteger(context, "delay");
+            final String message = StringArgumentType.getString(context, "message");
+            new Thread(() -> {
+                IS_RUNNING = true;
+                for (int i = 0; i < times; i++) {
+                    final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+                    if (networkHandler == null) break;
+                    if (message.startsWith("/") && message.length() > 1) {
+                        this.mc.getNetworkHandler().sendChatCommand(Placeholders.applyReplacements(message.substring(1)));
+                    } else {
+                        ((IClientPlayNetworkHandler) this.mc.getNetworkHandler()).vandalism$sendChatMessage(Placeholders.applyReplacements(message));
+                    }
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+                IS_RUNNING = false;
+            }).start();
+            return SINGLE_SUCCESS;
+        }))));
     }
 
 }
