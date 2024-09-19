@@ -366,6 +366,13 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue portalGui = new BooleanValue(
+            this,
+            "Portal GUI",
+            "Allows you to open GUI's while standing in a portal.",
+            false
+    );
+
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");
     }
