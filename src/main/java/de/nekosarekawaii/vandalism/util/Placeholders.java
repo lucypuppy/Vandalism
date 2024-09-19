@@ -29,126 +29,126 @@ import java.util.function.Supplier;
 
 public enum Placeholders {
 
-    USERNAME(() -> MinecraftClient.getInstance().getSession().getUsername(), descriptionBuilder -> {
-        descriptionBuilder.append("Your current Username.");
-        return descriptionBuilder;
+    USERNAME(() -> MinecraftClient.getInstance().getSession().getUsername(), description -> {
+        description.append("Your current Username.");
+        return description;
     }),
     UUID(() -> {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return "null";
         return player.getUuidAsString();
-    }, descriptionBuilder -> {
-        descriptionBuilder.append("Your current UUID.");
-        return descriptionBuilder;
+    }, description -> {
+        description.append("Your current UUID.");
+        return description;
     }),
-    RANDOM(() -> String.valueOf(RandomUtils.randomInt(1000, 9999)), descriptionBuilder -> {
-        descriptionBuilder.append("A random number between 1000 and 9999.");
-        return descriptionBuilder;
+    RANDOM(() -> String.valueOf(RandomUtils.randomInt(1000, 9999)), description -> {
+        description.append("A random number between 1000 and 9999.");
+        return description;
     }),
     X(() -> {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return "null";
         return String.valueOf(player.getX());
-    }, descriptionBuilder -> {
-        descriptionBuilder.append("Your current X position.");
-        return descriptionBuilder;
+    }, description -> {
+        description.append("Your current X position.");
+        return description;
     }),
     Y(() -> {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return "null";
         return String.valueOf(player.getY());
-    }, descriptionBuilder -> {
-        descriptionBuilder.append("Your current Y position.");
-        return descriptionBuilder;
+    }, description -> {
+        description.append("Your current Y position.");
+        return description;
     }),
     Z(() -> {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return "null";
         return String.valueOf(player.getZ());
-    }, descriptionBuilder -> {
-        descriptionBuilder.append("Your current Z position.");
-        return descriptionBuilder;
+    }, description -> {
+        description.append("Your current Z position.");
+        return description;
     }),
     YAW(() -> {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return "null";
         return String.valueOf(player.getYaw());
-    }, descriptionBuilder -> {
-        descriptionBuilder.append("Your current Yaw.");
-        return descriptionBuilder;
+    }, description -> {
+        description.append("Your current Yaw.");
+        return description;
     }),
     PITCH(() -> {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return "null";
         return String.valueOf(player.getPitch());
-    }, descriptionBuilder -> {
-        descriptionBuilder.append("Your current Pitch.");
-        return descriptionBuilder;
+    }, description -> {
+        description.append("Your current Pitch.");
+        return description;
     }),
-    DAY(() -> String.valueOf(LocalDateTime.now().getDayOfMonth()), descriptionBuilder -> {
-        descriptionBuilder.append("The current day of the month.");
-        return descriptionBuilder;
+    DAY(() -> String.valueOf(LocalDateTime.now().getDayOfMonth()), description -> {
+        description.append("The current day of the month.");
+        return description;
     }),
-    MONTH(() -> String.valueOf(LocalDateTime.now().getMonth()), descriptionBuilder -> {
-        descriptionBuilder.append("The current month.");
-        return descriptionBuilder;
+    MONTH(() -> String.valueOf(LocalDateTime.now().getMonth()), description -> {
+        description.append("The current month.");
+        return description;
     }),
-    YEAR(() -> String.valueOf(LocalDateTime.now().getYear()), descriptionBuilder -> {
-        descriptionBuilder.append("The current year.");
-        return descriptionBuilder;
+    YEAR(() -> String.valueOf(LocalDateTime.now().getYear()), description -> {
+        description.append("The current year.");
+        return description;
     }),
-    HOURS(() -> String.valueOf(LocalDateTime.now().getHour()), descriptionBuilder -> {
-        descriptionBuilder.append("The current hour.");
-        return descriptionBuilder;
+    HOURS(() -> String.valueOf(LocalDateTime.now().getHour()), description -> {
+        description.append("The current hour.");
+        return description;
     }),
-    MINUTES(() -> String.valueOf(LocalDateTime.now().getMinute()), descriptionBuilder -> {
-        descriptionBuilder.append("The current minute.");
-        return descriptionBuilder;
+    MINUTES(() -> String.valueOf(LocalDateTime.now().getMinute()), description -> {
+        description.append("The current minute.");
+        return description;
     }),
-    SECONDS(() -> String.valueOf(LocalDateTime.now().getSecond()), descriptionBuilder -> {
-        descriptionBuilder.append("The current second.");
-        return descriptionBuilder;
+    SECONDS(() -> String.valueOf(LocalDateTime.now().getSecond()), description -> {
+        description.append("The current second.");
+        return description;
     }),
-    MILLISECONDS(() -> String.valueOf(LocalDateTime.now().getLong(ChronoField.MILLI_OF_SECOND)), descriptionBuilder -> {
-        descriptionBuilder.append("The current millisecond.");
-        return descriptionBuilder;
+    MILLISECONDS(() -> String.valueOf(LocalDateTime.now().getLong(ChronoField.MILLI_OF_SECOND)), description -> {
+        description.append("The current millisecond.");
+        return description;
     }),
-    MOD_NAME(() -> FabricBootstrap.MOD_NAME, descriptionBuilder -> {
-        descriptionBuilder.append("The name of this client.");
-        return descriptionBuilder;
+    MOD_NAME(() -> FabricBootstrap.MOD_NAME, description -> {
+        description.append("The name of this client.");
+        return description;
     }),
-    MOD_VERSION(() -> FabricBootstrap.MOD_VERSION, descriptionBuilder -> {
-        descriptionBuilder.append("The version of this client.");
-        return descriptionBuilder;
+    MOD_VERSION(() -> FabricBootstrap.MOD_VERSION, description -> {
+        description.append("The version of this client.");
+        return description;
     }),
-    MOD_AUTHORS(() -> FabricBootstrap.MOD_AUTHORS, descriptionBuilder -> {
-        descriptionBuilder.append("The authors of this client.");
-        return descriptionBuilder;
+    MOD_AUTHORS(() -> FabricBootstrap.MOD_AUTHORS, description -> {
+        description.append("The authors of this client.");
+        return description;
     });
 
-    public static final String VARIABLE_CHAR = "%";
+    public static final String PLACEHOLDER_CHAR = "%";
 
-    private final Supplier<String> scriptReplacement;
-    private final Function<StringBuilder, StringBuilder> scriptVariableDescription;
+    private final Supplier<String> replacement;
+    private final Function<StringBuilder, StringBuilder> description;
 
-    Placeholders(final Supplier<String> scriptReplacement, final Function<StringBuilder, StringBuilder> scriptVariableDescription) {
-        this.scriptReplacement = scriptReplacement;
-        this.scriptVariableDescription = scriptVariableDescription;
+    Placeholders(final Supplier<String> replacement, final Function<StringBuilder, StringBuilder> description) {
+        this.replacement = replacement;
+        this.description = description;
     }
 
     public static String applyReplacements(String text) {
-        if (!text.contains(VARIABLE_CHAR)) return text;
+        if (!text.contains(PLACEHOLDER_CHAR)) return text;
         for (final Placeholders variable : values()) {
-            final String sequence = VARIABLE_CHAR + variable + VARIABLE_CHAR;
+            final String sequence = PLACEHOLDER_CHAR + variable + PLACEHOLDER_CHAR;
             if (StringUtils.contains(text, sequence)) {
-                text = StringUtils.replaceAll(text, sequence, variable.scriptReplacement.get());
+                text = StringUtils.replaceAll(text, sequence, variable.replacement.get());
             }
         }
         return text;
     }
 
     public String getDescription() {
-        return this.scriptVariableDescription.apply(new StringBuilder()).toString();
+        return this.description.apply(new StringBuilder()).toString();
     }
 
 }
