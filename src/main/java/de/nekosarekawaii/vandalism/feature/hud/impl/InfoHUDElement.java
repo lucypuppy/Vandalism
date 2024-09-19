@@ -232,7 +232,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private final BooleanValue fasterPings = new BooleanValue(
             this,
             "Faster Pings",
-            "This tries to send pings faster. (1.20.2+ client version)",
+            "This tries to send pings faster (1.20.2+ only).",
             false
     ).visibleCondition(this.ping::getValue);
 
