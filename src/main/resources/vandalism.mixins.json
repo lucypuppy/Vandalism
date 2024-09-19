@@ -97,6 +97,7 @@
     "module.MixinAbstractSignEditScreen",
     "module.MixinAnvilScreen",
     "module.MixinAnvilScreenHandler",
+    "module.MixinChatHud",
     "module.MixinClientPlayerEntity",
     "module.MixinClientPlayerInteractionManager",
     "module.MixinClientPlayNetworkAddon",

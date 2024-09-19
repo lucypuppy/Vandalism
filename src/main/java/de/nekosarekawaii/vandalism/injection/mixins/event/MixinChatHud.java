@@ -53,7 +53,7 @@ public abstract class MixinChatHud {
     }
 
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At("HEAD"), cancellable = true)
-    public void callChatReceiveListener(Text message, MessageSignatureData signatureData, MessageIndicator indicator, CallbackInfo ci) {
+    public void callChatReceiveListener(final Text message, final MessageSignatureData signatureData, final MessageIndicator indicator, final CallbackInfo ci) {
         if (this.client.player == null) {
             return;
         }

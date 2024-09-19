@@ -90,6 +90,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private StepModule stepModule;
     private RiptideBoosterModule riptideBoosterModule;
     private PortalGUIModule portalGUIModule;
+    private NoChatReportsModule noChatReportsModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -130,6 +131,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.stepModule = new StepModule(),
                 this.riptideBoosterModule = new RiptideBoosterModule(),
                 this.portalGUIModule = new PortalGUIModule(),
+                this.noChatReportsModule = new NoChatReportsModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),

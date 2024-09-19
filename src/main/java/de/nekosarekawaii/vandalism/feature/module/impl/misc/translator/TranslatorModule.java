@@ -140,7 +140,7 @@ public class TranslatorModule extends Module implements ChatSendListener, ChatRe
         if (text.getString().startsWith(ChatUtil.getChatPrefix().getString())) {
             return;
         }
-        if (text.getString().endsWith(TranslatorModule.TRANSLATION_PREFIX.getString())) {
+        if (text.getString().endsWith(TRANSLATION_PREFIX.getString())) {
             return;
         }
         event.cancel();
@@ -152,8 +152,8 @@ public class TranslatorModule extends Module implements ChatSendListener, ChatRe
             final String message = Formatting.strip(text.getString());
             final String translated = GoogleTranslate.translate(message, this.incomingFromLanguage.getValue(), this.incomingToLanguage.getValue()).orElse(message);
             final MutableText mutableText = text.copy();
-            mutableText.append(TranslatorModule.TRANSLATION_PREFIX.copy().setStyle(
-                    TranslatorModule.TRANSLATION_PREFIX.getStyle().withHoverEvent(new HoverEvent(
+            mutableText.append(TRANSLATION_PREFIX.copy().setStyle(
+                    TRANSLATION_PREFIX.getStyle().withHoverEvent(new HoverEvent(
                             HoverEvent.Action.SHOW_TEXT,
                             Text.literal(translated)
                     )))

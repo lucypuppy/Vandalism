@@ -20,11 +20,14 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastPlaceModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.NoChatReportsModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.ESPModule;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.session.ProfileKeys;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,12 +35,15 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = MinecraftClient.class)
-public abstract class MixinMinecraftClient implements MinecraftWrapper {
+public abstract class MixinMinecraftClient {
+
+    @Shadow
+    public ClientPlayerEntity player;
 
     @Inject(method = "hasOutline", at = @At("RETURN"), cancellable = true)
     private void hookESP(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
         final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
-        if (entity != this.mc.player && espModule.isActive() && espModule.isTarget(entity)) {
+        if (entity != this.player && espModule.isActive() && espModule.isTarget(entity)) {
             cir.setReturnValue(true);
         }
     }
@@ -47,6 +53,14 @@ public abstract class MixinMinecraftClient implements MinecraftWrapper {
         final FastPlaceModule fastPlaceModule = Vandalism.getInstance().getModuleManager().getFastPlaceModule();
         if (fastPlaceModule.isActive()) return fastPlaceModule.cooldown.getValue();
         return value;
+    }
+
+    @Inject(method = "getProfileKeys()Lnet/minecraft/client/session/ProfileKeys;", at = @At("HEAD"), cancellable = true)
+    private void hookNoChatReports(final CallbackInfoReturnable<ProfileKeys> cir) {
+        final NoChatReportsModule noChatReportsModule = Vandalism.getInstance().getModuleManager().getNoChatReportsModule();
+        if (noChatReportsModule.isActive()) {
+            cir.setReturnValue(ProfileKeys.MISSING);
+        }
     }
 
 }
