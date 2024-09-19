@@ -21,18 +21,22 @@ package de.nekosarekawaii.vandalism.integration.minigames.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.integration.minigames.Minigame;
 import de.nekosarekawaii.vandalism.integration.minigames.MinigamesManager;
 import de.nekosarekawaii.vandalism.util.imgui.FontAwesomeIcons;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.gl.utils.TemporaryValues;
+import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import imgui.ImDrawList;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.SimpleFramebuffer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.Pair;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -78,17 +82,56 @@ public class MinigamesClientWindow extends ClientWindow {
         final Minigame currentMinigame = this.minigamesManager.getCurrentMinigame();
         if (currentMinigame == null) {
             for (final Minigame minigame : Vandalism.getInstance().getMinigamesManager().getList()) {
-                if (ImGui.button(FontAwesomeIcons.VolumeUp + id + "minigame" + minigame.getName(), ImUtils.modulateDimension(ImGui.getColumnWidth() / 9), ImUtils.modulateDimension(64f))) {
-                    if (!minigame.isPlaying()) {
-                        minigame.startPlaying();
+                final float modulatedDimension = ImUtils.modulateDimension(64f);
+                final Pair<Integer, Boolean> textureIdPair = minigame.getTextureId();
+                int textureId = minigame.getTextureId().getLeft();
+                if (textureId == -1) {
+                    textureId = RenderUtil.getGlId(FabricBootstrap.MOD_ICON);
+                }
+                if (!textureIdPair.getRight()) {
+                    ImGui.image(textureId, 64f, 64f);
+                } else {
+                    ImUtils.texture(
+                            textureId,
+                            modulatedDimension,
+                            modulatedDimension,
+                            ImUtils.modulateDimension(8f),
+                            ImUtils.modulateDimension(8f),
+                            ImUtils.modulateDimension(15.5f),
+                            ImUtils.modulateDimension(15f)
+                    );
+                    ImGui.sameLine(15);
+                    ImUtils.texture(
+                            textureId,
+                            modulatedDimension,
+                            modulatedDimension,
+                            ImUtils.modulateDimension(39.5f),
+                            ImUtils.modulateDimension(8f),
+                            ImUtils.modulateDimension(47.1f),
+                            ImUtils.modulateDimension(14.8f)
+                    );
+                }
+                final boolean isHovered = ImGui.isItemHovered();
+                if (ImGui.isItemClicked()) {
+                    if (!minigame.isPlayingInfoSound()) {
+                        minigame.startPlayingInfoSound();
                     }
                 }
-                ImGui.sameLine();
+                ImGui.sameLine(ImUtils.modulateDimension(15));
+                ImGui.pushStyleColor(ImGuiCol.Button, 1.0f, 1.0f, 1.0f, 0f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 1.0f, 1.0f, 1.0f, 0f);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, 1.0f, 1.0f, 1.0f, 0f);
+                ImGui.button((isHovered ? FontAwesomeIcons.VolumeUp : "") + id + "minigamePlayInfoSound" + minigame.getName(), ImUtils.modulateDimension(32f), ImUtils.modulateDimension(32f));
+                ImGui.popStyleColor(3);
+                ImGui.sameLine(ImUtils.modulateDimension(ImGui.getColumnWidth() / 7.5f));
                 if (ImGui.button(id + "minigame" + minigame.getName(), ImGui.getColumnWidth(), ImUtils.modulateDimension(64f))) {
                     this.minigamesManager.setCurrentMinigame(minigame);
                 }
-                ImGui.sameLine(ImUtils.modulateDimension(ImGui.getColumnWidth() / 6));
+                ImGui.sameLine(ImUtils.modulateDimension(ImGui.getColumnWidth() / 6.5f));
                 ImGui.textWrapped("Name: " + minigame.getName() + "\n" + "Description: " + minigame.getDescription() + "\n" + "Author: " + minigame.getAuthor());
+            }
+            if (ImUtils.subButton("Close Minigames Selector" + id + "closeMinigamesSelector")) {
+                this.setActive(false);
             }
             return;
         }

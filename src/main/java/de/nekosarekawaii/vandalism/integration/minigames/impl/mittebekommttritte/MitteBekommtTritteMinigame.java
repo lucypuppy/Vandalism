@@ -33,6 +33,7 @@ import de.nekosarekawaii.vandalism.util.SoundHooks;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
+import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import imgui.ImGui;
 import imgui.type.ImBoolean;
@@ -41,11 +42,13 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MitteBekommtTritteMinigame extends Minigame {
 
@@ -58,6 +61,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
     private final ImBoolean commentary;
     private final ImBoolean blood;
     private final ImBoolean hurtAnimation;
+    private final PlayerSkinRenderer playerSkinRenderer;
 
     private int count;
     private boolean clicked;
@@ -99,6 +103,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
         this.commentary = new ImBoolean(true);
         this.blood = new ImBoolean(true);
         this.hurtAnimation = new ImBoolean(true);
+        this.playerSkinRenderer = new PlayerSkinRenderer(UUID.fromString("e4314058-987e-41ee-93b0-33bebfe726a0"));
         this.count = 0;
         this.clicked = false;
         this.currentColor = null;
@@ -106,6 +111,11 @@ public class MitteBekommtTritteMinigame extends Minigame {
         this.levelUp = false;
         this.currentShoe = 0;
         this.shop = false;
+    }
+
+    @Override
+    public Pair<Integer, Boolean> getTextureId() {
+        return new Pair<>(this.playerSkinRenderer.getGlId(), true);
     }
 
     @Override
