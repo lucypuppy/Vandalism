@@ -38,7 +38,7 @@ public abstract class MixinInGameHud {
     protected abstract void renderHealthBar(final DrawContext context, final PlayerEntity player, final int x, final int y, final int lines, final int regeneratingHeartIndex, final float maxHealth, final int lastHealth, final int health, final int absorption, final boolean blinking);
 
     @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
-    private void hookExploitFixerModule(final InGameHud instance, final DrawContext context, final PlayerEntity player, final int x, final int y, final int lines, final int regeneratingHeartIndex, float maxHealth, final int lastHealth, int health, final int absorption, final boolean blinking) {
+    private void hookExploitFixer(final InGameHud instance, final DrawContext context, final PlayerEntity player, final int x, final int y, final int lines, final int regeneratingHeartIndex, float maxHealth, final int lastHealth, int health, final int absorption, final boolean blinking) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
         final ExploitFixerRenderSettings renderSettings = exploitFixerModule.renderSettings;
         if (exploitFixerModule.isActive() && renderSettings.blockTooHighHealthUpdates.getValue()) {
@@ -54,7 +54,7 @@ public abstract class MixinInGameHud {
     }
 
     @Redirect(method = "renderPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
-    private boolean hookBetterTabListModule(final KeyBinding instance) {
+    private boolean hookBetterTabList(final KeyBinding instance) {
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         if (betterTabListModule.isActive() && betterTabListModule.toggleable.getValue()) {
             return betterTabListModule.toggleState;

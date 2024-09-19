@@ -39,4 +39,5 @@ public abstract class MixinServerResourcePackLoader {
     private void hookResourcePackSpoofer(final CallbackInfo ci) {
         Vandalism.getInstance().getModuleManager().getResourcePackSpooferModule().clear();
     }
+
 }

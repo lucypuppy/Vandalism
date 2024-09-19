@@ -33,4 +33,5 @@ public abstract class MixinAnvilScreenHandler {
     private Text hookExploitFixer(final ItemStack instance) {
         return Vandalism.getInstance().getModuleManager().getExploitFixerModule().redirectComponentResolverContainer(instance);
     }
+
 }

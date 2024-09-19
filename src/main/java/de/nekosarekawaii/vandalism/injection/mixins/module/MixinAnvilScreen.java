@@ -30,12 +30,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinAnvilScreen {
 
     @Redirect(method = "onSlotUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"))
-    private Text hookExploitFixer1(final ItemStack instance) {
+    private Text hookExploitFixer_SlotUpdate(final ItemStack instance) {
         return Vandalism.getInstance().getModuleManager().getExploitFixerModule().redirectComponentResolverContainer(instance);
     }
 
     @Redirect(method = "onRenamed", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"))
-    private Text hookExploitFixer2(final ItemStack instance) {
+    private Text hookExploitFixer_Renamed(final ItemStack instance) {
         return Vandalism.getInstance().getModuleManager().getExploitFixerModule().redirectComponentResolverContainer(instance);
     }
+
 }

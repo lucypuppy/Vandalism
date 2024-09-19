@@ -29,7 +29,7 @@ public interface ChatModifyReceiveListener {
 
         public static final int ID = 17;
 
-        public final MutableText mutableText;
+        public MutableText mutableText;
 
         public ChatModifyReceiveEvent(final MutableText mutableText) {
             this.mutableText = mutableText;

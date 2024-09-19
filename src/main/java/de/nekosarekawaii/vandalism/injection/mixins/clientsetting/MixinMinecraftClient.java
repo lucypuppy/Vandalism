@@ -48,4 +48,25 @@ public abstract class MixinMinecraftClient implements MinecraftWrapper {
         }
     }
 
+    @Inject(method = "isTelemetryEnabledByApi", at = @At("HEAD"), cancellable = true)
+    private void antiTelemetry_DisableTelemetry(final CallbackInfoReturnable<Boolean> cir) {
+        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiTelemetry.getValue()) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "isOptionalTelemetryEnabled", at = @At("HEAD"), cancellable = true)
+    private void antiTelemetry_DisableOptionalTelemetry(final CallbackInfoReturnable<Boolean> cir) {
+        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiTelemetry.getValue()) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "isOptionalTelemetryEnabledByApi()Z", at = @At("HEAD"), cancellable = true)
+    private void antiTelemetry_DisableOptionalTelemetryFromApi(final CallbackInfoReturnable<Boolean> cir) {
+        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiTelemetry.getValue()) {
+            cir.setReturnValue(false);
+        }
+    }
+
 }
