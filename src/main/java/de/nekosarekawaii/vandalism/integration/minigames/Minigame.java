@@ -22,10 +22,10 @@ import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import lombok.Getter;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.Pair;
 
-@Getter
+
 public abstract class Minigame implements IName, MinecraftWrapper {
 
     private final String name;
@@ -58,7 +58,31 @@ public abstract class Minigame implements IName, MinecraftWrapper {
         return true;
     }
 
-    public void startPlaying() {
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String getAuthor() {
+        return this.author;
+    }
+
+    public Pair<Integer, Boolean> getTextureId() {
+        return new Pair<>(-1, false);
+    }
+
+    public boolean isPlayingInfoSound() {
+        if (this.infoSoundResetTimer.hasReached(this.getInfoSoundPlayingTime(), true)) {
+            this.isPlayingInfoSound = false;
+        }
+        return this.isPlayingInfoSound;
+    }
+
+    public void startPlayingInfoSound() {
         this.isPlayingInfoSound = true;
         this.playInfoSound();
     }
@@ -68,18 +92,6 @@ public abstract class Minigame implements IName, MinecraftWrapper {
 
     protected long getInfoSoundPlayingTime() {
         return 1000;
-    }
-
-    public boolean isPlaying() {
-        if (this.infoSoundResetTimer.hasReached(this.getInfoSoundPlayingTime(), true)) {
-            this.isPlayingInfoSound = false;
-        }
-        return this.isPlayingInfoSound;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
     public abstract void save(final JsonObject configNode);
