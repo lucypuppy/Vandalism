@@ -64,7 +64,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             this,
             "Height Offset",
             "The height offset of the text.",
-            -1,
+            0,
             -1,
             5
     );
