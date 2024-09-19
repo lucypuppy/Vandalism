@@ -121,7 +121,7 @@ public class MinigamesClientWindow extends ClientWindow {
                 ImGui.pushStyleColor(ImGuiCol.Button, 1.0f, 1.0f, 1.0f, 0f);
                 ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 1.0f, 1.0f, 1.0f, 0f);
                 ImGui.pushStyleColor(ImGuiCol.ButtonActive, 1.0f, 1.0f, 1.0f, 0f);
-                ImGui.button((isHovered ? FontAwesomeIcons.VolumeUp : "") + id + "minigamePlayInfoSound" + minigame.getName(), ImUtils.modulateDimension(32f), ImUtils.modulateDimension(32f));
+                ImGui.button((isHovered || minigame.isPlayingInfoSound() ? FontAwesomeIcons.VolumeUp : "") + id + "minigamePlayInfoSound" + minigame.getName(), ImUtils.modulateDimension(32f), ImUtils.modulateDimension(32f));
                 ImGui.popStyleColor(3);
                 ImGui.sameLine(ImUtils.modulateDimension(ImGui.getColumnWidth() / 7.5f));
                 if (ImGui.button(id + "minigame" + minigame.getName(), ImGui.getColumnWidth(), ImUtils.modulateDimension(64f))) {
