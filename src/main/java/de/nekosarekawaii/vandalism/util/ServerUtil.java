@@ -24,6 +24,11 @@ import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.ViaFabricPlusAccess;
+import net.lenni0451.mcping.MCPing;
+import net.lenni0451.mcping.exception.ReadTimeoutException;
+import net.lenni0451.mcping.responses.MCPingResponse;
+import net.lenni0451.mcping.responses.QueryPingResponse;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
@@ -45,6 +50,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,6 +62,8 @@ public class ServerUtil implements MinecraftWrapper {
     private static final MSTimer LAST_SERVER_INFO_FETCH_TIMER = new MSTimer();
     private static String LAST_SERVER_ADDRESS = "";
     private static IPAddressInfo LAST_SERVER_ADDRESS_INFO = null;
+    private static final CopyOnWriteArrayList<String> QUERY_PLUGIN_DATA = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<String> FORGE_MOD_DATA = new CopyOnWriteArrayList<>();
 
     /**
      * Attach additional tooltip data.
@@ -102,9 +110,15 @@ public class ServerUtil implements MinecraftWrapper {
                         tooltip.add(Text.literal("ASN: " + asn.getAsn()).asOrderedText());
                     }
                 } else {
-                    tooltip.add(Text.literal("Error: Failed to get IP information, API is probably down.").asOrderedText());
+                    tooltip.add(Text.literal("Collecting IP Data...").asOrderedText());
                 }
-                if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(2000, true)) {
+                for (final String line : FORGE_MOD_DATA) {
+                    tooltip.add(Text.literal(line).asOrderedText());
+                }
+                for (final String line : QUERY_PLUGIN_DATA) {
+                    tooltip.add(Text.literal(line).asOrderedText());
+                }
+                if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(5000, true)) {
                     if (!LAST_SERVER_ADDRESS.equals(address)) {
                         LAST_SERVER_ADDRESS = serverInfo.address;
                         EXECUTOR_SERVICE.submit(() -> {
@@ -122,6 +136,99 @@ public class ServerUtil implements MinecraftWrapper {
                                 Vandalism.getInstance().getLogger().error("Failed to get ip information from: {}", resolvedAddress, e);
                             }
                         });
+                        try {
+                            if (enhancedServerListSettings.forgePing.getValue()) {
+                                FORGE_MOD_DATA.clear();
+                                FORGE_MOD_DATA.add("Collecting Forge Data...");
+                                MCPing.pingModern(SharedConstants.getProtocolVersion())
+                                        .address(address)
+                                        .timeout(4000, 4000)
+                                        .exceptionHandler(t -> {
+                                            FORGE_MOD_DATA.clear();
+                                            Vandalism.getInstance().getLogger().error("Failed to forge ping server: {}", address, t);
+                                        })
+                                        .finishHandler(response -> {
+                                            FORGE_MOD_DATA.clear();
+                                            final int maxForgeMods = 20;
+                                            if (response.modinfo != null) {
+                                                FORGE_MOD_DATA.add("Forge Mod Type: " + response.modinfo.type);
+                                                final MCPingResponse.ModInfo.Mod[] mods = response.modinfo.modList;
+                                                if (mods.length > 0) {
+                                                    FORGE_MOD_DATA.add("Forge Mods:");
+                                                    for (int i = 0; i < mods.length; i++) {
+                                                        final MCPingResponse.ModInfo.Mod mod = mods[i];
+                                                        FORGE_MOD_DATA.add(" " + mod.modid + " v" + mod.version);
+                                                        if (i == maxForgeMods) {
+                                                            FORGE_MOD_DATA.add(" and " + (mods.length - maxForgeMods) + " more mods...");
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (response.forgeData != null) {
+                                                FORGE_MOD_DATA.add("Forge FML Net Version: " + response.forgeData.fmlNetworkVersion);
+                                                final MCPingResponse.ForgeData.Channel[] channels = response.forgeData.channels;
+                                                if (channels.length > 0) {
+                                                    FORGE_MOD_DATA.add("Forge Channels: " + channels.length);
+                                                }
+                                                final MCPingResponse.ForgeData.Mod[] mods = response.forgeData.mods;
+                                                if (mods.length > 0) {
+                                                    FORGE_MOD_DATA.add("Forge Mods:");
+                                                    for (int i = 0; i < mods.length; i++) {
+                                                        final MCPingResponse.ForgeData.Mod mod = mods[i];
+                                                        FORGE_MOD_DATA.add(" " + mod.modId + " | " + mod.modmarker);
+                                                        if (i == maxForgeMods) {
+                                                            FORGE_MOD_DATA.add(" and " + (mods.length - maxForgeMods) + " more mods...");
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }).getAsync();
+                            }
+                            if (enhancedServerListSettings.queryPing.getValue()) {
+                                QUERY_PLUGIN_DATA.clear();
+                                QUERY_PLUGIN_DATA.add("Collecting Query Plugin Data...");
+                                MCPing.pingQuery()
+                                        .address(addressWithoutPort, enhancedServerListSettings.queryPingPort.getValue())
+                                        .timeout(4000, 4000)
+                                        .exceptionHandler(t -> {
+                                            QUERY_PLUGIN_DATA.clear();
+                                            if (!(t instanceof ReadTimeoutException)) {
+                                                Vandalism.getInstance().getLogger().error("Failed to query ping server: {}", address, t);
+                                            }
+                                        })
+                                        .finishHandler(response -> {
+                                            QUERY_PLUGIN_DATA.clear();
+                                            boolean noPlugins = false;
+                                            final int maxPlugins = 20;
+                                            final QueryPingResponse.Plugins plugins = response.plugins;
+                                            if (plugins != null) {
+                                                final String[] pluginData = plugins.sample;
+                                                if (pluginData.length > 0) {
+                                                    QUERY_PLUGIN_DATA.add("Query Plugins:");
+                                                    for (int i = 0; i < pluginData.length; i++) {
+                                                        final String plugin = pluginData[i];
+                                                        QUERY_PLUGIN_DATA.add(" " + plugin);
+                                                        if (i == maxPlugins) {
+                                                            QUERY_PLUGIN_DATA.add(" and " + (pluginData.length - maxPlugins) + " more plugins...");
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    noPlugins = true;
+                                                }
+                                            } else {
+                                                noPlugins = true;
+                                            }
+                                            if (noPlugins) {
+                                                QUERY_PLUGIN_DATA.add("Query responded but no plugins were found.");
+                                            }
+                                        }).getAsync();
+                            }
+                        } catch (final Throwable t) {
+                            Vandalism.getInstance().getLogger().error("Failed to ping server for extra data: {}", address, t);
+                        }
                     }
                 }
             }

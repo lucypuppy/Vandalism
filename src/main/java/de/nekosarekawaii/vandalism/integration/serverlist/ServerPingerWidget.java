@@ -23,11 +23,12 @@ import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSe
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.PingState;
-import de.nekosarekawaii.vandalism.util.ServerUtil;
 import net.lenni0451.mcping.MCPing;
-import net.lenni0451.mcping.exception.*;
+import net.lenni0451.mcping.exception.ConnectTimeoutException;
+import net.lenni0451.mcping.exception.ConnectionRefusedException;
+import net.lenni0451.mcping.exception.DataReadException;
+import net.lenni0451.mcping.exception.PacketReadException;
 import net.lenni0451.mcping.responses.MCPingResponse;
-import net.lenni0451.mcping.responses.QueryPingResponse;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -44,7 +45,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Pair;
 
 import java.awt.*;
 import java.net.UnknownHostException;
@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ServerPingerWidget implements MinecraftWrapper {
 
@@ -80,9 +79,6 @@ public class ServerPingerWidget implements MinecraftWrapper {
 
     private static final int GRAY = Color.GRAY.getRGB();
     private static final int GREEN = Color.GREEN.getRGB();
-
-    private static final CopyOnWriteArrayList<String> PLUGIN_DATA = new CopyOnWriteArrayList<>();
-    private static final CopyOnWriteArrayList<String> FORGE_MOD_DATA = new CopyOnWriteArrayList<>();
 
     private static void setServerInfo(final ServerInfo serverInfo) {
         if (serverInfo == null) {
@@ -124,8 +120,6 @@ public class ServerPingerWidget implements MinecraftWrapper {
             if (tooltip != null) {
                 final List<OrderedText> lines = new ArrayList<>(tooltip.tooltip());
                 if (!lines.isEmpty()) {
-                    for (final String line : PLUGIN_DATA) lines.add(Text.literal(line).asOrderedText());
-                    for (final String line : FORGE_MOD_DATA) lines.add(Text.literal(line).asOrderedText());
                     context.drawTooltip(mc.textRenderer, lines, tooltip.positioner(), mouseX, mouseY);
                 }
                 FAKE_MULTIPLAYER_SCREEN.tooltip = null;
@@ -150,39 +144,10 @@ public class ServerPingerWidget implements MinecraftWrapper {
             final int serverPingerWidgetDelay = enhancedServerListSettings.serverPingerWidgetDelay.getValue();
             final String address = currentServerInfo.address;
             try {
-                PLUGIN_DATA.clear();
-                if (enhancedServerListSettings.serverPingerQueryPing.getValue()) {
-                    final Pair<String, Integer> addressParts = ServerUtil.splitServerAddress(address);
-                    MCPing.pingQuery()
-                            .address(addressParts.getLeft(), enhancedServerListSettings.serverPingerQueryPingPort.getValue())
-                            .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
-                            .exceptionHandler(t -> {
-                                if (!(t instanceof ReadTimeoutException)) {
-                                    Vandalism.getInstance().getLogger().error("Failed to query ping server: {}", address, t);
-                                }
-                            })
-                            .finishHandler(response -> {
-                                final int maxPlugins = 20;
-                                final QueryPingResponse.Plugins plugins = response.plugins;
-                                if (plugins != null) {
-                                    PLUGIN_DATA.add("Plugins:");
-                                    final String[] pluginData = plugins.sample;
-                                    for (int i = 0; i < pluginData.length; i++) {
-                                        final String plugin = pluginData[i];
-                                        PLUGIN_DATA.add(" " + plugin);
-                                        if (i == maxPlugins) {
-                                            PLUGIN_DATA.add(" and " + (pluginData.length - maxPlugins) + " more plugins...");
-                                            break;
-                                        }
-                                    }
-                                }
-                            }).getAsync();
-                }
                 MCPing.pingModern(SharedConstants.getProtocolVersion())
                         .address(address)
                         .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
                         .exceptionHandler(t -> {
-                            FORGE_MOD_DATA.clear();
                             currentServerInfo.ping = -1L;
                             switch (t) {
                                 case UnknownHostException unknownHostException ->
@@ -243,42 +208,6 @@ public class ServerPingerWidget implements MinecraftWrapper {
                                 currentServerInfo.playerListSummary = list;
                             } else {
                                 currentServerInfo.playerListSummary = List.of();
-                            }
-                            FORGE_MOD_DATA.clear();
-                            final int maxForgeMods = 20;
-                            if (response.modinfo != null) {
-                                FORGE_MOD_DATA.add("Forge Mod Type: " + response.modinfo.type);
-                                final MCPingResponse.ModInfo.Mod[] mods = response.modinfo.modList;
-                                if (mods.length > 0) {
-                                    FORGE_MOD_DATA.add("Forge Mods:");
-                                    for (int i = 0; i < mods.length; i++) {
-                                        final MCPingResponse.ModInfo.Mod mod = mods[i];
-                                        FORGE_MOD_DATA.add(" " + mod.modid + " v" + mod.version);
-                                        if (i == maxForgeMods) {
-                                            FORGE_MOD_DATA.add(" and " + (mods.length - maxForgeMods) + " more mods...");
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if (response.forgeData != null) {
-                                FORGE_MOD_DATA.add("Forge FML Net Version: " + response.forgeData.fmlNetworkVersion);
-                                final MCPingResponse.ForgeData.Channel[] channels = response.forgeData.channels;
-                                if (channels.length > 0) {
-                                    FORGE_MOD_DATA.add("Forge Channels: " + channels.length);
-                                }
-                                final MCPingResponse.ForgeData.Mod[] mods = response.forgeData.mods;
-                                if (mods.length > 0) {
-                                    FORGE_MOD_DATA.add("Forge Mods:");
-                                    for (int i = 0; i < mods.length; i++) {
-                                        final MCPingResponse.ForgeData.Mod mod = mods[i];
-                                        FORGE_MOD_DATA.add(" " + mod.modId + " | " + mod.modmarker);
-                                        if (i == maxForgeMods) {
-                                            FORGE_MOD_DATA.add(" and " + (mods.length - maxForgeMods) + " more mods...");
-                                            break;
-                                        }
-                                    }
-                                }
                             }
                             setServerInfo(currentServerInfo);
                         }).getAsync();

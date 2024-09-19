@@ -90,28 +90,35 @@ public class EnhancedServerListSettings extends ValueGroup {
             30000
     ).visibleCondition(() -> this.enhancedServerList.getValue() && this.serverPingerWidget.getValue());
 
-    public final BooleanValue serverPingerQueryPing = new BooleanValue(
-            this,
-            "Server Pinger Query Ping",
-            "If activated the client pings the server with a query ping to get additional infos like the plugins.",
-            false
-    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.serverPingerWidget.getValue());
-
-    public final IntegerValue serverPingerQueryPingPort = new IntegerValue(
-            this,
-            "Server Pinger Query Ping Port",
-            "The port used to query ping the server to get additional infos like the plugins.",
-            25565,
-            1,
-            65535
-    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.serverPingerWidget.getValue() && this.serverPingerQueryPing.getValue());
-
     public final BooleanValue morePingTooltipServerInformation = new BooleanValue(
             this,
             "More Ping Tooltip Server Information",
             "If activated the Game shows more server information in the ping tooltip.",
             true
     ).visibleCondition(this.enhancedServerList::getValue);
+
+    public final BooleanValue forgePing = new BooleanValue(
+            this,
+            "Forge Ping",
+            "If activated the client pings the server with a forge ping to get additional infos like the mods.",
+            true
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.morePingTooltipServerInformation.getValue());
+
+    public final BooleanValue queryPing = new BooleanValue(
+            this,
+            "Query Ping",
+            "If activated the client pings the server with a query ping to get additional infos like the plugins.",
+            true
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.morePingTooltipServerInformation.getValue());
+
+    public final IntegerValue queryPingPort = new IntegerValue(
+            this,
+            "Query Ping Port",
+            "The port used to query ping the server to get additional infos like the plugins.",
+            25565,
+            1,
+            65535
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.morePingTooltipServerInformation.getValue() && this.queryPing.getValue());
 
     public final BooleanValue renderAddressAsDefaultServerName = new BooleanValue(
             this,
