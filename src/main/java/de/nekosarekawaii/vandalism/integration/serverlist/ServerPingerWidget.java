@@ -25,10 +25,7 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.PingState;
 import de.nekosarekawaii.vandalism.util.ServerUtil;
 import net.lenni0451.mcping.MCPing;
-import net.lenni0451.mcping.exception.ConnectTimeoutException;
-import net.lenni0451.mcping.exception.ConnectionRefusedException;
-import net.lenni0451.mcping.exception.DataReadException;
-import net.lenni0451.mcping.exception.PacketReadException;
+import net.lenni0451.mcping.exception.*;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
 import net.minecraft.SharedConstants;
@@ -159,7 +156,11 @@ public class ServerPingerWidget implements MinecraftWrapper {
                     MCPing.pingQuery()
                             .address(addressParts.getLeft(), enhancedServerListSettings.serverPingerQueryPingPort.getValue())
                             .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
-                            .exceptionHandler(t -> Vandalism.getInstance().getLogger().error("Failed to query ping server: {}", address, t))
+                            .exceptionHandler(t -> {
+                                if (!(t instanceof ReadTimeoutException)) {
+                                    Vandalism.getInstance().getLogger().error("Failed to query ping server: {}", address, t);
+                                }
+                            })
                             .finishHandler(response -> {
                                 final int maxPlugins = 20;
                                 final QueryPingResponse.Plugins plugins = response.plugins;
