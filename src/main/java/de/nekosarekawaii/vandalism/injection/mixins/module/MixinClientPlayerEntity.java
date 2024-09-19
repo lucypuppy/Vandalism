@@ -29,7 +29,7 @@ public abstract class MixinClientPlayerEntity {
 
     @ModifyExpressionValue(method = "tickNausea", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;shouldPause()Z"))
     private boolean hookPortalGUI(final boolean original) {
-        if (Vandalism.getInstance().getModuleManager().getPortalGUIModule().isActive()) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().portalGui.getValue()) {
             return true;
         }
         return original;

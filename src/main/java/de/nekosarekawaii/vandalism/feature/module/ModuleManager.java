@@ -89,7 +89,6 @@ public class ModuleManager extends NamedStorage<Module> implements
     private ResourcePackSpooferModule resourcePackSpooferModule;
     private StepModule stepModule;
     private RiptideBoosterModule riptideBoosterModule;
-    private PortalGUIModule portalGUIModule;
     private NoChatReportsModule noChatReportsModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
@@ -130,7 +129,6 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.resourcePackSpooferModule = new ResourcePackSpooferModule(),
                 this.stepModule = new StepModule(),
                 this.riptideBoosterModule = new RiptideBoosterModule(),
-                this.portalGUIModule = new PortalGUIModule(),
                 this.noChatReportsModule = new NoChatReportsModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
