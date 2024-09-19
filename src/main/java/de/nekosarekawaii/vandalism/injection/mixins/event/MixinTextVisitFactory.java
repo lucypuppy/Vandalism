@@ -18,22 +18,27 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
+import net.minecraft.text.CharacterVisitor;
+import net.minecraft.text.Style;
 import net.minecraft.text.TextVisitFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TextVisitFactory.class)
 public abstract class MixinTextVisitFactory {
 
-    @ModifyArg(method = {"visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/text/TextVisitFactory;visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z", ordinal = 0), index = 0)
-    private static String callTextDrawListener(final String text) {
-        final TextDrawListener.TextDrawEvent event = new TextDrawListener.TextDrawEvent(text);
+    @Inject(method = "visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z", at = @At(value = "HEAD"))
+    private static void callTextDrawListener(final String t, final int startIndex, final Style s, final Style resetStyle, final CharacterVisitor visitor, final CallbackInfoReturnable<Boolean> cir, final @Local(argsOnly = true) LocalRef<String> text, final @Local(argsOnly = true, ordinal = 0) LocalRef<Style> startingStyle) {
+        final TextDrawListener.TextDrawEvent event = new TextDrawListener.TextDrawEvent(text.get(), startingStyle.get());
         Vandalism.getInstance().getEventSystem().callExceptionally(TextDrawListener.TextDrawEvent.ID, event);
-
-        return event.text;
+        text.set(event.text);
+        startingStyle.set(event.startingStyle);
     }
 
 }
