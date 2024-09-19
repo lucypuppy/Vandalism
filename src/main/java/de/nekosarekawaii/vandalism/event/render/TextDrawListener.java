@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.event.render;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
+import net.minecraft.text.Style;
 
 public interface TextDrawListener {
 
@@ -29,9 +30,11 @@ public interface TextDrawListener {
         public static final int ID = 31;
 
         public String text;
+        public Style startingStyle;
 
-        public TextDrawEvent(final String text) {
+        public TextDrawEvent(final String text, final Style startingStyle) {
             this.text = text;
+            this.startingStyle = startingStyle;
         }
 
         @Override

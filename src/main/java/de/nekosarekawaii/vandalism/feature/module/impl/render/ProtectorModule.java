@@ -23,8 +23,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import net.minecraft.client.session.Session;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
@@ -75,12 +75,14 @@ public class ProtectorModule extends Module implements TextDrawListener {
     @Override
     public void onTextDraw(final TextDrawEvent event) {
         final Session session = this.mc.session;
-        if (this.protectUsername.getValue()) event.text = StringUtils.replace(event.text, session.getUsername(), this.username.getValue());
+        if (this.protectUsername.getValue()) {
+            event.text = StringUtils.replaceAll(event.text, session.getUsername(), this.username.getValue());
+        }
         if (this.protectUUID.getValue()) {
             final UUID uuid = session.getUuidOrNull();
             if (uuid != null) {
-                event.text = StringUtils.replace(event.text, uuid.toString(), this.uuid.getValue());
-                event.text = StringUtils.replace(event.text, uuid.toString().replace("-", ""), this.uuid.getValue());
+                event.text = StringUtils.replaceAll(event.text, uuid.toString(), this.uuid.getValue());
+                event.text = StringUtils.replaceAll(event.text, uuid.toString().replace("-", ""), this.uuid.getValue());
             }
         }
     }

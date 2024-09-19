@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.ServerUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -51,7 +52,9 @@ public abstract class MixinServerEntry {
     @Final
     private ServerInfo server;
 
-    @Shadow @Final private MultiplayerScreen screen;
+    @Shadow
+    @Final
+    private MultiplayerScreen screen;
 
     @Unique
     private ServerInfo.Status vandalism$onProtocolVersionCheck(final ServerInfo info) {
@@ -100,33 +103,34 @@ public abstract class MixinServerEntry {
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"))
     private int applyAdditionalServerInformation(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color, final boolean shadow) {
         instance.drawText(textRenderer, text, x, y, color, shadow);
-        if (this.server.ping >= 0) {
-            final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
-            if (enhancedServerListSettings.enhancedServerList.getValue()) {
-                if (enhancedServerListSettings.multiplayerScreenServerInformation.getValue()) {
-                    final String versionString = this.server.version.getString();
-                    if (!versionString.isEmpty()) {
-                        final String fixedVersion = ServerUtil.fixVersionName(versionString, false);
-                        String type = fixedVersion;
-                        StringBuilder version = new StringBuilder();
-                        if (fixedVersion.contains(" ")) {
-                            final String[] data = fixedVersion.split(" +");
-                            if (data.length > 0) {
-                                type = data[0];
-                                for (int i = 1; i < data.length; i++) {
-                                    version.append(" ").append(data[i]);
+        if (MinecraftClient.getInstance().currentScreen instanceof MultiplayerScreen) {
+            if (this.server.ping >= 0) {
+                final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+                if (enhancedServerListSettings.enhancedServerList.getValue()) {
+                    if (enhancedServerListSettings.multiplayerScreenServerInformation.getValue()) {
+                        final String versionString = this.server.version.getString();
+                        if (!versionString.isEmpty()) {
+                            final String fixedVersion = ServerUtil.fixVersionName(versionString, false);
+                            String type = fixedVersion;
+                            StringBuilder version = new StringBuilder();
+                            if (fixedVersion.contains(" ")) {
+                                final String[] data = fixedVersion.split(" +");
+                                if (data.length > 0) {
+                                    type = data[0];
+                                    for (int i = 1; i < data.length; i++) {
+                                        version.append(" ").append(data[i]);
+                                    }
+                                    if (version.toString().startsWith(" ")) {
+                                        version = new StringBuilder(version.substring(1));
+                                    }
                                 }
-                                if (version.toString().startsWith(" ")) {
-                                    version = new StringBuilder(version.substring(1));
-                                }
+                            } else {
+                                type = "Vanilla/Unknown";
+                                version = new StringBuilder(fixedVersion);
                             }
+                            instance.drawTextWithShadow(textRenderer, vandalism$TYPE_TEXT + type, x + textRenderer.getWidth(text) + 35, y, -1);
+                            instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + version, x + textRenderer.getWidth(text) + 35, y + textRenderer.fontHeight, -1);
                         }
-                        else {
-                            type = "Vanilla/Unknown";
-                            version = new StringBuilder(fixedVersion);
-                        }
-                        instance.drawTextWithShadow(textRenderer, vandalism$TYPE_TEXT + type, x + textRenderer.getWidth(text) + 35, y, -1);
-                        instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + version, x + textRenderer.getWidth(text) + 35, y + textRenderer.fontHeight, -1);
                     }
                 }
             }

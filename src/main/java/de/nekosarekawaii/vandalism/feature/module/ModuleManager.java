@@ -199,7 +199,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new InventoryMoveModule(),
                 new TranslatorModule(),
                 new KaboomFuckerModule(),
-                new ProtocolIdChangerModule()
+                new ProtocolIdChangerModule(),
+                new NoObfuscatedTextModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }

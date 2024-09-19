@@ -27,9 +27,9 @@ import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.integration.friends.config.FriendsConfig;
 import de.nekosarekawaii.vandalism.integration.friends.gui.FriendsClientWindow;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.storage.Storage;
 import net.minecraft.entity.player.PlayerEntity;
-import org.apache.commons.lang3.StringUtils;
 
 public class FriendsManager extends Storage<Friend> implements TargetListener, TextDrawListener {
 
@@ -60,7 +60,7 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
     @Override
     public void onTextDraw(final TextDrawListener.TextDrawEvent event) {
         for (final Friend friend : this.getList()) {
-            event.text = StringUtils.replace(event.text, friend.getName(), friend.getAlias());
+            event.text = StringUtils.replaceAll(event.text, friend.getName(), friend.getAlias());
         }
     }
 
