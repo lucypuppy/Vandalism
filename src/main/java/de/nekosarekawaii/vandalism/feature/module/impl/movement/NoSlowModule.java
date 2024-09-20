@@ -31,6 +31,7 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
 
+// TODO: Add soul sand and cobweb like slowdowns
 public class NoSlowModule extends Module implements PlayerSlowdownListener, CanSprintListener, ShouldSlowdownListener {
 
     private static final String FORWARD = "Forward";
