@@ -201,7 +201,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new TranslatorModule(),
                 new KaboomFuckerModule(),
                 new ProtocolIdChangerModule(),
-                new NoObfuscatedTextModule()
+                new NoObfuscatedTextModule(),
+                new HenklerSprenklerModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
