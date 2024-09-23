@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
@@ -32,6 +33,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -39,7 +41,9 @@ import java.util.stream.IntStream;
 
 public class HenklerSprenklerModule extends Module implements PlayerUpdateListener {
 
-    private static final int BUFFER_SIZE = 960;
+    private static final int SAMPLE_RATE = 48_000;
+    private static final double TONE_DURATION = 0.02;
+    private static final int NUM_SAMPLES = /*(int) (SAMPLE_RATE * TONE_DURATION)*/ 960;
     private static final int MAX_GROUP_NAME_LENGTH = 24;
 
     private final EnumModeValue<HenklerSprenklerModule.Mode> mode = new EnumModeValue<>(
@@ -49,6 +53,23 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
             Mode.VOICE,
             Mode.values()
     );
+
+    private final EnumModeValue<HenklerSprenklerModule.VoiceMode> voiceMode = new EnumModeValue<>(
+            this,
+            "Voice Mode",
+            "The voice input mode.",
+            VoiceMode.STATIC_NOISE,
+            VoiceMode.values()
+    ).visibleCondition(() -> this.mode.getValue() == Mode.VOICE);
+
+    private final DoubleValue frequency = new DoubleValue(
+            this,
+            "Frequency",
+            "Sound frequency in Hertz.",
+            20.0,
+            20.0,
+            20_000.0
+    ).visibleCondition(() -> this.mode.getValue() == Mode.VOICE && this.voiceMode.getValue() == VoiceMode.HERTZ);
 
     private final StringValue groupName = new StringValue(
             this,
@@ -117,6 +138,20 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
     private Constructor<?> createGroupPacketConstructor;
     private Object groupTypeOpen;
 
+    private static short[] pcm(final double frequency, final int num, final int sampleRate) {
+        final short[] pcm = new short[num];
+        for (int i = 0; i < num; i++) {
+
+            final double time = i / (double) sampleRate;
+
+            final double angle = 2.0 * Math.PI * frequency * time;
+            final double sineValue = Math.sin(angle);
+
+            pcm[i] = (short) (sineValue * Short.MAX_VALUE);
+        }
+        return pcm;
+    }
+
     public HenklerSprenklerModule() {
         super(
                 "Henkler Sprenkler", "Applies a henkel to simple voice chat, causing sudden ear-piercing blasts that\n " +
@@ -181,8 +216,8 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
     private short[][] generateRandomAudioSamples(final int count) {
         final short[][] randomAudioSamples = new short[count][];
         for (int i = 0; i < count; i++) {
-            final short[] buffer = new short[HenklerSprenklerModule.BUFFER_SIZE];
-            for (int j = 0; j < HenklerSprenklerModule.BUFFER_SIZE; j++) {
+            final short[] buffer = new short[HenklerSprenklerModule.NUM_SAMPLES];
+            for (int j = 0; j < HenklerSprenklerModule.NUM_SAMPLES; j++) {
                 buffer[j] = (short) ThreadLocalRandom.current().nextInt(Short.MIN_VALUE, Short.MAX_VALUE);
             }
             randomAudioSamples[i] = buffer;
@@ -230,9 +265,7 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
                         return;
                     }
                     this.netManagerSendToServerMethod.invoke(null, this.createGroupPacketConstructor.newInstance(
-                            !value.isEmpty() ? value + IntStream.range(0, x).mapToObj(y -> {
-                                return Formatting.values()[ThreadLocalRandom.current().nextInt(Formatting.values().length)].toString();
-                            }).collect(Collectors.joining()) :
+                            !value.isEmpty() ? value + IntStream.range(0, x).mapToObj(y -> Formatting.values()[ThreadLocalRandom.current().nextInt(Formatting.values().length)].toString()).collect(Collectors.joining()) :
                                     Formatting.values()[ThreadLocalRandom.current().nextInt(1, Formatting.values().length)].toString() + Formatting.OBFUSCATED +
                                             RandomUtils.randomString(20, true, true, true, false),
                             null,
@@ -258,7 +291,10 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
                                         this.micPacketConstructor.newInstance(
                                                 this.encodeMethod.invoke(
                                                         encoder,
-                                                        this.randomAudioSamples[ThreadLocalRandom.current().nextInt(this.randomAudioSamples.length)]
+                                                        switch (this.voiceMode.getValue()) {
+                                                            case STATIC_NOISE -> this.randomAudioSamples[ThreadLocalRandom.current().nextInt(this.randomAudioSamples.length)];
+                                                            case HERTZ -> HenklerSprenklerModule.pcm(this.frequency.getValue(), HenklerSprenklerModule.NUM_SAMPLES, HenklerSprenklerModule.SAMPLE_RATE);
+                                                        }
                                                 ),
                                                 false,
                                                 sequenceNumber.getAndIncrement()
@@ -290,6 +326,21 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         private final String name;
 
         Mode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public final String getName() {
+            return this.name;
+        }
+    }
+
+    public enum VoiceMode implements IName {
+        STATIC_NOISE, HERTZ;
+
+        private final String name;
+
+        VoiceMode() {
             this.name = StringUtils.normalizeEnumName(this.name());
         }
 
