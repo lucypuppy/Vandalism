@@ -25,11 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.IName;
-import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.RandomUtils;
-import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.util.Formatting;
 
 import java.lang.reflect.Constructor;
@@ -95,7 +91,6 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
             10_000
     );
 
-
     private final MSTimer timer;
     private boolean done;
     private boolean unsupported;
@@ -123,11 +118,14 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
     private Object groupTypeOpen;
 
     public HenklerSprenklerModule() {
-        super("Henkler Sprenkler", "Applies a henkel to simple voice chat, causing sudden ear-piercing blasts that\n " +
+        super(
+                "Henkler Sprenkler", "Applies a henkel to simple voice chat, causing sudden ear-piercing blasts that\n " +
                 "will leave other players scrambling for the volume button.\n\n" +
-                "Use responsibly... or don't!", Category.MISC);
-        this.timer = new MSTimer();
+                        "Use responsibly... or don't!",
+                Category.MISC
+        );
         this.deactivateAfterSessionDefault();
+        this.timer = new MSTimer();
     }
 
     @Override
@@ -180,7 +178,7 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         this.regenerateRandomAudioSamplesIfNeeded();
     }
 
-    public short[][] generateRandomAudioSamples(final int count) {
+    private short[][] generateRandomAudioSamples(final int count) {
         final short[][] randomAudioSamples = new short[count][];
         for (int i = 0; i < count; i++) {
             final short[] buffer = new short[HenklerSprenklerModule.BUFFER_SIZE];
@@ -192,11 +190,11 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         return randomAudioSamples;
     }
 
-    public void regenerateRandomAudioSamples() {
+    private void regenerateRandomAudioSamples() {
         this.randomAudioSamples = this.generateRandomAudioSamples(this.randomAudioSamplesCount.getDefaultValue());
     }
 
-    public void regenerateRandomAudioSamplesIfNeeded() {
+    private void regenerateRandomAudioSamplesIfNeeded() {
         final int count = this.randomAudioSamplesCount.getValue();
         if (this.randomAudioSamples == null || this.randomAudioSamples.length != count) {
             this.regenerateRandomAudioSamples();
@@ -232,7 +230,11 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
                         return;
                     }
                     this.netManagerSendToServerMethod.invoke(null, this.createGroupPacketConstructor.newInstance(
-                            !value.isEmpty() ? value + IntStream.range(0, x).mapToObj(y -> Formatting.values()[ThreadLocalRandom.current().nextInt(Formatting.values().length)].toString()).collect(Collectors.joining()) : Formatting.values()[ThreadLocalRandom.current().nextInt(1, Formatting.values().length)].toString() + Formatting.OBFUSCATED + RandomUtils.randomString(20, true, true, true, false),
+                            !value.isEmpty() ? value + IntStream.range(0, x).mapToObj(y -> {
+                                return Formatting.values()[ThreadLocalRandom.current().nextInt(Formatting.values().length)].toString();
+                            }).collect(Collectors.joining()) :
+                                    Formatting.values()[ThreadLocalRandom.current().nextInt(1, Formatting.values().length)].toString() + Formatting.OBFUSCATED +
+                                            RandomUtils.randomString(20, true, true, true, false),
                             null,
                             this.groupTypeOpen
                     ));
@@ -250,10 +252,29 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
                     final AtomicLong sequenceNumber = (AtomicLong) this.sequenceNumberField.get(micThread);
                     final Object encoder = this.encoderField.get(micThread);
                     for (int i = 0; i < this.bufferSize.getValue(); i++) {
-                        this.clientVoiceChatConnectionSendToServerMethod.invoke(connection, this.networkMessageConstructor.newInstance(this.micPacketConstructor.newInstance(this.encodeMethod.invoke(encoder, this.randomAudioSamples[ThreadLocalRandom.current().nextInt(this.randomAudioSamples.length)]), false, sequenceNumber.getAndIncrement())));
+                        this.clientVoiceChatConnectionSendToServerMethod.invoke(
+                                connection,
+                                this.networkMessageConstructor.newInstance(
+                                        this.micPacketConstructor.newInstance(
+                                                this.encodeMethod.invoke(
+                                                        encoder,
+                                                        this.randomAudioSamples[ThreadLocalRandom.current().nextInt(this.randomAudioSamples.length)]
+                                                ),
+                                                false,
+                                                sequenceNumber.getAndIncrement()
+                                        )
+                                )
+                        );
                     }
                     this.resetStateMethod.invoke(encoder);
-                    this.clientVoiceChatConnectionSendToServerMethod.invoke(connection, this.networkMessageConstructor.newInstance(this.micPacketConstructor.newInstance(new byte[0], false, sequenceNumber.getAndIncrement())));
+                    this.clientVoiceChatConnectionSendToServerMethod.invoke(
+                            connection,
+                            this.networkMessageConstructor.newInstance(
+                                    this.micPacketConstructor.newInstance(
+                                            new byte[0], false, sequenceNumber.getAndIncrement()
+                                    )
+                            )
+                    );
                 }
             }
         } catch (final IllegalAccessException | InvocationTargetException | InstantiationException exception) {
@@ -277,4 +298,5 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
             return this.name;
         }
     }
+
 }
