@@ -19,24 +19,41 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 
 public class FullBrightModule extends Module implements PlayerUpdateListener {
 
-    public final BooleanValue useEffect = new BooleanValue(
+    public final EnumModeValue<Mode> mode = new EnumModeValue<>(
             this,
-            "Use Effect",
-            "Whether or not to use client side night vision effect.",
-            false
+            "Mode",
+            "The full bright mode.",
+            Mode.GAMMA,
+            Mode.values()
     );
 
+    public final FloatValue gammaValue = new FloatValue(
+            this,
+            "Gamma Value",
+            "The gamma value.",
+            2.0f,
+            2.0f,
+            10.0f
+    ).visibleCondition(() -> this.mode.getValue() == Mode.GAMMA);
+
     public FullBrightModule() {
-        super("Full Bright", "Increases the brightness of the game which than allows you to see more in the dark.", Category.RENDER);
+        super(
+                "Full Bright",
+                "Increases the brightness of the game which than allows you to see more in the dark.",
+                Category.RENDER
+        );
     }
 
     @Override
@@ -58,13 +75,31 @@ public class FullBrightModule extends Module implements PlayerUpdateListener {
         if (player == null) {
             return;
         }
-        if (this.useEffect.getValue()) {
+        if (this.mode.getValue() == Mode.NIGHT_VISION) {
             if (!player.hasStatusEffect(StatusEffects.NIGHT_VISION)) {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, Integer.MAX_VALUE, 2, true, false, false), player);
             }
         } else {
             player.removeStatusEffect(StatusEffects.NIGHT_VISION);
         }
+    }
+
+    public enum Mode implements IName {
+
+        GAMMA,
+        NIGHT_VISION;
+
+        private final String name;
+
+        Mode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
     }
 
 }
