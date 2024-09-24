@@ -153,8 +153,10 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
 
     public HenklerSprenklerModule() {
         super(
-                "Henkler Sprenkler", "Applies a henkel to simple voice chat, causing sudden ear-piercing blasts that\n " +
-                "will leave other players scrambling for the volume button.\n\n" +
+                "Henkler Sprenkler",
+                "Applies a henkel to simple voice chat, causing sudden ear-piercing blasts that\n" +
+                        "will leave other players scrambling for the volume button.\n" +
+                        "Also allows you to create massive amounts of empty voice groups.\n\n" +
                         "Use responsibly... or don't!",
                 Category.MISC
         );
