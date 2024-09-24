@@ -18,28 +18,23 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.FullBrightModule;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.texture.NativeImage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import java.awt.Color;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(LightmapTextureManager.class)
 public abstract class MixinLightmapTextureManager {
 
-    @WrapOperation(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/NativeImage;setColor(III)V"))
-    private void hookFullBright(final NativeImage instance, final int x, final int y, final int color, final Operation<Void> original) {
+    @Redirect(method = "update", at = @At(value = "INVOKE", target = "Ljava/lang/Double;floatValue()F", ordinal = 1))
+    private float hookFullBright(final Double instance) {
         final FullBrightModule fullBrightModule = Vandalism.getInstance().getModuleManager().getFullBrightModule();
-        if (fullBrightModule.isActive() && !fullBrightModule.useEffect.getValue()) {
-            original.call(instance, x, y, Color.WHITE.getRGB());
-        } else {
-            original.call(instance, x, y, color);
+        if (fullBrightModule.isActive() && fullBrightModule.mode.getValue() == FullBrightModule.Mode.GAMMA) {
+            return fullBrightModule.gammaValue.getValue();
         }
+        return instance.floatValue();
     }
 
 }
