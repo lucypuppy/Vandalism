@@ -167,6 +167,14 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
     @Override
     protected void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID);
+
+        final ModPacketBlockerModule module = Vandalism.getInstance().getModuleManager().getModPacketBlockerModule();
+        if (module.isActive()) {
+            ChatUtil.errorChatMessage("Please deactivate the " + module.getName() + " module before using this " + this.getName() + " module.");
+            this.deactivate();
+            return;
+        }
+
         if (this.unsupported) {
             this.deactivate();
             return;
