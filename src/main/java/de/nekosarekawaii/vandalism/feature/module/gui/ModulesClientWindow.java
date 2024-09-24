@@ -228,6 +228,11 @@ public class ModulesClientWindow extends ClientWindow {
         if (ImGui.button(module.getName() + moduleId + "togglebutton", -1, ImUtils.modulateDimension(25))) {
             module.toggle();
         }
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            this.renderModuleInfo(module, false);
+            ImGui.endTooltip();
+        }
         if (isActive) ImGui.popStyleColor(3);
         final String popupId = module.getName() + " Module" + moduleId + "popup";
         if (ImGui.isItemClicked(ImGuiMouseButton.Right)) {
@@ -304,12 +309,6 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.closeCurrentPopup();
             }
             ImGui.endPopup();
-        }
-        // TODO: Fix random crash caused by this
-        if (ImGui.isItemHovered()) {
-            ImGui.beginTooltip();
-            this.renderModuleInfo(module, false);
-            ImGui.endTooltip();
         }
     }
 
