@@ -33,7 +33,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -320,7 +319,8 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         }
     }
 
-    public enum Mode implements IName {
+    private enum Mode implements IName {
+
         VOICE, GROUP;
 
         private final String name;
@@ -333,9 +333,11 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         public final String getName() {
             return this.name;
         }
+
     }
 
-    public enum VoiceMode implements IName {
+    private enum VoiceMode implements IName {
+
         STATIC_NOISE, HERTZ;
 
         private final String name;
@@ -348,6 +350,7 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         public final String getName() {
             return this.name;
         }
+
     }
 
 }
