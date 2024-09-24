@@ -132,18 +132,25 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        // TODO: Fix target selection
         if (this.target == null) {
             final Stream<AbstractClientPlayerEntity> players = this.mc.world.getPlayers().stream();
             this.target = players.sorted(Comparator.comparingDouble(player -> this.mc.player.distanceTo(player))).
-                    filter(player -> this.mc.player != player && this.mc.player.distanceTo(player) <= this.maxDistance.getValue() && !Vandalism.getInstance().getFriendsManager().isFriend(player.getGameProfile().getName(), true)).
+                    filter(player -> {
+                        final boolean playerIsNotCurrentPlayer = this.mc.player != player;
+                        final boolean distanceCheck = this.mc.player.distanceTo(player) <= this.maxDistance.getValue();
+                        final boolean isNotFriend = !Vandalism.getInstance().getFriendsManager().isFriend(player.getGameProfile().getName(), true);
+                        return playerIsNotCurrentPlayer && distanceCheck && isNotFriend;
+                    }).
                     findFirst().
                     orElse(null);
 
             return;
         }
 
-        if (this.target.isDead() || this.mc.world.getEntityById(this.target.getId()) == null || !Vandalism.getInstance().getFriendsManager().isFriend(this.target.getGameProfile().getName(), true)) {
+        final boolean targetIsDead = this.target.isDead();
+        final boolean targetIsNotInWorld = this.mc.world.getEntityById(this.target.getId()) == null;
+        final boolean targetIsNotFriend = Vandalism.getInstance().getFriendsManager().isFriend(this.target.getGameProfile().getName(), true);
+        if (targetIsDead || targetIsNotInWorld || targetIsNotFriend) {
             this.reset();
             return;
         }
