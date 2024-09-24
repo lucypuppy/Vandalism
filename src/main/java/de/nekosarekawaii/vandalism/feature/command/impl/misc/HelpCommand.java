@@ -29,6 +29,7 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.raphimc.vialoader.util.VersionRange;
 
 public class HelpCommand extends Command {
 
@@ -66,8 +67,7 @@ public class HelpCommand extends Command {
         for (int i = page * maxCommandsPerPage; i < Math.min((page + 1) * maxCommandsPerPage, totalCommands); i++) {
             final Command command = Vandalism.getInstance().getCommandManager().getList().get(i);
             final MutableText commandText = Text.literal(commandPrefix + String.join(" | ", command.getAliases()));
-            commandText.formatted(Formatting.YELLOW);
-            commandText.append(Text.literal(" > ").formatted(Formatting.DARK_GRAY));
+            commandText.formatted(command.isExperimental() ? Formatting.RED : Formatting.YELLOW);
             commandText.styled(style ->
                     style.withClickEvent(new ClickEvent(
                             ClickEvent.Action.SUGGEST_COMMAND,
@@ -77,6 +77,13 @@ public class HelpCommand extends Command {
                             Text.literal("Insert the command into the chat field")
                     ))
             );
+            final VersionRange supportedVersions = command.getSupportedVersions();
+            if (supportedVersions != null) {
+                commandText.append(Text.literal(" [").formatted(Formatting.DARK_GRAY).append(
+                        Text.literal(supportedVersions + " only").formatted(Formatting.GREEN)
+                ).append(Text.literal("]").formatted(Formatting.DARK_GRAY)));
+            }
+            commandText.append(Text.literal(" » ").formatted(Formatting.DARK_GRAY));
             String description = command.getDescription();
             if (description == null || description.isEmpty()) {
                 description = "No description available.";
