@@ -87,7 +87,7 @@ public class DerpModule extends Module implements PlayerUpdateListener {
     public DerpModule() {
         super(
                 "Derp",
-                "Messes around with your rotation.",
+                "Messes around with your server side rotation.",
                 Category.MISC
         );
     }
