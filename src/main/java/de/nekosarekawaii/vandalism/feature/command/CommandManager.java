@@ -92,7 +92,7 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new FlipCommand(),
                 new ClientsideInventoryClearCommand(),
                 new DifficultyCommand(),
-                //new ExploitBookCommand(), TODO: Fix Json
+                new CrashBookCommand(),
                 new ModuleToggleCommand(),
                 new MultiverseCoreOptimizerCommand(),
                 new SkillSpamCommand(),

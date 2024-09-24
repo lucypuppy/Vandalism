@@ -18,7 +18,10 @@
 
 package de.nekosarekawaii.vandalism.integration;
 
+import com.viaversion.nbt.tag.ByteTag;
 import com.viaversion.nbt.tag.CompoundTag;
+import com.viaversion.nbt.tag.ListTag;
+import com.viaversion.nbt.tag.StringTag;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.minecraft.BlockPosition;
 import com.viaversion.viaversion.api.minecraft.item.DataItem;
@@ -31,10 +34,13 @@ import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.lenni0451.reflect.stream.RStream;
 import net.lenni0451.reflect.stream.field.FieldWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.List;
 
 import static de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator.getPlayNetworkUserConnection;
 
@@ -50,8 +56,28 @@ public class ViaFabricPlusAccess {
         return new BlockPosition(pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static DataItem writtenBook(final CompoundTag tag) {
-        return new DataItem(386, (byte) 1, tag); // assuming no data
+    /***
+     * Creates a 1.8 book item.
+     * @param title the title of the book
+     * @param author the author of the book
+     * @param resolved whether the book is signed or not
+     * @param written whether the book is written or not
+     * @param pages the pages of the book (max pages in 1.8 are 50)
+     * @return the created book item as a ByteBuf
+     */
+    public static ByteBuf create1_8Book(final String title, final String author, final boolean resolved, final boolean written, final List<String> pages) {
+        final ListTag<StringTag> pagesTag = new ListTag<>(StringTag.class);
+        for (final String page : pages) {
+            pagesTag.add(new StringTag(page));
+        }
+        final CompoundTag tag = new CompoundTag();
+        tag.put("author", new StringTag(author));
+        tag.put("title", new StringTag(title));
+        tag.put("resolved", new ByteTag(resolved ? (byte) 1 : (byte) 0));
+        tag.put("pages", pagesTag);
+        final ByteBuf buf = Unpooled.buffer();
+        Types.ITEM1_8.write(buf, new DataItem(written ? 387 : 386, (byte) 1, tag));
+        return buf;
     }
 
     public static void send1_8CustomPayload(final String channel, final ByteBuf data) {
