@@ -162,7 +162,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
                 return;
             } else {
                 final String address = ServerUtil.getLastServerInfo().address.toLowerCase();
-                if (!address.contains("kaboom.pw") && !address.equalsIgnoreCase("chipmunk.land") && !address.equalsIgnoreCase("nekoboom.bongocatsmp.site")) {
+                if (!address.equalsIgnoreCase("kaboom.pw") && !address.equalsIgnoreCase("chipmunk.land") && !address.equalsIgnoreCase("nekoboom.bongocatsmp.site")) {
                     this.deactivate();
                 }
             }
