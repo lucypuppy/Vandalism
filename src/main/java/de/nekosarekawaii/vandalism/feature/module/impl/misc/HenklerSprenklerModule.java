@@ -65,7 +65,7 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
             this,
             "Frequency",
             "Sound frequency in Hertz.",
-            20.0,
+            50.0,
             20.0,
             20_000.0
     ).visibleCondition(() -> this.mode.getValue() == Mode.VOICE && this.voiceMode.getValue() == VoiceMode.HERTZ);
