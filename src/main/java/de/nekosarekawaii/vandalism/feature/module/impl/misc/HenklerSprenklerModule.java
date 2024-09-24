@@ -222,6 +222,12 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         this.regenerateRandomAudioSamplesIfNeeded();
     }
 
+    @Override
+    protected void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID);
+        this.randomAudioSamples = null;
+    }
+
     private short[][] generateRandomAudioSamples(final int count) {
         final short[][] randomAudioSamples = new short[count][];
         for (int i = 0; i < count; i++) {
@@ -243,12 +249,6 @@ public class HenklerSprenklerModule extends Module implements PlayerUpdateListen
         if (this.randomAudioSamples == null || this.randomAudioSamples.length != count) {
             this.regenerateRandomAudioSamples();
         }
-    }
-
-    @Override
-    protected void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID);
-        this.randomAudioSamples = null;
     }
 
     @Override
