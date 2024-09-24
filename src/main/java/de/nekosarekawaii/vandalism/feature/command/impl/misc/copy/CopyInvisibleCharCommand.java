@@ -19,9 +19,11 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
+import net.raphimc.vialoader.util.VersionRange;
 
 public class CopyInvisibleCharCommand extends Command {
 
@@ -29,6 +31,7 @@ public class CopyInvisibleCharCommand extends Command {
         super(
                 "Copies an invisible character into your clipboard.",
                 Category.MISC,
+                VersionRange.andOlder(ProtocolVersion.v1_14_4),
                 "copyinvisiblechar",
                 "copyinvchar"
         );
