@@ -34,7 +34,7 @@ public class SimplexNoise {
     private static final double G3 = 1.0 / 6.0;
 
     static {
-        Random random = new Random();
+        final Random random = new Random();
         for (int i = 0; i < 256; i++) {
             p[i] = i;
         }
@@ -49,7 +49,7 @@ public class SimplexNoise {
         }
     }
 
-    public static double noise(double xin, double yin, double zin) {
+    public static double noise(final double xin, final double yin, final double zin) {
         double n0, n1, n2, n3;
         double s = (xin + yin + zin) * F3;
         int i = fastfloor(xin + s);
@@ -134,11 +134,11 @@ public class SimplexNoise {
         return 32.0 * (n0 + n1 + n2 + n3);
     }
 
-    private static int fastfloor(double x) {
+    private static int fastfloor(final double x) {
         return x > 0 ? (int) x : (int) x - 1;
     }
 
-    private static double dot(int[] g, double x, double y, double z) {
+    private static double dot(final int[] g, final double x, final double y, final double z) {
         return g[0] * x + g[1] * y + g[2] * z;
     }
 

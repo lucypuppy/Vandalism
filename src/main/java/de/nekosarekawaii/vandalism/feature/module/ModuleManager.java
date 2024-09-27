@@ -91,6 +91,10 @@ public class ModuleManager extends NamedStorage<Module> implements
     private StepModule stepModule;
     private RiptideBoosterModule riptideBoosterModule;
     private NoChatReportsModule noChatReportsModule;
+    private AntiBotsModule antiBotsModule;
+    private LagRangeModule lagRangeModule;
+    private AutoSoupModule autoSoupModule;
+    private AutoSprintModule autoSprintModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -131,15 +135,16 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.stepModule = new StepModule(),
                 this.riptideBoosterModule = new RiptideBoosterModule(),
                 this.noChatReportsModule = new NoChatReportsModule(),
-                new FakeLagModule(this.killAuraModule),
-                new AntiBotsModule(),
+                this.antiBotsModule = new AntiBotsModule(),
+                this.lagRangeModule = new LagRangeModule(),
+                this.autoSoupModule = new AutoSoupModule(),
+                this.autoSprintModule = new AutoSprintModule(),
+                new FakeLagModule(),
                 new AutoClickerModule(),
                 new AutoRodModule(),
                 new AutoShieldModule(),
-                new AutoSoupModule(),
                 new BackTrackModule(),
                 new BowSpammerModule(),
-                new LagRangeModule(),
                 new TeleportHitModule(),
                 new TimerRangeModule(),
                 new WTapModule(),
@@ -176,7 +181,6 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new PhaseModule(),
                 new SpeedModule(),
                 new VelocityModule(),
-                new AutoSprintModule(),
                 new BlockNormalizerModule(),
                 new FOVFuckerModule(),
                 new LongJumpModule(),

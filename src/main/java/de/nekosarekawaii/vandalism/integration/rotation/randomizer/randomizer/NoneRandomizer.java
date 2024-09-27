@@ -23,14 +23,13 @@ import net.minecraft.util.math.Vec3d;
 
 public class NoneRandomizer extends Randomizer {
 
-    @Override
-    public Vec3d randomiseRotationVec3d(Vec3d vec3d) {
-        return vec3d;
+    public NoneRandomizer() {
+        super("None");
     }
 
     @Override
-    public String getName() {
-        return "None";
+    public Vec3d randomiseRotationVec3d(final Vec3d vec3d) {
+        return vec3d;
     }
 
 }

@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util;
 
 import de.nekosarekawaii.vandalism.injection.access.ILivingEntity;
 import net.minecraft.client.input.Input;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -27,46 +28,51 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Pair;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
 public class Prediction {
 
-    public static LivingEntity predictEntityMovement(LivingEntity entity, int ticks, boolean predictInput, boolean predictJumping) {
+    // Jump/sneak states are randomized as soon as getClosestInput is called
+    private static final List<Input> BRUTEFORCE_INPUTS = MathUtil.possibleInputs();
+
+    public static LivingEntity predictEntityMovement(final LivingEntity entity, final int ticks, final boolean predictInput, final boolean predictJumping) {
         final LivingEntity livingEntity = new LivingEntity((EntityType<? extends LivingEntity>) entity.getType(), entity.getWorld()) {
+
             @Override
             public Iterable<ItemStack> getArmorItems() {
                 return entity.getArmorItems();
             }
 
             @Override
-            public ItemStack getEquippedStack(EquipmentSlot slot) {
+            public ItemStack getEquippedStack(final EquipmentSlot slot) {
                 return entity.getEquippedStack(slot);
             }
 
             @Override
-            public void equipStack(EquipmentSlot slot, ItemStack stack) {
-                // Do nothing
+            public void equipStack(final EquipmentSlot slot, final ItemStack stack) {
             }
 
             @Override
             public Arm getMainArm() {
                 return entity.getMainArm();
             }
+
         };
 
         livingEntity.copyFrom(entity);
         livingEntity.copyPositionAndRotation(entity);
         livingEntity.setVelocity(entity.getVelocity());
 
+        ClientPlayerEntity player = MinecraftWrapper.mc.player;
+
+        final Input predictedInput = (player != null && entity.getId() == player.getId()) ? player.input : getClosestInput(entity);
+
         for (int i = 0; i < ticks; i++) {
-            if(predictInput) {
-                BlockPos blockPos = entity.getVelocityAffectingPos();
-                float p = entity.getWorld().getBlockState(blockPos).getBlock().getSlipperiness();
-                Vec3d input = new Vec3d(entity.sidewaysSpeed, entity.upwardSpeed, entity.forwardSpeed);
-                livingEntity.applyMovementInput(input, p);
+            if (predictInput) {
+                livingEntity.sidewaysSpeed = predictedInput.movementSideways;
+                livingEntity.forwardSpeed = predictedInput.movementForward;
             }
             if (predictJumping && livingEntity.isOnGround()) {
                 livingEntity.jump();
@@ -77,13 +83,10 @@ public class Prediction {
         return livingEntity;
     }
 
-    public static Vec3d predictEntityPosition(LivingEntity entity, int ticks, boolean predictInput, boolean predictJumping) {
-        LivingEntity predictedEntity = predictEntityMovement(entity, ticks, predictInput, predictJumping);
+    public static Vec3d predictEntityPosition(final LivingEntity entity, final int ticks, final boolean predictInput, final boolean predictJumping) {
+        final LivingEntity predictedEntity = predictEntityMovement(entity, ticks, predictInput, predictJumping);
         return predictedEntity.getPos();
     }
-
-    // Jump/sneak states are randomized as soon as getClosestInput is called
-    private static final List<Input> BRUTEFORCE_INPUTS = MathUtil.possibleInputs();
 
     public static Input getClosestInput(final LivingEntity baseEntity) {
         final Vec3d serverPos = ((ILivingEntity) baseEntity).vandalism$prevServerPos();
@@ -97,7 +100,7 @@ public class Prediction {
         }
 
         Pair<Input, Double> bestPossibility = null;
-        for (Input input : BRUTEFORCE_INPUTS) {
+        for (final Input input : BRUTEFORCE_INPUTS) {
             input.jumping = !baseEntity.isOnGround();
             input.sneaking = baseEntity.isSneaking();
 

@@ -18,15 +18,30 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation.randomizer;
 
-import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import lombok.RequiredArgsConstructor;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class Randomizer implements IName {
+@RequiredArgsConstructor
+public abstract class Randomizer implements ValueParent {
 
-    public final Random random = new Random();
+    private final List<Value<?>> values = new ArrayList<>();
+    private final String randomizerName;
 
-    public abstract Vec3d randomiseRotationVec3d(Vec3d vec3d);
+    public abstract Vec3d randomiseRotationVec3d(final Vec3d vec3d);
+
+    @Override
+    public List<Value<?>> getValues() {
+        return this.values;
+    }
+
+    @Override
+    public String getName() {
+        return this.randomizerName;
+    }
 
 }

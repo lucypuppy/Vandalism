@@ -16,23 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.rotation.randomizer;
+package de.nekosarekawaii.vandalism.integration.clicker;
 
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ClassModeValue;
-import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.NoneRandomizer;
-import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.SimplexRandomizer;
-import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.WindmouseRandomizer;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import de.nekosarekawaii.vandalism.integration.clicker.clickers.GaussianClicker;
+import de.nekosarekawaii.vandalism.integration.clicker.clickers.TestClicker;
 
-public class RandomizerModeValue extends ClassModeValue<Randomizer> {
+public class ClickerModeValue extends ClassModeValue<Clicker> {
 
-    public RandomizerModeValue(ValueParent parent, String name, String description) {
-        super(parent, name, description, new NoneRandomizer(), new SimplexRandomizer(), new WindmouseRandomizer());
+    public ClickerModeValue(final ValueParent parent, final String name, final String description, final ClickerModule clickerModule) {
+        super(parent, name, description, new GaussianClicker(clickerModule), new TestClicker(clickerModule));
 
-        for (final Randomizer randomizer : getOptions()) {
-            for (final Value<?> value : randomizer.getValues()) {
-                value.visibleCondition(() -> this.getValue() == randomizer);
+        for (final Clicker clicker : getOptions()) {
+            for (final Value<?> value : clicker.getValues()) {
+                value.visibleCondition(() -> this.getValue() == clicker);
                 parent.getValues().add(value);
             }
         }

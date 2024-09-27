@@ -31,7 +31,7 @@ public class AutoSoupModule extends Module implements PlayerUpdateListener {
 
     private int lastSlot;
     @Getter
-    private State state = State.SWAP_SOUP;
+    private State state = State.WAITING;
 
     public AutoSoupModule() {
         super("Auto Soup", "Automatically heals you by drinking soups in your hotbar.", Category.MISC);
@@ -42,6 +42,7 @@ public class AutoSoupModule extends Module implements PlayerUpdateListener {
     @Override
     protected void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID);
+        this.state = State.WAITING;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class AutoSoupModule extends Module implements PlayerUpdateListener {
                     break;
                 }
                 state = State.SWAP_SOUP;
-                break;
+//                break;
             case SWAP_SOUP:
                 lastSlot = mc.player.getInventory().selectedSlot;
                 InventoryUtil.setSlot(soupSlot);

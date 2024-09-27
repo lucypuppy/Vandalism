@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer;
 
+import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.Randomizer;
 import de.nekosarekawaii.vandalism.util.SimplexNoise;
 import lombok.Setter;
@@ -27,31 +28,56 @@ import net.minecraft.util.math.Vec3d;
 public class SimplexRandomizer extends Randomizer {
 
     private final long startTime;
-    private double maxRadius;
-    private double maxRadiusY;
-    private double mindDistance;
+
+    private final DoubleValue maxRadius = new DoubleValue(
+            this,
+            "Max Radius",
+            "The maximum radius for the randomizer.",
+            0.15,
+            0.0,
+            1.0
+    );
+
+    private final DoubleValue maxRadiusY = new DoubleValue(
+            this,
+            "Max Radius Y",
+            "The maximum radius Y for the randomizer.",
+            0.25,
+            0.0,
+            1.0
+    );
+
+    private final DoubleValue mindDistance = new DoubleValue(
+            this,
+            "Mind Distance To BHV",
+            "The minimum distance to the Best Hit Vector.",
+            0.1,
+            0.0,
+            1.0
+    );
 
     public SimplexRandomizer() {
+        super("Simplex");
         this.startTime = System.currentTimeMillis();
     }
 
     @Override
-    public Vec3d randomiseRotationVec3d(Vec3d vec3d) {
+    public Vec3d randomiseRotationVec3d(final Vec3d vec3d) {
         final double time = (System.currentTimeMillis() - startTime) / 200.0;
 
-        final double jitterX = this.maxRadius * SimplexNoise.noise(time, 0, 0);
-        final double jitterY = this.maxRadiusY * SimplexNoise.noise(0, time, 0);
-        final double jitterZ = this.maxRadius * SimplexNoise.noise(0, 0, time);
+        final double jitterX = this.maxRadius.getValue() * SimplexNoise.noise(time, 0, 0);
+        final double jitterY = this.maxRadiusY.getValue() * SimplexNoise.noise(0, time, 0);
+        final double jitterZ = this.maxRadius.getValue() * SimplexNoise.noise(0, 0, time);
 
         final Vec3d newVec = new Vec3d(vec3d.x + jitterX, vec3d.y + jitterY, vec3d.z + jitterZ);
 
-        if (this.mindDistance <= 0) {
+        if (this.mindDistance.getValue() <= 0) {
             return newVec;
         }
 
         final double dist = vec3d.distanceTo(newVec);
-        if (dist < this.mindDistance) {
-            final double moveFactor = 0.1 + (this.mindDistance / dist);
+        if (dist < this.mindDistance.getValue()) {
+            final double moveFactor = 0.1 + (this.mindDistance.getValue() / dist);
             final double newX = vec3d.getX() + (newVec.getX() - vec3d.getX()) * moveFactor;
             final double newY = vec3d.getY() + (newVec.getY() - vec3d.getY()) * moveFactor;
             final double newZ = vec3d.getZ() + (newVec.getZ() - vec3d.getZ()) * moveFactor;
@@ -59,11 +85,6 @@ public class SimplexRandomizer extends Randomizer {
         }
 
         return newVec;
-    }
-
-    @Override
-    public String getName() {
-        return "Simplex";
     }
 
 }

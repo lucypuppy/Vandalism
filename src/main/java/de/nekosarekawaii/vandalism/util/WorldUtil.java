@@ -70,6 +70,13 @@ public class WorldUtil implements MinecraftWrapper {
         return crosshairTarget;
     }
 
+    public static double calculateRange(final Vec3d from, final Vec3d to) {
+        final double d = from.x - to.x;
+        final double e = from.y - to.y;
+        final double f = from.z - to.z;
+        return Math.sqrt(d * d + e * e + f * f);
+    }
+
     public static boolean canHitEntity(final Entity from, final Entity target, final Rotation rotation, final double range) {
         final Vec3d eyePos = from.getEyePos();
         final Vec3d rotationVector = rotation.getVec();

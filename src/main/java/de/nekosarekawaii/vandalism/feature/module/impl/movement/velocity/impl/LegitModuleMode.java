@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LegitModuleMode extends ModuleMulti<VelocityModule> implements MoveInputListener {
 
@@ -89,7 +89,7 @@ public class LegitModuleMode extends ModuleMulti<VelocityModule> implements Move
 
     private boolean canJump() {
         return switch (chanceMode.getValue().toLowerCase()) {
-            case "percent" -> new Random().nextInt(100) < percent.getValue();
+            case "percent" -> ThreadLocalRandom.current().nextInt(100) < percent.getValue();
             case "hit amount" -> hitAmount.getValue() <= hits;
             case "delay" -> System.currentTimeMillis() - lastJumpTime < delay.getValue();
             default -> false;

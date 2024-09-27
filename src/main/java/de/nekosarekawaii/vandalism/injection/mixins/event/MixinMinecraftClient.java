@@ -106,4 +106,9 @@ public abstract class MixinMinecraftClient {
         return event.time;
     }
 
+    @Inject(method = "handleInputEvents", at = @At("HEAD"))
+    public void callHandleInputListener(final CallbackInfo ci) {
+        Vandalism.getInstance().getEventSystem().callExceptionally(HandleInputListener.HandleInputEvent.ID, new HandleInputListener.HandleInputEvent());
+    }
+
 }

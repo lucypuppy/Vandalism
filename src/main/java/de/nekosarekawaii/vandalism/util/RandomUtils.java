@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.util;
 
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -28,9 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public final class RandomUtils {
 
-    public static final Random RANDOM = new Random();
-    public static final SecureRandom SECURE_RANDOM = new SecureRandom();
-    public static final ThreadLocalRandom MAIN_THREAD_RANDOM = ThreadLocalRandom.current();
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     /**
      * @param minIndex The min index.
