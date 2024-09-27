@@ -52,7 +52,7 @@ public class TestDetection extends Detection implements OutgoingPacketListener {
               // verbose("Pitch GCD: " + pitchGCD);
             }
 
-            System.out.println("Pitch GCD: " + pitchGCD);
+            //System.out.println("Pitch GCD: " + pitchGCD);
         }
     }
 
