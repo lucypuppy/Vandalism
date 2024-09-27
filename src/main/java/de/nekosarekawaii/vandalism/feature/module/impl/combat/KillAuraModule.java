@@ -177,7 +177,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             this.rotationGroup,
             "Client Rotation",
             "Clientside rotation.",
-            true
+            false
     );
 
     private final BooleanValue movementFix = new BooleanValue(

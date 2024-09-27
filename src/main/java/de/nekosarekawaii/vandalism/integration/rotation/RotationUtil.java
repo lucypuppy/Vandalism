@@ -66,7 +66,7 @@ public class RotationUtil implements MinecraftWrapper {
 
         float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
         float accelerationFactor = Math.min(timeFactor / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
-        System.out.println(accelerationFactor);
+        //System.out.println(accelerationFactor);
         speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
 
         // Apply deceleration if within the threshold
