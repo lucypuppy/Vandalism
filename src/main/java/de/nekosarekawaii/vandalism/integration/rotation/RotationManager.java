@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
+import com.mojang.datafixers.util.Function4;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
@@ -39,8 +40,7 @@ public class RotationManager implements MinecraftWrapper, StrafeListener, Rotati
 
     private PrioritizedRotation clientRotation, serverRotation, targetRotation;
 
-    private float rotateSpeed;
-    private float correlationStrength;
+    private Function4<PrioritizedRotation, PrioritizedRotation, Double, Boolean, PrioritizedRotation> smoothingFunc;
     private boolean movementFix;
 
     private long lastMillis;
@@ -99,8 +99,11 @@ public class RotationManager implements MinecraftWrapper, StrafeListener, Rotati
         this.serverRotation = Objects.requireNonNullElseGet(this.clientRotation, () -> new PrioritizedRotation(this.mc.player.lastYaw, this.mc.player.lastPitch, RotationPriority.NORMAL));
 
         if (targetRotation != null) {
-            boolean didRotate = clientRotation != null;
-            this.clientRotation = RotationUtil.rotateMouse(this.targetRotation, this.serverRotation, this.rotateSpeed, deltaTime, didRotate);
+            if (this.smoothingFunc == null) {
+                this.clientRotation = this.targetRotation;
+            } else {
+                this.clientRotation = this.smoothingFunc.apply(this.targetRotation, this.serverRotation, deltaTime, clientRotation != null);
+            }
             return;
         }
 
@@ -118,17 +121,15 @@ public class RotationManager implements MinecraftWrapper, StrafeListener, Rotati
         }
 
         final RotationSettings settings = Vandalism.getInstance().getClientSettings().getRotationSettings();
-        this.clientRotation = RotationUtil.rotateMouse(new PrioritizedRotation(yaw, pitch, RotationPriority.NORMAL), this.serverRotation, settings.rotateSpeed.getValue(), deltaTime, this.clientRotation != null);
+        this.clientRotation = RotationUtil.rotateMouse(new PrioritizedRotation(yaw, pitch, RotationPriority.NORMAL),
+                this.serverRotation, settings.rotateSpeed.getValue(), deltaTime, this.clientRotation != null);
     }
 
-    public void setRotation(final PrioritizedRotation rotation, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
+    public void setRotation(final PrioritizedRotation rotation, final boolean movementFix, final Function4<PrioritizedRotation, PrioritizedRotation, Double, Boolean, PrioritizedRotation> smoothingFunc) {
         if (this.clientRotation == null || rotation.getPriority().getPriority() >= this.clientRotation.getPriority().getPriority()) {
             this.targetRotation = rotation;
-
-            // Settings
-            this.rotateSpeed = rotateSpeed;
-            this.correlationStrength = correlationStrength;
             this.movementFix = movementFix;
+            this.smoothingFunc = smoothingFunc;
         }
     }
 

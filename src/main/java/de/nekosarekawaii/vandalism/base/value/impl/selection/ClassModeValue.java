@@ -23,7 +23,9 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.util.IName;
 import imgui.ImGui;
+import lombok.Getter;
 
+@Getter
 public class ClassModeValue<T extends IName> extends Value<T> {
 
     private final T[] options;

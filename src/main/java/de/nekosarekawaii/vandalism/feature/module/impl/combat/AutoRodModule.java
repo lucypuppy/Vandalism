@@ -143,7 +143,7 @@ public class AutoRodModule extends Module implements PlayerUpdateListener, Rotat
         double targetDistance = this.target != null ? mc.player.getEyePos().distanceTo(this.target.getPos()) : -1;
         double hookDistance = mc.player.fishHook != null ? mc.player.getEyePos().distanceTo(mc.player.fishHook.getPos()) : 9999;
 
-        if (mc.player.fishHook == null && this.target != null && targetDistance > Vandalism.getInstance().getModuleManager().getKillAuraModule().getRange()+0.5) {
+        if (mc.player.fishHook == null && this.target != null && targetDistance > Vandalism.getInstance().getModuleManager().getKillAuraModule().getAttackRange() + 0.5) {
             PrioritizedRotation rotation = this.rotationManager.getClientRotation() != null ? this.rotationManager.getClientRotation() : new PrioritizedRotation(mc.player.getYaw(), mc.player.getPitch(), RotationPriority.NORMAL);
             hitResult = WorldUtil.raytrace(rotation, range.getValue());
 //            predictedTargetPos = Prediction.predictEntityMovement((LivingEntity) this.target, this.ticksToPredict.getValue(), false);

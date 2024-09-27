@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
+import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.StringUtils;
@@ -123,9 +124,9 @@ public class DerpModule extends Module implements PlayerUpdateListener {
         }
         Vandalism.getInstance().getRotationManager().setRotation(
                 new PrioritizedRotation(yaw, pitch, RotationPriority.NORMAL),
-                this.rotateSpeed.getValue(),
-                0.0f,
-                this.useMoveFix.getValue()
+                this.useMoveFix.getValue(),
+                (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
+                        RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation)
         );
     }
 

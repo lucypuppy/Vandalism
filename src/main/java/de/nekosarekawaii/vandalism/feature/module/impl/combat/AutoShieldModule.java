@@ -112,8 +112,8 @@ public class AutoShieldModule extends Module implements PlayerUpdateListener {
             this.target = entities.getFirst();
         } else {
             final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.target.getPos(), RotationPriority.NORMAL);
-            Vandalism.getInstance().getRotationManager().setRotation(rotation, this.rotateSpeed.getValue(),
-                    0.0f, false);
+            Vandalism.getInstance().getRotationManager().setRotation(rotation, false, (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
+                    RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
             if (!this.mc.player.isBlocking()) {
                 this.mc.options.useKey.setPressed(true);
             }

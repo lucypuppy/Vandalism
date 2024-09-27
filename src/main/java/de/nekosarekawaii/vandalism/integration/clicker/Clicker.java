@@ -16,21 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.template.clicking;
+package de.nekosarekawaii.vandalism.integration.clicker;
 
+import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.base.value.impl.selection.ClassModeValue;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import lombok.RequiredArgsConstructor;
 
-public class ClickerModeValue extends ClassModeValue<Clicker> {
+import java.util.ArrayList;
+import java.util.List;
 
-    public ClickerModeValue(ValueParent parent, String name, String description) {
-        super(parent, name, description,
-                new CooldownClicker(),
-                new BezierClicker(),
-                new BoxMuellerClicker());
+@RequiredArgsConstructor
+public abstract class Clicker implements ValueParent {
+
+    private final List<Value<?>> values = new ArrayList<>();
+    protected final ClickerModule clickerModule;
+    private final String clickerName;
+
+    public void onActivate() {
+    }
+
+    public void onDeactivate() {
+    }
+
+    @Override
+    public List<Value<?>> getValues() {
+        return this.values;
+    }
+
+    @Override
+    public String getName() {
+        return this.clickerName;
     }
 
 }

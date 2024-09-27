@@ -90,6 +90,13 @@ public class VisualSettings extends ValueGroup {
             DisplayNameVisibility.values()
     ).visibleCondition(this.customDisplayNameVisibility::getValue);
 
+    public final BooleanValue removeEquipAnimation = new BooleanValue(
+            this,
+            "Remove Equip Animation",
+            "If activated removes the equip animation.",
+            false
+    );
+
     public enum DisplayNameVisibility implements IName {
 
         SHOW_ALL,

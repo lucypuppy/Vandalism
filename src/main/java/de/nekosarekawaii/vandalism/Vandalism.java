@@ -72,7 +72,6 @@ import java.io.File;
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  *  - Add more stuff to fake lag (Ideas off clumsy)
  *  - Fix autoblock blocking without sword
- *  - Rework windmouse algorythm
  *  - Technically this should be legit but i need more investigation -> AutoGUICloseModule#onIncomingPacket
  *  - Maybe add faster ray traces -> RotationBuilder#build
  *  - Make this customizable -> InventoryUtil#getHotbarSlotForItem
@@ -97,7 +96,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     @Getter
     private static final Vandalism instance = new Vandalism();
 
-    private final DietrichEvents2 eventSystem = new DietrichEvents2(48 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
+    private final DietrichEvents2 eventSystem = new DietrichEvents2(50 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
 
     // Base handlers

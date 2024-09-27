@@ -19,30 +19,13 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
-import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
-import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.event.player.RotationListener;
-import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
+import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import net.minecraft.util.hit.HitResult;
+import org.lwjgl.glfw.GLFW;
 
-public class AutoClickerModule extends Module implements PlayerUpdateListener, RotationListener {
-
-    private final ClickerModeValue clickType = new ClickerModeValue(
-            this,
-            "Click Type",
-            "The type of clicking."
-    ).onValueChange((oldValue, newValue) -> {
-        oldValue.setClickAction(aBoolean -> {
-        });
-        this.updateClicker(newValue);
-    });
+public class AutoClickerModule extends ClickerModule implements MouseInputListener {
 
     private final BooleanValue onlyWhenHolding = new BooleanValue(
             this,
@@ -51,67 +34,14 @@ public class AutoClickerModule extends Module implements PlayerUpdateListener, R
             true
     );
 
-    private final FloatValue std = new FloatValue(
+    private final BooleanValue blockBreaking = new BooleanValue(
             this,
-            "Standard Deviation",
-            "The standard deviation for the Box-Mueller clicker.",
-            5.0f,
-            1.0f,
-            10.0f
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
+            "Block Breaking",
+            "Allows you to break blocks instead of clicking on them.",
+            false
+    );
 
-    private final FloatValue mean = new FloatValue(
-            this,
-            "Mean",
-            "The mean for the Box-Mueller clicker.",
-            15.0f,
-            1.0f,
-            30.0f
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
-
-    private final IntegerValue minCps = new IntegerValue(
-            this,
-            "Minimum CPS",
-            "The minimum CPS for the Box-Mueller clicker.",
-            10,
-            1,
-            20
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
-
-    private final IntegerValue maxCps = new IntegerValue(
-            this,
-            "Maximum CPS",
-            "The maximum CPS for the Box-Mueller clicker.",
-            20,
-            1,
-            30
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
-
-    private final BezierValue cpsBezier = new BezierValue(
-            this,
-            "CPS Bezier Curve",
-            "The bezier curve for the CPS.",
-            25.0f,
-            17.0f,
-            14.0f,
-            25.0f,
-            1.0f,
-            25.0f
-    ).visibleCondition(() -> this.clickType.getValue() instanceof BezierClicker);
-
-    private final IntegerValue updatePossibility = new IntegerValue(
-            this,
-            "Update Possibility",
-            "The possibility of the CPS update.",
-            80,
-            0,
-            100
-    ).visibleCondition(() -> !(this.clickType.getValue() instanceof CooldownClicker));
-
+    private boolean isPressed;
 
     public AutoClickerModule() {
         super(
@@ -122,47 +52,51 @@ public class AutoClickerModule extends Module implements PlayerUpdateListener, R
     }
 
     @Override
-    public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
-        this.updateClicker(this.clickType.getValue());
+    protected void onActivate() {
+        super.onActivate();
+        Vandalism.getInstance().getEventSystem().subscribe(this, MouseEvent.ID);
     }
 
     @Override
-    public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+    protected void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, MouseEvent.ID);
+        super.onDeactivate();
     }
 
     @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.onlyWhenHolding.getValue() || this.mc.options.attackKey.isPressed()) {
-            this.clickType.getValue().onUpdate();
+    public void onClick() {
+        if (mc.player == null || mc.world == null) {
+            return;
+        }
+
+        mc.options.attackKey.setPressed(this.checkBreakable() && this.isPressed);
+
+        if (mc.options.attackKey.isPressed()) {
+            return;
+        }
+
+        if (!this.onlyWhenHolding.getValue() || this.isPressed) {
+            this.mc.doAttack();
         }
     }
 
     @Override
-    public void onRotation(final RotationEvent event) {
-        if (!this.onlyWhenHolding.getValue() || this.mc.options.attackKey.isPressed()) {
-            this.clickType.getValue().onRotate();
+    public void onMouse(final MouseEvent event) {
+        if (mc.player == null || mc.world == null || mc.currentScreen != null) {
+            return;
         }
-    }
-
-    private void updateClicker(final Clicker clicker) {
-        if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
-            boxMuellerClicker.setStd(this.std.getValue());
-            boxMuellerClicker.setMean(this.mean.getValue());
-            boxMuellerClicker.setMinCps(this.minCps.getValue());
-            boxMuellerClicker.setMaxCps(this.maxCps.getValue());
-            boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-        }
-        if (clicker instanceof final BezierClicker bezierClicker) {
-            bezierClicker.setBezierValue(this.cpsBezier);
-            bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-        }
-        clicker.setClickAction(attack -> {
-            if (attack) {
-                this.mc.doAttack();
+        if (event.type == Type.BUTTON && event.button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            if (event.action == GLFW.GLFW_PRESS) {
+                this.isPressed = true;
+                event.setCancelled(!this.checkBreakable());
+            } else if (event.action == GLFW.GLFW_RELEASE) {
+                this.isPressed = false;
             }
-        });
+        }
+    }
+
+    private boolean checkBreakable() {
+        return this.blockBreaking.getValue() && mc.crosshairTarget != null && mc.crosshairTarget.getType() == HitResult.Type.BLOCK && Math.sqrt(mc.crosshairTarget.squaredDistanceTo(mc.player)) <= mc.player.getBlockInteractionRange();
     }
 
 }

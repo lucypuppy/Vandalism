@@ -46,81 +46,38 @@ public class RotationUtil implements MinecraftWrapper {
         return new PrioritizedRotation(yaw, pitch, priority);
     }
 
-//    private static long lastNanoTime;
-//
-//    public static PrioritizedRotation rotateMouse(final PrioritizedRotation desiredRotation, final Rotation prevRotation, final float rotationSpeed) {
-//        long currentTime = System.nanoTime();
-//        final double deltaTime = (currentTime - lastNanoTime) / 1e9;
-//
-//        final float f = (float) (mc.options.getMouseSensitivity().getValue() * 0.6000000238418579 + 0.20000000298023224);
-//        final float onePixel = f * f * f * 8.0F;
-//
-//        final float desiredYaw = desiredRotation.getYaw();
-//        final float desiredPitch = desiredRotation.getPitch();
-//        final float prevYaw = prevRotation.getYaw();
-//        final float prevPitch = prevRotation.getPitch();
-//
-//        float yawDiff = desiredYaw - prevYaw;
-//        float pitchDiff = desiredPitch - prevPitch;
-////        float speed = (float) (rotationSpeed + Math.random() * 10);
-//        float speed = rotationSpeed;
-////        if(mc.player.getYaw() == mc.player.prevYaw && mc.player.getPitch() == mc.player.prevPitch){ //if it is the first rotation, slowdown the first rot
-////            speed = (float) (Math.abs(MathHelper.wrapDegrees(yawDiff)) / (3 + Math.random()));
-////        }
-//
-//        speed *= ((RenderTickCounter.Dynamic) mc.getRenderTickCounter()).tickTime;
-//        float yawSpeedMult = 1;
-//        float pitchSpeedMult = 1;
-//
-//        //slowdown rotation in frame to keep rotating until all frames are finished until next tick, so the pitch reaches its destination in the same time as the yaw
-//        if (Math.abs(yawDiff) > Math.abs(pitchDiff)) {
-//            pitchSpeedMult = Math.abs(pitchDiff) / Math.abs(yawDiff);
-//        } else if (Math.abs(pitchDiff) > Math.abs(yawDiff)) {
-//            yawSpeedMult = Math.abs(yawDiff) / Math.abs(pitchDiff);
-//        }
-//
-//        //Fix unintentional deceleration on low frame rates
-//        speed *= deltaTime;
-//        float maxYaw = yawDiff > 0 ? Math.min(speed, yawDiff) * yawSpeedMult / 0.15F : Math.max(-speed, yawDiff) * yawSpeedMult / 0.15F;
-//        float maxPitch = pitchDiff > 0 ? Math.min(speed, pitchDiff) * pitchSpeedMult / 0.15F : Math.max(-speed, pitchDiff) * pitchSpeedMult / 0.15F;
-//        int yawPixels = Math.round(maxYaw / onePixel);
-//        int pitchPixels = Math.round(maxPitch / onePixel);
-//
-//        float yaw = MathHelper.wrapDegrees(prevYaw + onePixel * yawPixels * 0.15F);
-//        float pitch = MathHelper.clamp(prevPitch + onePixel * pitchPixels * 0.15F, -90, 90);
-//        lastNanoTime = System.nanoTime();
-//        return new PrioritizedRotation(yaw, pitch, desiredRotation.getPriority());
-//    }
-
     public static PrioritizedRotation rotateMouse(final PrioritizedRotation desiredRotation, final Rotation prevRotation, final double rotationSpeed, final double deltaTime, final boolean didRotate) {
         final float desiredYaw = desiredRotation.getYaw();
         final float desiredPitch = desiredRotation.getPitch();
         final float prevYaw = prevRotation.getYaw();
         final float prevPitch = prevRotation.getPitch();
 
+        final float timeFactor = (float) (deltaTime / 20.0f);
+
         final float f = (float) (mc.options.getMouseSensitivity().getValue() * 0.6F + 0.2F);
         final float onePixel = f * f * f * 8.0F;
-        float yawDiff = MathHelper.wrapDegrees(desiredYaw - prevYaw);
-        float pitchDiff = desiredPitch - prevPitch;
+        final float yawDiff = MathHelper.wrapDegrees(desiredYaw - prevYaw);
+        final float pitchDiff = desiredPitch - prevPitch;
 
         float speed = (float) rotationSpeed / 8.0f;
 
-        if (!didRotate) { //if it is the first rotation, slowdown the first rot
-            speed = (float) (Math.abs(MathHelper.wrapDegrees(yawDiff)) / (3 + Math.random()));
-            speed = (float) Math.max(1 + Math.random() * 3f, speed);
-        }
+        final double distance = Math.sqrt(yawDiff * yawDiff + pitchDiff * pitchDiff);
+        speed *= 1.0f + (float) distance / 45.0f; // Increase speed based on the largest difference
 
-        //Idk if this can be detected by some anticheats but it fixes some issues on low fps
-        speed *= (float) deltaTime / 20.0f;
+        float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
+        float accelerationFactor = Math.min(timeFactor / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
+        System.out.println(accelerationFactor);
+        speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
 
-        // Apply deceleration
+        // Apply deceleration if within the threshold
         float decelerationThreshold = 5.0f; // Threshold angle to start decelerating
         if (Math.abs(yawDiff) < decelerationThreshold) {
             float decelerationFactor = 0.08f; // Adjust this factor to change the deceleration rate
             speed *= decelerationFactor;
         }
 
-        //slowdown rotation in frame to keep rotating until all frames are finished until next tick, so the pitch reaches its destination in the same time as the yaw
+        // slowdown rotation in frame to keep rotating until all frames are finished until next tick, so the pitch reaches its destination in the same time as the yaw
+        // Adjust speed multipliers to synchronize yaw and pitch changes
         float yawSpeedMult = 1;
         float pitchSpeedMult = 1;
         if (Math.abs(yawDiff) > Math.abs(pitchDiff)) {
@@ -129,11 +86,26 @@ public class RotationUtil implements MinecraftWrapper {
             yawSpeedMult = Math.abs(yawDiff) / Math.abs(pitchDiff);
         }
 
-        final float maxYaw = yawDiff > 0 ? Math.min(speed, yawDiff) * yawSpeedMult / 0.15F : Math.max(-speed, yawDiff) * yawSpeedMult / 0.15F;
-        final float maxPitch = pitchDiff > 0 ? Math.min(speed, pitchDiff) * pitchSpeedMult / 0.15F : Math.max(-speed, pitchDiff) * pitchSpeedMult / 0.15F;
-        int yawPixels = Math.round(maxYaw / onePixel);
-        int pitchPixels = Math.round(maxPitch / onePixel);
+        // Calculate allowed yaw and pitch changes
+        float allowedYawChange = yawDiff > 0
+                ? Math.min(speed, yawDiff)  // Limit yaw change to the smaller of speed or yaw difference if positive
+                : Math.max(-speed, yawDiff); // Limit yaw change to the larger of -speed or yaw difference if negative
+        float allowedPitchChange = pitchDiff > 0
+                ? Math.min(speed, pitchDiff)  // Limit pitch change to the smaller of speed or pitch difference if positive
+                : Math.max(-speed, pitchDiff); // Limit pitch change to the larger of -speed or pitch difference if negative
 
+        allowedYawChange *= timeFactor;
+        allowedPitchChange *= timeFactor;
+
+        // Calculate final yaw and pitch changes
+        final float maxYaw = allowedYawChange * yawSpeedMult / 0.15F;
+        final float maxPitch = allowedPitchChange * pitchSpeedMult/ 0.15F;
+
+        // Convert changes to pixels
+        final int yawPixels = Math.round(maxYaw / onePixel);
+        final int pitchPixels = Math.round(maxPitch / onePixel);
+
+        // Apply the calculated changes
         final float yaw = prevYaw + onePixel * yawPixels * 0.15F;
         final float pitch = MathHelper.clamp(prevPitch + onePixel * pitchPixels * 0.15F, -90.0F, 90.0F);
         return new PrioritizedRotation(yaw, pitch, desiredRotation.getPriority());
@@ -145,10 +117,11 @@ public class RotationUtil implements MinecraftWrapper {
         return Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(target.getYaw())) > diff;
     }
 
-    public static Vec3d clampHitpointsToBoundingBox(final Vec3d vec3d, final Box box) {
-        final double x = MathHelper.clamp(vec3d.x, box.minX, box.maxX);
-        final double y = MathHelper.clamp(vec3d.y, box.minY, box.maxY);
-        final double z = MathHelper.clamp(vec3d.z, box.minZ, box.maxZ);
+    public static Vec3d clampHitpointsToBoundingBox(final Vec3d vec3d, final Box box, final double shrink) {
+        final Box betterBox = box.shrink(shrink, shrink, shrink);
+        final double x = MathHelper.clamp(vec3d.x, betterBox.minX, betterBox.maxX);
+        final double y = MathHelper.clamp(vec3d.y, betterBox.minY, betterBox.maxY);
+        final double z = MathHelper.clamp(vec3d.z, betterBox.minZ, betterBox.maxZ);
         return new Vec3d(x, y, z);
     }
 

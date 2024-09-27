@@ -26,13 +26,13 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 
 public class TimerModule extends Module implements TickTimeListener {
 
-    private final FloatValue ticksPerSecond = new FloatValue(
+    private final FloatValue timerSpeed = new FloatValue(
             this,
-            "Ticks per seconds",
-            "The amount of speed the timer should have.",
-            20.0f,
+            "Timer Speed",
+            "The speed for the minecraft Timer.",
             1.0f,
-            100.0f
+            0.01f,
+            5.0f
     );
 
     private final BooleanValue guis = new BooleanValue(
@@ -63,7 +63,7 @@ public class TimerModule extends Module implements TickTimeListener {
     @Override
     public void onTickTimings(final TickTimeEvent event) {
         if (this.guis.getValue() || this.mc.currentScreen == null) {
-            event.tickTime = 1000f / this.ticksPerSecond.getValue();
+            event.fromPercentage(this.timerSpeed.getValue());
         }
     }
 

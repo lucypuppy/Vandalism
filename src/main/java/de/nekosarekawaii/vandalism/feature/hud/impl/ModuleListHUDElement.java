@@ -181,7 +181,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                     x - 2,
                     y,
                     x + this.getTextWidth(text) + 2,
-                    y + this.getFontHeight() - 1,
+                    y + heightOffset.getValue() + this.getFontHeight(),
                     1677721600
             );
         }

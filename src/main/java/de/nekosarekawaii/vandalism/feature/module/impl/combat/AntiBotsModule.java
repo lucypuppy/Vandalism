@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.render.ShouldRenderEntityListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,11 +35,13 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AntiBotsModule extends Module implements TargetListener, IncomingPacketListener, WorldListener {
+public class AntiBotsModule extends Module implements TargetListener, IncomingPacketListener, WorldListener, ShouldRenderEntityListener {
 
-    private final BooleanValue movement = new BooleanValue(this, "Movement", "Checks if the entities are moving", true);
-    private final BooleanValue sound = new BooleanValue(this, "Sound", "Checks if the entities are playing sounds", false);
-    private final BooleanValue playerList = new BooleanValue(this, "Player List", "Checks if the entities are in the player list (Only Players)", false);
+    private final BooleanValue movement = new BooleanValue(this, "Movement", "Checks if the entities are moving.", true);
+    private final BooleanValue sound = new BooleanValue(this, "Sound", "Checks if the entities are playing sounds.", false);
+    private final BooleanValue playerList = new BooleanValue(this, "Player List", "Checks if the entities are in the player list (Only Players).", false);
+
+    private final BooleanValue hideDetectedBots = new BooleanValue(this, "Hide Detected Bots", "Hides the detected bots.", false);
 
     private final List<Entity> movedEntities = new ArrayList<>();
     private final List<Entity> soundEntities = new ArrayList<>();
@@ -49,42 +52,39 @@ public class AntiBotsModule extends Module implements TargetListener, IncomingPa
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, TargetEvent.ID, IncomingPacketEvent.ID, WorldLoadEvent.ID);
+        this.reset();
+        Vandalism.getInstance().getEventSystem().subscribe(this, TargetEvent.ID, IncomingPacketEvent.ID, WorldLoadEvent.ID, ShouldRenderEntityEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, TargetEvent.ID, IncomingPacketEvent.ID, WorldLoadEvent.ID);
-        clearLists();
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, TargetEvent.ID, IncomingPacketEvent.ID, WorldLoadEvent.ID, ShouldRenderEntityEvent.ID);
+        this.reset();
     }
 
     @Override
-    public void onTarget(TargetEvent event) {
-        if (!event.isTarget)
-            return;
-
-        if (this.movement.getValue() && !this.movedEntities.contains(event.entity)) {
-            event.isTarget = false;
+    public void onTarget(final TargetEvent event) {
+        if (!event.isTarget) {
             return;
         }
 
-        if (this.sound.getValue() && !this.soundEntities.contains(event.entity)) {
+        if (this.isBot(event.entity)) {
             event.isTarget = false;
-            return;
-        }
-
-        //Only Player checks.
-        if (event.entity instanceof final PlayerEntity player) {
-            if (this.playerList.getValue() && mc.getNetworkHandler().getPlayerListEntry(player.getUuid()) == null) {
-                event.isTarget = false;
-            }
         }
     }
 
     @Override
-    public void onIncomingPacket(IncomingPacketEvent event) {
-        if (mc.world == null)
+    public void onShouldRenderEntity(final ShouldRenderEntityEvent event) {
+        if (this.hideDetectedBots.getValue() && this.isBot(event.entity)) {
+            event.cancel();
+        }
+    }
+
+    @Override
+    public void onIncomingPacket(final IncomingPacketEvent event) {
+        if (mc.world == null) {
             return;
+        }
 
         if (this.movement.getValue() && event.packet instanceof final EntityPositionS2CPacket packet) {
             final Entity entity = mc.world.getEntityById(packet.getEntityId());
@@ -128,12 +128,31 @@ public class AntiBotsModule extends Module implements TargetListener, IncomingPa
 
     @Override
     public void onPreWorldLoad() {
-        clearLists();
+        this.reset();
     }
 
-    private void clearLists() {
+    private void reset() {
         this.movedEntities.clear();
         this.soundEntities.clear();
+    }
+
+    private boolean isBot(final Entity entity) {
+        if (this.movement.getValue() && !this.movedEntities.contains(entity)) {
+            return true;
+        }
+
+        if (this.sound.getValue() && !this.soundEntities.contains(entity)) {
+            return true;
+        }
+
+        // Only Player checks
+        if (entity instanceof final PlayerEntity player) {
+            if (this.playerList.getValue() && mc.getNetworkHandler().getPlayerListEntry(player.getUuid()) == null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

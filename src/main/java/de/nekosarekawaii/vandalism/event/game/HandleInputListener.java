@@ -16,23 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.template.clicking;
+package de.nekosarekawaii.vandalism.event.game;
 
-import de.nekosarekawaii.vandalism.util.IName;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import lombok.Setter;
+import de.florianmichael.dietrichevents2.AbstractEvent;
 
-import java.util.function.Consumer;
+public interface HandleInputListener {
 
-@Setter
-public abstract class Clicker implements IName, MinecraftWrapper {
+    void onHandleInputEvent(HandleInputEvent event);
 
-    public Consumer<Boolean> clickAction = attack -> {
-    };
+    class HandleInputEvent extends AbstractEvent<HandleInputListener> {
 
-    public abstract void onUpdate();
+        public static final int ID = 48;
 
-    public void onRotate() {
+        @Override
+        public void call(final HandleInputListener listener) {
+            listener.onHandleInputEvent(this);
+        }
     }
-
 }

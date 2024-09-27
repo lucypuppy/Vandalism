@@ -18,119 +18,51 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
-import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
-import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
-import de.nekosarekawaii.vandalism.event.render.Render2DListener;
-import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.AutoSoupModule;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPoint;
 import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
-import de.nekosarekawaii.vandalism.integration.rotation.randomizer.Randomizer;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.RandomizerModeValue;
-import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.SimplexRandomizer;
-import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.NoneRandomizer;
+import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.StringUtils;
+import lombok.Getter;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardEntry;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KillAuraModule extends Module implements PlayerUpdateListener, Render2DListener, Render3DListener, RotationListener, RaytraceListener {
+public class KillAuraModule extends ClickerModule implements RaytraceListener, RotationListener {
 
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
             "Target Selection",
-            "Settings for the target selection."
+            "The target selection group of the " + this.getName() + "."
     );
 
-    private final TargetGroup targetGroup = new TargetGroup(this.targetSelectionGroup, "Targets", "The entities to target.");
-
-    private final DoubleValue range = new DoubleValue(
+    private final TargetGroup targetGroup = new TargetGroup(
             this.targetSelectionGroup,
-            "Range",
-            "The range extension for the aim.",
-            3.0,
-            2.0,
-            6.0
+            "Targets",
+            "The entities to target."
     );
-
-    private final DoubleValue preAimRangeExtension = new DoubleValue(
-            this.targetSelectionGroup,
-            "Pre Aim Range Extension",
-            "The range extension for the aim.",
-            3.0,
-            0.0,
-            3.0
-    );
-
-    private final ValueGroup reachExploitGroup = new ValueGroup(
-            this.targetSelectionGroup,
-            "Reach Exploit",
-            "Settings for the reach exploit."
-    );
-
-    private final BooleanValue firstHitExtender = new BooleanValue(
-            this.reachExploitGroup,
-            "First Hit Extender",
-            "Whether the first hit extender should be used.",
-            false
-    );
-
-    private final IntegerValue firstHitExtenderOffTime = new IntegerValue(
-            this.reachExploitGroup,
-            "First Hit Extender Off Time",
-            "The time in milliseconds after the first hit extender should be disabled.",
-            1000,
-            0,
-            5000
-    ).visibleCondition(this.firstHitExtender::getValue);
-
-    private final DoubleValue firstHitRangeExtender = new DoubleValue(
-            this.reachExploitGroup,
-            "First Hit Range Extender",
-            "The range extender for the first hit extender.",
-            1.0,
-            0.0,
-            2.0
-    ).visibleCondition(this.firstHitExtender::getValue);
 
     private final EnumModeValue<SelectionMode> selectionMode = new EnumModeValue<>(
             this.targetSelectionGroup,
@@ -140,109 +72,51 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
             SelectionMode.values()
     );
 
-    private final BooleanValue switchTarget = new BooleanValue(
-            this.targetSelectionGroup,
-            "Switch Target",
-            "Whether the target should be switched.",
-            true
-    );
-
     private final BooleanValue ignoreCreativePlayers = new BooleanValue(
             this.targetSelectionGroup,
             "Ignore Creative Players",
             "Whether creative players should be ignored.",
-            false
+            true
     );
 
-    private final ValueGroup clicking = new ValueGroup(
-            this,
-            "Clicking",
-            "Settings for the clicking."
+    private final ValueGroup rangeGroup = new ValueGroup(
+            this.targetSelectionGroup,
+            "Range",
+            "The range group of the " + this.getName() + "."
     );
 
-    private final ClickerModeValue clickType = new ClickerModeValue(
-            this.clicking,
-            "Click Type",
-            "The type of clicking."
-    ).onValueChange((oldValue, newValue) -> {
-        oldValue.setClickAction(aBoolean -> {
-        });
-        this.updateClicker(newValue);
-    });
+    private final DoubleValue rotateRange = new DoubleValue(
+            this.rangeGroup,
+            "Rotation Range",
+            "The range in which the " + this.getName() + " should start to rotate to the target.",
+            4.5, 1.0, 6.0
+    );
 
-    private final FloatValue std = new FloatValue(
-            this.clicking,
-            "Standard Deviation",
-            "The standard deviation for the Box-Mueller clicker.",
-            5.0f,
-            1.0f,
-            10.0f
-    )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
+    private final DoubleValue clickRange = new DoubleValue(
+            this.rangeGroup,
+            "Click Range",
+            "The range in which the " + this.getName() + " should start clicking.",
+            4.0, 1.0, 6.0
+    );
 
-    private final FloatValue mean = new FloatValue(
-            this.clicking, "Mean",
-            "The mean for the Box-Mueller clicker.",
-            15.0f, 1.0f, 30.0f
-    )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
+    private final DoubleValue attackRange = new DoubleValue(
+            this.rangeGroup,
+            "Attack Range",
+            "The range in which the " + this.getName() + " should start attacking the target.",
+            3.0, 1.0, 6.0
+    );
 
-    private final IntegerValue minCps = new IntegerValue(
-            this.clicking,
-            "Minimum CPS",
-            "The minimum CPS for the clicker.",
-            10,
-            1,
-            20
-    )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
-
-    private final IntegerValue maxCps = new IntegerValue(
-            this.clicking,
-            "Maximum CPS",
-            "The maximum CPS for the clicker.",
-            20,
-            1,
-            30
-    )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
-            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
-
-    private final BezierValue cpsBezier = new BezierValue(
-            this.clicking,
-            "CPS Bezier Curve",
-            "The bezier curve for the CPS.",
-            25.0f,
-            17.0f,
-            14.0f,
-            25.0f,
-            1.0f,
-            25.0f
-    ).visibleCondition(() -> this.clickType.getValue() instanceof BezierClicker);
-
-    private final IntegerValue updatePossibility = new IntegerValue(
-            this.clicking,
-            "Update Possibility",
-            "The possibility of the CPS update.",
-            80,
-            0,
-            100
-    ).visibleCondition(() -> !(this.clickType.getValue() instanceof CooldownClicker));
-
-    private final BooleanValue preHit = new BooleanValue(
-            this.clicking,
-            "Pre Hit",
-            "Whether you want to pre hit in the extended range (doesnt work in cooldown mode).",
+    private final BooleanValue switchTarget = new BooleanValue(
+            this.targetSelectionGroup,
+            "Switch Target",
+            "Whether the target should be switched.",
             false
-    ).visibleCondition(() -> !(this.clickType.getValue() instanceof CooldownClicker));
+    );
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
-            "Settings for the rotations."
+            "The rotation group of the " + this.getName() + "."
     );
 
     private final ValueGroup rotationSpeedGroup = new ValueGroup(
@@ -255,46 +129,16 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
             this.rotationSpeedGroup,
             "Rotation Speed Type",
             "The type of the rotation speed.",
-            SmoothingType.BEZIER,
+            SmoothingType.NORMAL,
             SmoothingType.values()
     );
 
-    private final FloatValue rotateSpeed = new FloatValue(
+    private final FloatValue rotationSpeed = new FloatValue(
             this.rotationSpeedGroup,
-            "Rotate Speed",
+            "Rotation Speed",
             "The speed of the rotation.",
-            60.0f,
-            1.0f,
-            180.0f
+            90.0f, 1.0f, 180.0f
     ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.NORMAL);
-
-    private final BezierValue rotationSpeedBezier = new BezierValue(
-            this.rotationSpeedGroup,
-            "Rotation Speed Bezier Curve",
-            "The bezier curve for the rotation speed.",
-            40.0f,
-            20.0f,
-            90.0f,
-            50.0f,
-            1.0f,
-            180.0f
-    ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.BEZIER);
-
-    private final FloatValue correlationStrength = new FloatValue(
-            this.rotationGroup,
-            "Correlation Strength",
-            "The strength of the correlation.",
-            0.2f,
-            0.0f,
-            1.0f
-    );
-
-    private final BooleanValue clientRotations = new BooleanValue(
-            this.rotationGroup,
-            "Client Rotations",
-            "Whenever the rotations are clientside or nor.",
-            false
-    );
 
     private final ValueGroup randomisation = new ValueGroup(
             this.rotationGroup,
@@ -308,358 +152,186 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
             "The mode of the randomizer."
     );
 
-    private final DoubleValue maxRadius = new DoubleValue(
+    private final DoubleValue minDistToBHV = new DoubleValue(
             this.randomisation,
-            "Max Radius",
-            "The maximum radius for the randomiser.",
-            0.15,
-            0.0,
-            1.0
-    ).visibleCondition(() -> this.randomizerMode.getValue() instanceof SimplexRandomizer);
+            "Min Dist to BHV",
+            "The minimal distance to the best hit vector.",
+            0.2, 0.0, 1.0
+    ).visibleCondition(() -> !(this.randomizerMode.getValue() instanceof NoneRandomizer));
 
-    private final DoubleValue maxRadiusY = new DoubleValue(
+    private final DoubleValue maxDistToBHV = new DoubleValue(
             this.randomisation,
-            "Max Radius Y",
-            "The maximum radius Y for the randomiser.",
-            0.25,
-            0.0,
-            1.0
-    ).visibleCondition(() -> this.randomizerMode.getValue() instanceof SimplexRandomizer);
+            "Max Dist to BHV",
+            "The maximum distance to the best hit vector.",
+            0.5, 0.0, 1.0
+    ).visibleCondition(() -> !(this.randomizerMode.getValue() instanceof NoneRandomizer));
 
-    private final DoubleValue mindDistanceToBHV = new DoubleValue(
+    private final BooleanValue reuseOldPoint = new BooleanValue(
             this.randomisation,
-            "Mind Distance To BHV",
-            "The minimum distance to the Best Hit Vector.",
-            0.1,
-            0.0,
-            1.0
-    ).visibleCondition(() -> this.randomizerMode.getValue() instanceof SimplexRandomizer);
-
-    private final ValueGroup humanityGroup = new ValueGroup(
-            this.rotationGroup,
-            "Humanity",
-            "These settings make the Killaura more human"
-    );
-
-    private final BooleanValue reactionDelay = new BooleanValue(
-            this.humanityGroup,
-            "Reaction Delay",
-            "Whether the reaction delay should be used.",
+            "Reuse Old Point",
+            "Whether the old point should be reused.",
             true
-    );
+    ).visibleCondition(() -> !(this.randomizerMode.getValue() instanceof NoneRandomizer));
 
-    private final IntegerValue reactionDelayMin = new IntegerValue(
-            this.humanityGroup,
-            "Reaction Delay Min",
-            "The minimum reaction delay.",
-            50,
-            0,
-            1000
-    ).visibleCondition(this.reactionDelay::getValue);
-
-    private final IntegerValue reactionDelayMax = new IntegerValue(
-            this.humanityGroup,
-            "Reaction Delay Max",
-            "The maximum reaction delay.",
-            100,
-            0,
-            1000
-    ).visibleCondition(this.reactionDelay::getValue);
-
-    private final BooleanValue outerHitbox = new BooleanValue(
-            this.humanityGroup,
-            "Outer Hitbox",
-            "Only aims if the rotations arent on the hitbox anymore",
+    private final BooleanValue clientRotation = new BooleanValue(
+            this.rotationGroup,
+            "Client Rotation",
+            "Clientside rotation.",
             true
     );
 
     private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
             "Movement Fix",
-            "Whether the movement fix should be used.",
+            "Whether the movement fix should be applied.",
             true
-    );
-
-    private final ValueGroup autoBlockGroup = new ValueGroup(
-            this,
-            "Auto Block",
-            "Settings for the auto block."
-    );
-
-    private final EnumModeValue<AutoBlockMode> autoBlockMode = new EnumModeValue<>(
-            this.autoBlockGroup,
-            "Auto Block Mode",
-            "The mode of the auto block.",
-            AutoBlockMode.OFF,
-            AutoBlockMode.values()
-    );
-
-    private final ValueGroup extraSettings = new ValueGroup(
-            this,
-            "Extra Settings",
-            "Extra settings for the auto block."
     );
 
     public final BooleanValue noHitSlow = new BooleanValue(
-            this.extraSettings,
-            "No Hit Slowdown",
-            "Whether you should slow down when hitting.",
+            this,
+            "No Hit Slow",
+            "Whether the player should not be slowed down when hitting.",
             false
     );
 
-    private final ValueGroup renderGroup = new ValueGroup(
-            this,
-            "Render",
-            "Settings for aura render stuff."
-    );
-
-    private final BooleanValue targetESP = new BooleanValue(
-            this.renderGroup,
-            "Target ESP",
-            "Whether to render the target ESP.",
-            true
-    );
-
-    private final ColorValue targetColor1 = new ColorValue(
-            this.renderGroup,
-            "First Target Color",
-            "The first color of the target ESP.",
-            new Color(0x00FF00)
-    ).visibleCondition(this.targetESP::getValue);
-
-    private final ColorValue targetColor2 = new ColorValue(
-            this.renderGroup,
-            "Second Target Color",
-            "The second color of the target ESP.",
-            new Color(0x00FF00)
-    ).visibleCondition(this.targetESP::getValue);
-
+    // Target
+    @Getter
     private Entity target;
     private int targetIndex = 0;
 
-    private double raytraceDistance = -1.0;
-    private boolean isLooking = false;
-
-    private long lastPossibleHit = -1;
-
-    private final RotationManager rotationManager;
-
-    public boolean isBlocking = false;
-    public boolean shouldRotate;
-
-    public final MSTimer aimTimer = new MSTimer();
-
+    // Rotation
     public final EntityHitPoint points = new IcarusBHV();
-
-    private AutoSoupModule autoSoupModule;
+    public Vec3d hitPoint;
+    public final MSTimer rotationTimer = new MSTimer();
+    private int currentDirection = 0;
+    private long rotationDelay = 0L;
 
     public KillAuraModule() {
-        super(
-                "Kill Aura",
-                "Automatically attacks nearby enemies.",
-                Category.COMBAT
-        );
-
-        this.rotationManager = Vandalism.getInstance().getRotationManager();
-        this.updateClicker(this.clickType.getValue());
-
+        super("Kill Aura", "Automatically attacks nearby enemies.", Category.COMBAT);
         this.deactivateAfterSessionDefault();
     }
 
     @Override
-    public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(
-                this,
-                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
-        );
-
-        this.updateClicker(this.clickType.getValue());
-
-        if (this.autoSoupModule == null)
-            this.autoSoupModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSoupModule.class);
+    protected void onActivate() {
+        super.onActivate();
+        Vandalism.getInstance().getEventSystem().subscribe(this, RaytraceEvent.ID, RotationEvent.ID);
     }
 
     @Override
-    public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(
-                this,
-                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
-        );
-
-        this.rotationManager.resetRotation(RotationPriority.HIGH);
-        this.targetIndex = 0;
-
-        stopBlocking(BlockState.ERROR);
-    }
-
-    @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.target == null || this.rotationManager.getClientRotation() == null) {
-            stopBlocking(BlockState.ERROR);
-            return;
-        }
-
-        // Check if the target is looking at us
-        final Rotation pseudoRotation = RotationUtil.rotationToVec(this.target.getEyePos(), RotationPriority.NORMAL);
-        this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
-                this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
-
-        final double raytraceReach = this.preHit.getValue() && !(this.clickType.getValue() instanceof CooldownClicker) ? this.getAimRange() : this.getRange();
-        final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getClientRotation() != null ? this.rotationManager.getClientRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch()), raytraceReach);
-        this.raytraceDistance = raytrace != null && (preHit.getValue() || raytrace.getType() != HitResult.Type.MISS) ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
-
-        if (this.raytraceDistance > raytraceReach || this.raytraceDistance < 0) {
-            stopBlocking(BlockState.ERROR);
-            this.targetIndex = 0;
-            return;
-        }
-
-        stopBlocking(BlockState.PRE_CLICKING);
-        boolean shouldUpdate = true;
-        final Clicker clicker = this.clickType.getValue();
-
-        if (autoSoupModule != null && autoSoupModule.isActive() && autoSoupModule.getState() != AutoSoupModule.State.WAITING) {
-            clicker.clickAction.accept(false);
-            shouldUpdate = false;
-        }
-
-        if (clicker instanceof final CooldownClicker cooldownClicker) {
-            if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
-                cooldownClicker.clickAction.accept(false);
-                shouldUpdate = false;
-            }
-            if (shouldUpdate) {
-                if (
-                        this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult &&
-                                entityHitResult.getEntity().distanceTo(this.mc.player) >
-                                        (this.getPreHit().getValue() ? this.getAimRange() : this.getRange())
-                ) {
-                    cooldownClicker.clickAction.accept(false);
-                    shouldUpdate = false;
-                }
-            }
-        } else if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
-            if (!this.getPreHit().getValue()) {
-                if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
-                    clicker.clickAction.accept(false);
-                    boxMuellerClicker.setClicks(0);
-                    shouldUpdate = false;
-                }
-                if (shouldUpdate) {
-                    if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult && entityHitResult.getEntity().distanceTo(this.mc.player) > this.getAimRange()) {
-                        clicker.clickAction.accept(false);
-                        boxMuellerClicker.setClicks(0);
-                        shouldUpdate = false;
-                    }
-                }
-            } else {
-                if (this.getTarget() == null) {
-                    clicker.clickAction.accept(false);
-                    boxMuellerClicker.setClicks(0);
-                    shouldUpdate = false;
-                }
-            }
-        }
-        if (shouldUpdate) clicker.onUpdate();
-        startBlocking(BlockState.POST_CLICKING);
+    protected void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, RaytraceEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGH);
+        this.target = null;
+        this.hitPoint = null;
+        super.onDeactivate();
     }
 
     @Override
     public void onRotation(final RotationEvent event) {
-        if (mc.player == null || mc.interactionManager == null || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) {
+        if (mc.player == null || mc.world == null) return;
+        this.updateTarget();
+
+        if (this.target == null) {
+            Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGH);
+            this.hitPoint = null;
             return;
         }
 
-        this.updateTarget();
+//        Vec3d actualVelocity = new Vec3d(mc.player.prevX - mc.player.getX(), mc.player.prevY - mc.player.getY(), mc.player.prevZ - mc.player.getZ()).multiply(-1);
+//        Vec3d diff = actualVelocity.subtract(target.prevX - target.getX(), target.prevY - target.getY(), target.prevZ - target.getZ());
 
-        if (this.target != null) {
-            if (this.raytraceDistance <= this.getAimRange()) {
-                this.clickType.getValue().onRotate();
+        // This code generates a hitpoint on a target entity hitbox
+        final Vec3d newPoint = this.points.generateHitPoint(this.target);
+        if (this.hitPoint == null || !this.reuseOldPoint.getValue()) {
+            this.hitPoint = newPoint;
+        }
+
+        { // Randomisation
+            this.hitPoint = this.randomizerMode.getValue().randomiseRotationVec3d(this.hitPoint);
+
+            // This code clamps the distance between the hitpoint and the new point to a maximum distance
+            final double maxDistance = this.maxDistToBHV.getValue();
+            if (this.hitPoint.distanceTo(newPoint) > maxDistance) {
+                final Vec3d direction = this.hitPoint.subtract(newPoint).normalize();
+                this.hitPoint = newPoint.add(direction.multiply(maxDistance));
             }
 
-            Vec3d aimPos = this.points.generateHitPoint(this.target);
-            final Randomizer randomizer = randomizerMode.getValue();
-
-            if (randomizer instanceof final SimplexRandomizer simplexRandomizer) {
-                simplexRandomizer.setMaxRadius(maxRadius.getValue());
-                simplexRandomizer.setMaxRadiusY(maxRadiusY.getValue());
-                simplexRandomizer.setMindDistance(mindDistanceToBHV.getValue());
+            final double minDistance = this.minDistToBHV.getValue();
+            if (this.hitPoint.distanceTo(newPoint) < minDistance) {
+                final Vec3d direction = this.hitPoint.subtract(newPoint).normalize();
+                this.hitPoint = newPoint.add(direction.multiply(minDistance));
             }
 
-            //final Vec3d oldVec = aimPos;
-            aimPos = randomizerMode.getValue().randomiseRotationVec3d(aimPos);
+            final double distance = this.hitPoint.distanceTo(newPoint);
+            //ChatUtil.infoChatMessage("Distance: " + distance);
+        }
 
-            //final double mindDist = oldVec.distanceTo(aimPos);
-            //if (mindDist < 0.1) {
-            //    ChatUtil.infoChatMessage("Shit client gets detected" + mindDist);
-            //}
 
-            aimPos = RotationUtil.clampHitpointsToBoundingBox(aimPos, this.target.getBoundingBox());
-            final PrioritizedRotation rotation = RotationUtil.rotationToVec(aimPos, RotationPriority.HIGH);
+//        this.hitPoint.subtract(diff.multiply(random.nextGaussian()));
 
-            if (rotation == null) { // Sanity check, crashes if you sneak and have your reach set to 3.0
-                this.rotationManager.resetRotation(RotationPriority.HIGH);
-                return;
-            }
+        // This code clamps the hitpoint to the bounding box of the target entity and generates the rotation
+        this.hitPoint = RotationUtil.clampHitpointsToBoundingBox(this.hitPoint, this.target.getBoundingBox(), 0.01);
+        final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.hitPoint, RotationPriority.HIGH);
+        final PrioritizedRotation preRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
 
-            if (this.rotationManager.getClientRotation() == null || (!this.outerHitbox.getValue() && !this.reactionDelay.getValue())) {
-                this.shouldRotate = true;
-            } else {
-                if (this.outerHitbox.getValue() &&
-                        !WorldUtil.canHitEntity(mc.player, target, this.rotationManager.getClientRotation(), getAimRange())) {
-                    if (!this.reactionDelay.getValue() ||
-                            this.aimTimer.hasReached(RandomUtils.randomInt(this.reactionDelayMin.getMinValue(), this.reactionDelayMax.getValue()), true)) {
-                        this.shouldRotate = true;
-                    }
-                } else {
-                    final float yaw = MathHelper.wrapDegrees(rotation.getYaw());
-                    final float pitch = rotation.getPitch();
-                    final float yawDiff = Math.abs(yaw - MathHelper.wrapDegrees(this.rotationManager.getClientRotation().getYaw()));
-                    final float pitchDiff = Math.abs(pitch - this.rotationManager.getClientRotation().getPitch());
+//        if (preRotation != null) {
+//            final float yawDifference = MathHelper.wrapDegrees(rotation.getYaw()) - MathHelper.wrapDegrees(preRotation.getYaw());
+//            final float threshold = 5.0f;
+//
+//            int direction = 0;
+//            if (yawDifference > threshold) {
+//                direction = 1;
+//            } else if (yawDifference < -threshold) {
+//                direction = -1;
+//            }
+//
+//            if (direction != 0) {
+//                final boolean changedDiection = direction != this.currentDirection;
+//                this.currentDirection = direction;
+//
+//                if (changedDiection && this.rotationDelay == 0L) {
+//                    this.rotationDelay = RandomUtils.randomLong(20L, 100L);
+//                    this.rotationTimer.reset();
+//                    ChatUtil.infoChatMessage("Direction changed! (Rotation timer reset! " + this.rotationDelay + ")");
+//                }
+//            }
+//        }
 
-                    if (yawDiff <= 2 && pitchDiff <= 2) {
-                        this.shouldRotate = false;
-                    } else if (!this.outerHitbox.getValue() &&
-                            (!this.reactionDelay.getValue() ||
-                                    this.aimTimer.hasReached(RandomUtils.randomInt(this.reactionDelayMin.getMinValue(), this.reactionDelayMax.getValue()), true))) {
-                        this.shouldRotate = true;
-                    }
+        // Update the current reaction time
+//        updateReactionTime(rotation);
 
-                    this.aimTimer.reset();
-                }
-            }
 
-            if (this.shouldRotate) {
-                float rotateSpeed = 360.0f;
+        // This code sets the rotation
+        if (this.rotationDelay == 0L || this.rotationTimer.hasReached(this.rotationDelay)) {
+            Vandalism.getInstance().getRotationManager().setRotation(rotation, this.movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
+                    RotationUtil.rotateMouse(targetRotation, serverRotation, this.getRotationSpeed(), deltaTime, hasClientRotation));
+            this.rotationDelay = 0L;
+        }
 
-                if (rotationSpeedType.getValue() == SmoothingType.NORMAL) {
-                    rotateSpeed = this.rotateSpeed.getValue();
-                }
-
-                this.rotationManager.setRotation(
-                        rotation,
-                        rotateSpeed,
-                        this.correlationStrength.getValue(),
-                        this.movementFix.getValue()
-                );
-            }
-
-            if (this.rotationManager.getClientRotation() != null && this.clientRotations.getValue()) {
-                final Rotation clientRotation = this.rotationManager.getClientRotation();
-                mc.player.setYaw(clientRotation.getYaw());
-                mc.player.setPitch(clientRotation.getPitch());
-            }
-        } else {
-            this.rotationManager.resetRotation(RotationPriority.HIGH);
+        final PrioritizedRotation currentRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
+        if (currentRotation != null && this.clientRotation.getValue()) {
+            mc.player.setYaw(currentRotation.getYaw());
+            mc.player.setPitch(currentRotation.getPitch());
         }
     }
 
     @Override
     public void onRaytrace(final RaytraceEvent event) {
-        if (this.target != null && this.rotationManager.getClientRotation() != null) {
-            event.range = getRange();
+        if (this.target != null && Vandalism.getInstance().getRotationManager().getClientRotation() != null) {
+            event.range = getAttackRange();
         }
+    }
+
+    public double getAttackRange() {
+        return this.attackRange.getValue();
+    }
+
+    public double getClickRange() {
+        return this.clickRange.getValue();
+    }
+
+    public double getRotateRange() {
+        return this.rotateRange.getValue();
     }
 
     private void updateTarget() {
@@ -671,7 +343,7 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
             }
             if (
                     this.targetGroup.isTarget(entity) &&
-                            this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
+                            this.mc.player.distanceTo(entity) <= getRotateRange() + 1.0 &&
                             entity.getWidth() > 0.0 && entity.getHeight() > 0.0
             ) {
                 PlayerListEntry playerListEntry = null;
@@ -717,7 +389,7 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
                 return Double.compare(armor1, armor2);
             });
 
-            case GOMME_HEALTH -> entities.sort((entity1, entity2) -> {
+            case SCOREBOARD_HEALTH -> entities.sort((entity1, entity2) -> {
                 double health1 = getHealthFromScoreboard(entity1);
                 double health2 = getHealthFromScoreboard(entity2);
                 if (health1 == 9999 && health2 == 9999) {
@@ -740,7 +412,7 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
         this.target = entities.get(this.targetIndex);
     }
 
-    private double getAngleToPlayer(Entity entity) {
+    private double getAngleToPlayer(final Entity entity) {
         // Calculate direction vector from player to entity
         double dx = entity.getX() - mc.player.getX();
         double dz = entity.getZ() - mc.player.getZ();
@@ -765,10 +437,10 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
         return Math.acos(dotProduct);
     }
 
-    private double getHealthFromScoreboard(Entity entity) {
-        Scoreboard scoreboard = mc.player.getScoreboard();
+    private double getHealthFromScoreboard(final Entity entity) {
+        final Scoreboard scoreboard = mc.player.getScoreboard();
 
-        for (ScoreboardEntry entry : scoreboard.getScoreboardEntries(scoreboard.getNullableObjective("health"))) {
+        for (final ScoreboardEntry entry : scoreboard.getScoreboardEntries(scoreboard.getNullableObjective("health"))) {
             if (entry.owner().equalsIgnoreCase(entity.getName().getString())) {
                 return entry.value();
             }
@@ -782,206 +454,57 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
         return 9999; // default value if health is not found
     }
 
-    public BooleanValue getPreHit() {
-        return preHit;
-    }
-
-    public double getAimRange() {
-        return getRange() + this.preAimRangeExtension.getValue();
-    }
-
-    public double getRange() {
-        if (
-                this.firstHitExtender.getValue() &&
-                        (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue() &&
-                        this.isLooking
-        ) {
-            return this.range.getValue() + this.firstHitRangeExtender.getValue();
+    private float getRotationSpeed() {
+        if (this.rotationSpeedType.getValue() == SmoothingType.NORMAL) {
+            return this.rotationSpeed.getValue();
         }
 
-        return this.range.getValue();
-    }
-
-    private void updateClicker(final Clicker clicker) {
-        if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
-            boxMuellerClicker.setStd(this.std.getValue());
-            boxMuellerClicker.setMean(this.mean.getValue());
-            boxMuellerClicker.setMinCps(this.minCps.getValue());
-            boxMuellerClicker.setMaxCps(this.maxCps.getValue());
-            boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-        } else if (clicker instanceof final BezierClicker bezierClicker) {
-            bezierClicker.setBezierValue(this.cpsBezier);
-            bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-        }
-        clicker.setClickAction(attack -> {
-            if (attack) {
-                final boolean possibleHit = this.raytraceDistance <= getRange();
-
-                if (possibleHit) {
-                    this.lastPossibleHit = System.currentTimeMillis();
-                }
-
-                this.hit();
-            }
-        });
-    }
-
-    private void hit() {
-        stopBlocking(BlockState.PRE_ATTACK);
-
-        this.mc.doAttack();
-
-        startBlocking(BlockState.POST_ATTACK);
-
-        this.targetIndex++;
-    }
-
-    private void startBlocking(final BlockState blockState) {
-        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
-            return;
-        }
-
-        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
-            mc.options.useKey.setPressed(true); // Ensure we are blocking permanently
-        } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
-            if (blockState == BlockState.POST_ATTACK) {
-                final ActionResult actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
-                if (actionResult.isAccepted()) {
-                    if (actionResult.shouldSwingHand()) {
-                        mc.player.swingHand(Hand.MAIN_HAND);
-                    }
-                }
-            }
-
-            this.isBlocking = true;
-        }
-    }
-
-    private void stopBlocking(final BlockState blockState) {
-        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
-            return;
-        }
-
-        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
-            mc.options.useKey.setPressed(blockState != BlockState.ERROR);
-        } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
-            if (this.mc.player.isBlocking() || this.isBlocking) {
-                if (blockState == BlockState.PRE_ATTACK) {
-                    this.mc.interactionManager.stopUsingItem(mc.player);
-                }
-
-                this.isBlocking = false;
-            }
-        }
-    }
-
-    public Entity getTarget() {
-        return this.target;
+        return 360.0f; // Instant Rotations
     }
 
     @Override
-    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
-        //    if (this.clickType.getValue().getClicker() instanceof final BoxMuellerClicker boxMuellerClicker) {
-        //        final List<Vector4d> cpsHistory = boxMuellerClicker.getCpsHistory().getNormalList();
-//
-        //        if (cpsHistory.size() < 5) {
-        //            return;
-        //        }
-//
-        //        final Double[] x = new Double[cpsHistory.size()];
-        //        final Double[] y1 = new Double[cpsHistory.size()];
-        //        final Double[] y2 = new Double[cpsHistory.size()];
-        //        final Double[] y3 = new Double[cpsHistory.size()];
-        //        final Double[] y4 = new Double[cpsHistory.size()];
-//
-        //        for (int i = 0; i < cpsHistory.size(); i++) {
-        //            final Vector4d cps = cpsHistory.get(i);
-        //            x[i] = (double) i;
-        //            y1[i] = cps.x;
-        //            y2[i] = cps.y;
-        //            y3[i] = cps.z;
-        //            y4[i] = cps.w;
-        //        }
-//
-        //        ImLoader.draw(() -> {
-        //            if (ImGui.begin("CPS History")) {
-        //                if (ImPlot.beginPlot("CPS History")) {
-        //                    ImPlot.plotLine("CPS", x, y1);
-        //                    ImPlot.plotLine("Gaussian", x, y2);
-        //                    ImPlot.plotLine("Gaussian Percentage", x, y3);
-        //                    ImPlot.plotLine("Gaussian Density", x, y4);
-        //                    ImPlot.endPlot();
-        //                }
-        //            }
-        //            ImGui.end();
-        //        });
-        //    }
-
-        if (!this.targetESP.getValue() || this.getTarget() == null) {
+    public void onClick() {
+        if (mc.player == null || mc.world == null || this.hitPoint == null) {
             return;
         }
 
-        final Vec3d pos = this.getTarget().getPos();
-
-        if (this.getTarget() instanceof final LivingEntity entity) {
-            matrixStack.push();
-
-            final Box box = new Box(
-                    pos.x - entity.getWidth() / 2f,
-                    pos.y + entity.getHeight() / 2 + Math.sin(System.currentTimeMillis() * 0.005) * 0.9,
-                    pos.z - entity.getWidth() / 2f,
-                    pos.x + entity.getWidth() / 2f,
-                    pos.y + entity.getHeight() / 2 + 0.11 + Math.sin(System.currentTimeMillis() * 0.005) * 0.9,
-                    pos.z + entity.getWidth() / 2f
-            );
-
-            final Box box2 = new Box(
-                    pos.x - entity.getWidth() / 2f,
-                    pos.y + entity.getHeight() / 2 + Math.sin(System.currentTimeMillis() * 0.005 + Math.PI) * 0.9,
-                    pos.z - entity.getWidth() / 2f,
-                    pos.x + entity.getWidth() / 2f,
-                    pos.y + entity.getHeight() / 2 + 0.11 + Math.sin(System.currentTimeMillis() * 0.005 + Math.PI) * 0.9,
-                    pos.z + entity.getWidth() / 2f
-            );
-
-            final Vec3d center = box.getCenter();
-            final Vec3d center2 = box2.getCenter();
-
-            final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
-            matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
-
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-            RenderSystem.disableCull();
-            final Tessellator tessellator = Tessellator.getInstance();
-
-            BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-            int points = 24;
-            for (int i = 0; i <= points; i++) {
-                double angle = (i / (double) points) * Math.PI * 2;
-                double radius = this.getTarget().getWidth();
-                double x = Math.cos(angle) * radius;
-                double z = Math.sin(angle) * radius;
-                buffer.vertex(matrixStack.peek().getPositionMatrix(), (float) (center.x + x), (float) center.y, (float) (center.z + z)).color(targetColor1.getColor().getRGB());
-            }
-            BufferRenderer.drawWithGlobalProgram(buffer.end());
-
-            buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-            for (int i = 0; i <= points; i++) {
-                double angle = (i / (double) points) * Math.PI * 2;
-                double radius = this.getTarget().getWidth();
-                double x = Math.cos(angle) * radius;
-                double z = Math.sin(angle) * radius;
-                buffer.vertex(matrixStack.peek().getPositionMatrix(), (float) (center2.x + x), (float) center2.y, (float) (center2.z + z)).color(targetColor2.getColor().getRGB());
-            }
-            BufferRenderer.drawWithGlobalProgram(buffer.end());
-            RenderSystem.enableCull();
-            matrixStack.pop();
+//        final Rotation clientRotation = Vandalism.getInstance().getRotationManager().getClientRotation() != null ? Vandalism.getInstance().getRotationManager().getClientRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
+//        final HitResult hitResult = WorldUtil.raytrace(clientRotation, this.getClickRange());
+//        final double raytraceDistance = hitResult != null && hitResult.getType() == HitResult.Type.ENTITY ? mc.player.getEyePos().distanceTo(hitResult.getPos()) : -1.0;
+//
+//        if (raytraceDistance > this.getClickRange() || raytraceDistance < 0.0) {
+//            return;
+//        }
+        if (mc.player.getEyePos().distanceTo(this.hitPoint) > this.getClickRange()) {
+            return;
         }
+
+        mc.doAttack();
+    }
+
+    private enum SelectionMode implements IName {
+
+        RANGE,
+        HEALTH,
+        FOV,
+        ARMOR,
+        SCOREBOARD_HEALTH;
+
+        private final String name;
+
+        SelectionMode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
     }
 
     private enum SmoothingType implements IName {
 
-        BEZIER,
         NORMAL,
         NONE;
 
@@ -996,55 +519,6 @@ public class KillAuraModule extends Module implements PlayerUpdateListener, Rend
             return this.name;
         }
 
-    }
-
-    private enum AutoBlockMode implements IName {
-
-        OFF,
-        RIGHT_CLICK_PERMANENT,
-        TEST;
-
-        private final String name;
-
-        AutoBlockMode() {
-            this.name = StringUtils.normalizeEnumName(this.name());
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-    }
-
-    private enum BlockState {
-
-        ERROR,
-        PRE_CLICKING,
-        POST_CLICKING,
-        PRE_ATTACK,
-        POST_ATTACK
-
-    }
-
-    private enum SelectionMode implements IName {
-
-        RANGE,
-        HEALTH,
-        FOV,
-        ARMOR,
-        GOMME_HEALTH;
-
-        private final String name;
-
-        SelectionMode() {
-            this.name = StringUtils.normalizeEnumName(this.name());
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
     }
 
 }

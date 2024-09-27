@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
+import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import de.nekosarekawaii.vandalism.util.render.util.InputType;
@@ -153,7 +154,8 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
             }
 
             prevRotation = rotation;
-            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, rotateSpeed.getValue(), 0.0f, movementFix.getValue());
+            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
+                    RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
         }
     }
 

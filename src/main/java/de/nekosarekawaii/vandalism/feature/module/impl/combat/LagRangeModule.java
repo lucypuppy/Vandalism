@@ -19,184 +19,151 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.game.TimeTravelListener;
-import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
-import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.Prediction;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
+import lombok.Getter;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.math.Vec3d;
 
-public class LagRangeModule extends Module implements TimeTravelListener, MoveInputListener, PlayerUpdateListener {
+public class LagRangeModule extends Module implements TimeTravelListener, PlayerUpdateListener {
 
-    private long shifted, prevShifted, prevTime;
-    private boolean isCharging, isDone;
-    private MSTimer timer;
-    private KillAuraModule killAura;
+    private final IntegerValue tickLimit = new IntegerValue(this, "Tick Limit", "The maximum amount of ticks you can charge.", 3, 1, 10);
 
-    private int ticksToShift;
+    private final IntegerValue ticksToWait = new IntegerValue(this, "Ticks to wait", "Ticks to wait before being able to charge again.", 10, 0, 20);
+
+    private final BooleanValue onlyOnGround = new BooleanValue(this, "Only On Ground", "Only charge when you are on the ground.", false);
+
+    public final BooleanValue noChargeHit = new BooleanValue(this, "No Charge Hit", "Don't hit while charging.", true);
+
+    private State state = State.IDLE;
+    private long shifted, prevShifted;
+    private boolean canShift;
+
+    @Getter
+    private boolean stopAttack, prevStopAttack;
+    private float limit = 0;
+    private int ticksWaited = 0;
 
     public LagRangeModule() {
         super("Lag Range", "Allows you to manipulate how minecraft handles ticks and speedup the game.", Category.COMBAT);
     }
 
-    private final ModeValue mode = new ModeValue(this, "Mode", "The way lagrange should behave.", "Range", "On Hit");
-    private final BooleanValue jump = new BooleanValue(this, "Jump", "Jumps while uncharging.", false);
-    private final DoubleValue range = new DoubleValue(this, "Range", "The range to start lagging.", 3.5, 0.1, 6.0).visibleCondition(() -> mode.getValue().equalsIgnoreCase("Range"));
-    private final IntegerValue hurtTime = new IntegerValue(this, "Hurt Time", "The amount of ticks to wait before lagging after attacking.", 7, 1, 10).visibleCondition(() -> mode.getValue().equalsIgnoreCase("On Hit"));
-
-    private final IntegerValue maxCharge = new IntegerValue(this, "Max Charge", "The maximum amount of ticks you can charge.", 3, 1, 10);
-    private final LongValue delay = new LongValue(this, "Delay", "The delay between lagging in milliseconds.", 1000L, 0L, 10000L);
-    private final BooleanValue tickEntities = new BooleanValue(this, "Tick Entities", "Tick entities while charging.", true);
-    private final BooleanValue onlyOnGround = new BooleanValue(this, "Only On Ground", "Only lag when you are on the ground.", false);
-    private final BooleanValue noDamageCharge = new BooleanValue(this, "No Damage Charge", "Don't charge when receiving damage.", true);
-
-    @Override
-    public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, TimeTravelEvent.ID, MoveInputEvent.ID, PlayerUpdateEvent.ID);
-        this.timer = new MSTimer();
-        this.killAura = Vandalism.getInstance().getModuleManager().getByClass(KillAuraModule.class);
-        this.isCharging = false;
-        this.isDone = true;
-        this.ticksToShift = 0;
-        isPredictedInRange = false;
+    private void reset() {
+        this.limit = 0;
+        this.ticksWaited = 0;
+        this.state = State.IDLE;
+        this.canShift = false;
+        this.prevStopAttack = false;
+        this.stopAttack = false;
     }
 
     @Override
-    public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, TimeTravelEvent.ID, MoveInputEvent.ID, PlayerUpdateEvent.ID);
+    protected void onActivate() {
+        this.reset();
+        Vandalism.getInstance().getEventSystem().subscribe(this, TimeTravelEvent.ID, PlayerUpdateEvent.ID);
     }
 
-    private boolean isPredictedInRange;
+    @Override
+    protected void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, TimeTravelEvent.ID, PlayerUpdateEvent.ID);
+        this.reset();
+    }
 
     @Override
-    public void onTimeTravel(TimeTravelEvent event) {
-        if (this.mc.player == null) {
+    public void onTimeTravel(final TimeTravelEvent event) {
+        if (mc.player == null) {
             this.shifted = 0;
             return;
         }
-        this.prevShifted = this.shifted;
 
-        if (this.getCharge() >= this.maxCharge.getValue()) {
-            this.isDone = false;
+        if (mc.player.age % 2 == 0) {
+            this.prevStopAttack = this.stopAttack;
         }
 
-        /* Deciding when to lag and when to uncharge */
-        if (this.killAura.isActive() && this.killAura.getTarget() instanceof LivingEntity target) {
-            boolean isDamaged = this.noDamageCharge.getValue() && this.mc.player.hurtTime > 2;
-            switch (this.mode.getValue().toLowerCase()) {
-                case "range": {
-                    double distance = this.mc.player.getEyePos().distanceTo(new IcarusBHV().generateHitPoint(target));
+        final KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
+        if (killAuraModule.isActive() && killAuraModule.getTarget() instanceof final LivingEntity target) {
+            this.dynamicShit(target);
+        }
 
-                    if (!isCharging) {
-                        this.isPredictedInRange = this.isPredictedInRange(target);
-                    }
+        if (this.canShift) {
+            if (this.getCharge() <= this.limit) {
+                this.stopAttack = true;
+                this.state = State.CHARGING;
+            } else {
+                this.prevStopAttack = this.stopAttack;
+                this.stopAttack = false;
+                this.ticksWaited = 0;
+                this.canShift = false;
+                this.state = State.UNCHARGING;
+            }
+        }
 
-                    boolean isInRange = distance > this.killAura.getRange() && distance <= this.range.getValue();
-
-                    this.isCharging = this.isDone && isInRange && !isDamaged && (isPredictedInRange || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
-                    break;
-                }
-                case "on hit": {
-                    boolean isPredictedInRange = false;
-                    if (target.hurtTime == this.hurtTime.getValue() && !isCharging) {
-                        isPredictedInRange = isPredictedInRange(target);
-                    }
-
-                    this.isCharging = this.isDone && !isDamaged && (isPredictedInRange || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
-                    break;
+        switch (this.state) {
+            case CHARGING -> this.shifted += event.time - this.prevShifted;
+            case UNCHARGING -> {
+                if (this.shifted > 0) {
+                    this.shifted = 0;
+                } else {
+                    this.state = State.IDLE;
                 }
             }
-        } else {
-            this.isCharging = false;
-        }
-
-
-        /* Charging and saving the amount of shifted time */
-        if (this.isCharging && this.timer.hasReached(this.delay.getValue(), false) && (!this.onlyOnGround.getValue() || this.mc.player.isOnGround())) {
-            this.shifted += event.time - this.prevTime;
-        }
-
-        /* Ticking the entities so they are in sync with us */
-        if (this.tickEntities.getValue() && this.prevShifted < this.shifted) {
-            tickEntities();
-        }
-
-        if (this.shifted <= 0) {
-            if (!this.isCharging && !this.isDone) {
-                this.timer.reset();
+            default -> {
             }
-            this.isDone = true;
         }
 
-        /* UnCharging */
-        if (!this.isCharging && this.shifted > 0 && getCharge() >= this.ticksToShift) {
-            this.isDone = false;
-            this.shifted = 0;
-            this.ticksToShift = 0;
-        }
-
-        this.prevTime = event.time;
+        this.prevShifted = event.time;
         event.time -= this.shifted;
     }
 
     @Override
-    public void onMoveInput(MoveInputEvent event) {
-    }
-
-    @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (!isDone && jump.getValue() && mc.player.isOnGround()) {
-            mc.player.jump();
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        final KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
+        if (this.state == State.IDLE && killAuraModule.getTarget() != null) {
+            this.ticksWaited++;
         }
     }
 
-    private boolean isPredictedInRange(LivingEntity target) {
-        boolean isPredictedInRange = false;
-        for (int ticks = Math.max(2, getCharge()); ticks <= this.maxCharge.getValue(); ++ticks) {
-            LivingEntity predictedPlayer = Prediction.predictEntityMovement(this.mc.player, ticks, true, false);
+    private enum State {
+        IDLE,
+        CHARGING,
+        UNCHARGING
+    }
 
-            LivingEntity predictedTarget;
+    private int getCharge() {
+        return (int) (this.shifted / ((RenderTickCounter.Dynamic) mc.getRenderTickCounter()).tickTime);
+    }
 
-            if (jump.getValue()) {
-                predictedTarget = Prediction.predictEntityMovement(this.mc.player, ticks, true, true);
-            } else {
-                predictedTarget = Prediction.predictEntityMovement(target, ticks, true, false);
-            }
+    private void dynamicShit(final LivingEntity target) {
+        for (int i = 2; i <= this.tickLimit.getValue(); i++) {
+            this.limit = (float) (i + (int) (Math.random() * 1.55f));
 
-            double predictedDistance = predictedPlayer
-                    .getEyePos()
-                    .distanceTo(new IcarusBHV().generateHitPoint(predictedTarget));
+            final LivingEntity predictedTarget = Prediction.predictEntityMovement(target, (int) this.limit, true, false);
+            final LivingEntity currentPredictedTarget = Prediction.predictEntityMovement(target, getCharge(), true, false);
 
-            if (Math.abs(predictedDistance) <= this.killAura.getRange()) {
-                isPredictedInRange = true;
-                this.ticksToShift = ticks;
+            final LivingEntity predictedPlayer = Prediction.predictEntityMovement(mc.player, (int) this.limit, true, false);
+            final Vec3d targetBHV = new IcarusBHV().generateHitPoint(predictedTarget);
+            final double playerRange = WorldUtil.calculateRange(predictedPlayer.getEyePos(), targetBHV);
+
+            final Vec3d playerBHV = new IcarusBHV().generateHitPoint(predictedPlayer);
+            final double targetRange = WorldUtil.calculateRange(predictedTarget.getEyePos(), playerBHV);
+
+            final Vec3d currentPlayerBHV = new IcarusBHV().generateHitPoint(mc.player);
+            final double currentTargetRange = WorldUtil.calculateRange(currentPredictedTarget.getEyePos(), currentPlayerBHV);
+
+            final boolean inRange = playerRange <= 3 && playerRange > 0 && (targetRange > 3 && currentTargetRange > 3);
+
+            if (inRange && this.ticksWaited >= this.ticksToWait.getValue() && mc.player.hurtTime - this.limit <= 7 && (!this.onlyOnGround.getValue() || mc.player.isOnGround())) {
+                this.canShift = true;
                 break;
             }
         }
-        return isPredictedInRange;
     }
 
-    public int getCharge() {
-        return (int) (this.shifted / ((RenderTickCounter.Dynamic) this.mc.getRenderTickCounter()).tickTime);
-    }
-
-    private void tickEntities() {
-        Profiler profiler = this.mc.world.getProfiler();
-        profiler.push("entities");
-        this.mc.world.getEntities().forEach((entity) -> {
-            if (entity == null || entity == this.mc.player) return;
-            if (!entity.isRemoved() && !entity.hasVehicle() && !this.mc.world.getTickManager().shouldSkipTick(entity)) {
-                this.mc.world.tickEntity(this.mc.world::tickEntity, entity);
-            }
-        });
-    }
 }

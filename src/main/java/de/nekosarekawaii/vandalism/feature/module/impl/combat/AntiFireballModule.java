@@ -94,7 +94,9 @@ public class AntiFireballModule extends Module implements PlayerUpdateListener {
         } else {
             Vandalism.getInstance().getRotationManager().setRotation(
                     RotationUtil.rotationToVec(this.target.getPos(), RotationPriority.HIGHEST),
-                    this.rotateSpeed.getValue(), 0.0f, false
+                    false, (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
+                            RotationUtil.rotateMouse(targetRotation, serverRotation,
+                                    this.rotateSpeed.getValue(), deltaTime, hasClientRotation)
             );
         }
         if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
