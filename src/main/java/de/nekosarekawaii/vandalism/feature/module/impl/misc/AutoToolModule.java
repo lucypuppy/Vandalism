@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-// TODO: Mori meinte irgendwas ka.
 public class AutoToolModule extends Module implements PlayerUpdateListener, PreBlockBreakListener {
 
     private final ModeValue mode = new ModeValue(
@@ -137,19 +136,21 @@ public class AutoToolModule extends Module implements PlayerUpdateListener, PreB
         final float bestToolSpeed = bestTool.getLeft().getMiningSpeedMultiplier(blockState);
         if (!foundSwordForBamboo.get()) {
             if (bestToolSpeed <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
-                for (int i = 0; i < this.mc.player.getInventory().main.size(); i++) {
-                    if (!PlayerInventory.isValidHotbarIndex(i)) {
-                        continue;
-                    }
-                    final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
-                    if (itemStack == null) {
-                        continue;
-                    }
-                    final Item item = itemStack.getItem();
-                    if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
-                        this.oldSlot = this.mc.player.getInventory().selectedSlot;
-                        this.mc.player.getInventory().selectedSlot = i;
-                        break;
+                if (this.mc.player.getInventory().selectedSlot == bestTool.getRight()) {
+                    for (int i = 0; i < this.mc.player.getInventory().main.size(); i++) {
+                        if (!PlayerInventory.isValidHotbarIndex(i)) {
+                            continue;
+                        }
+                        final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+                        if (itemStack == null) {
+                            continue;
+                        }
+                        final Item item = itemStack.getItem();
+                        if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
+                            this.oldSlot = this.mc.player.getInventory().selectedSlot;
+                            this.mc.player.getInventory().selectedSlot = i;
+                            break;
+                        }
                     }
                 }
                 return;
