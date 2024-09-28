@@ -95,6 +95,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private LagRangeModule lagRangeModule;
     private AutoSoupModule autoSoupModule;
     private AutoSprintModule autoSprintModule;
+    private ShowClickEventsModule showClickEventsModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -139,6 +140,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.lagRangeModule = new LagRangeModule(),
                 this.autoSoupModule = new AutoSoupModule(),
                 this.autoSprintModule = new AutoSprintModule(),
+                this.showClickEventsModule = new ShowClickEventsModule(),
                 new FakeLagModule(),
                 new AutoClickerModule(),
                 new AutoRodModule(),

@@ -22,6 +22,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.NoChatReportsModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.ShowClickEventsModule;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.MessageIndicator;
@@ -36,12 +37,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinChatHud implements MinecraftWrapper {
 
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At("HEAD"))
-    private void hookNoChatReports(final Text message, final MessageSignatureData signature, final MessageIndicator indicatorDontUse, final CallbackInfo ci, @Local(argsOnly = true) LocalRef<MessageIndicator> indicator) {
+    private void hookNoChatReportsAndShowClickEvents(final Text message, final MessageSignatureData signature, final MessageIndicator indicatorDontUse, final CallbackInfo ci, @Local(argsOnly = true) LocalRef<MessageIndicator> indicator) {
         final NoChatReportsModule noChatReportsModule = Vandalism.getInstance().getModuleManager().getNoChatReportsModule();
-        if (!noChatReportsModule.isActive() || this.mc.isInSingleplayer()) {
-            return;
+        if (!this.mc.isInSingleplayer() && noChatReportsModule.isActive()) {
+            indicator.set(noChatReportsModule.modifyIndicator(signature, indicator.get()));
         }
-        indicator.set(noChatReportsModule.modifyIndicator(signature, indicator.get()));
+        final ShowClickEventsModule showClickEventsModule = Vandalism.getInstance().getModuleManager().getShowClickEventsModule();
+        if (showClickEventsModule.isActive()) {
+            indicator.set(showClickEventsModule.modifyIndicator(message, indicator.get()));
+        }
     }
 
 }
