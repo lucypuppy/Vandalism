@@ -84,6 +84,7 @@
     "integration.MixinDrawContext",
     "integration.MixinEntity",
     "integration.MixinHeldItemRenderer",
+    "integration.MixinIcons",
     "integration.MixinLivingEntity",
     "integration.MixinLivingEntityRenderer",
     "integration.MixinLogoDrawer",
