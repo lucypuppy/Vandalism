@@ -76,6 +76,13 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             true
     );
 
+    private final BooleanValue useSneakFromTarget = new BooleanValue(
+            this,
+            "Use Sneak From Target",
+            "Uses the sneak from the target.",
+            true
+    );
+
     private final BooleanValue alwaysFOV = new BooleanValue(
             this,
             "Always FOV",
@@ -88,7 +95,7 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             "Sneak Spam",
             "Spams sneak while moving.",
             true
-    );
+    ).visibleCondition(() -> !this.useSneakFromTarget.getValue());
 
     private final IntegerValue sneakSpamDelay = new IntegerValue(
             this,
@@ -97,7 +104,7 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             250,
             0,
             1000
-    );
+    ).visibleCondition(this.sneakSpam.isVisible());
 
     private final MSTimer sneakTimer = new MSTimer();
     private boolean sneaking;
@@ -170,7 +177,9 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             this.mc.player.setPitch(this.target.getPitch());
         }
 
-        if (this.sneakSpam.getValue()) {
+        if (this.useSneakFromTarget.getValue()) {
+            this.mc.options.sneakKey.setPressed(this.target.isSneaking());
+        } else if (this.sneakSpam.getValue()) {
             if (this.sneakTimer.hasReached(this.sneakSpamDelay.getValue(), true)) {
                 this.sneaking = !this.sneaking;
             }
