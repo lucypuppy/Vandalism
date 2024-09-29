@@ -23,7 +23,6 @@ import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.event.player.ShouldSlowdownListener;
@@ -31,12 +30,14 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
 
-// TODO: Add soul sand and cobweb like slowdowns
 public class NoSlowModule extends Module implements PlayerSlowdownListener, CanSprintListener, ShouldSlowdownListener {
 
-    private static final String FORWARD = "Forward";
-
-    private static final String SIDEWAYS = "Sideways";
+    public final BooleanValue noHitSlowdown = new BooleanValue(
+            this,
+            "No Hit Slowdown",
+            "Disables slowdown when hitting entities.",
+            true
+    );
 
     private final BooleanValue forceHungerSprint = new BooleanValue(
             this,
@@ -45,148 +46,196 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
             true
     );
 
-    private final ValueGroup foodSlowDown = new ValueGroup(this, "Food", "Food Slowdown settings.");
+    public final BooleanValue modifyBlockSlowdown = new BooleanValue(
+            this,
+            "Modify Block Slowdown",
+            "Modifies the slowdown when walking over blocks like soul sand and cobwebs.",
+            true
+    );
+
+    public final FloatValue blockMultiplier = new FloatValue(
+            this,
+            "Block Multiplier",
+            "Block slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    ).visibleCondition(this.modifyBlockSlowdown::getValue);
+
+    private final BooleanValue modifyFoodSlowdown = new BooleanValue(
+            this,
+            "Modify Food Slowdown",
+            "Modifies the slowdown when eating food.",
+            true
+    );
 
     private final FloatValue foodForwardMultiplier = new FloatValue(
-            this.foodSlowDown,
-            FORWARD,
-            FORWARD + " slowdown multiplier.",
+            this,
+            "Food Forward Multiplier",
+            "Food forward slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifyFoodSlowdown::getValue);
 
     private final FloatValue foodSidewaysMultiplier = new FloatValue(
-            this.foodSlowDown,
-            SIDEWAYS,
-            SIDEWAYS + " slowdown multiplier.",
+            this,
+            "Food Sideways Multiplier",
+            "Food sideways slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifyFoodSlowdown::getValue);
 
-    private final ValueGroup potionSlowDown = new ValueGroup(this, "Potion", "Potion Slowdown settings.");
+    private final BooleanValue modifyPotionSlowdown = new BooleanValue(
+            this,
+            "Modify Potion Slowdown",
+            "Modifies the slowdown when drinking potions.",
+            true
+    );
 
     private final FloatValue potionForwardMultiplier = new FloatValue(
-            this.potionSlowDown,
-            FORWARD,
-            FORWARD + " slowdown multiplier.",
+            this,
+            "Potion Forward Multiplier",
+            "Potion forward slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifyPotionSlowdown::getValue);
 
     private final FloatValue potionSidewaysMultiplier = new FloatValue(
-            this.potionSlowDown,
-            SIDEWAYS,
-            SIDEWAYS + " slowdown multiplier.",
+            this,
+            "Potion Sideways Multiplier",
+            "Potion sideways slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifyPotionSlowdown::getValue);
 
-    private final ValueGroup shieldSlowDown = new ValueGroup(this, "Shield", "Shield Slowdown settings.").visibleCondition(() ->
-            ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8));
+    private final BooleanValue modifyShieldSlowdown = new BooleanValue(
+            this,
+            "Modify Shield Slowdown",
+            "Modifies the slowdown when using a shield.",
+            true
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8));
 
     private final FloatValue shieldForwardMultiplier = new FloatValue(
-            this.shieldSlowDown,
-            FORWARD,
-            FORWARD + " slowdown multiplier.",
+            this,
+            "Shield Forward Multiplier",
+            "Shield forward slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8) && this.modifyShieldSlowdown.getValue());
 
     private final FloatValue shieldSidewaysMultiplier = new FloatValue(
-            this.shieldSlowDown,
-            SIDEWAYS,
-            SIDEWAYS + " slowdown multiplier.",
+            this,
+            "Shield Sideways Multiplier",
+            "Shield sideways slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8) && this.modifyShieldSlowdown.getValue());
 
-    private final ValueGroup swordSlowDown = new ValueGroup(this, "Sword", "Sword Slowdown settings.").visibleCondition(() ->
-            ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9));
+    private final BooleanValue modifySwordSlowdown = new BooleanValue(
+            this,
+            "Modify Sword Slowdown",
+            "Modifies the slowdown when using a sword.",
+            true
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9));
 
     private final FloatValue swordForwardMultiplier = new FloatValue(
-            this.swordSlowDown,
-            FORWARD,
-            FORWARD + " slowdown multiplier.",
+            this,
+            "Sword Forward Multiplier",
+            "Sword forward slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9) && this.modifySwordSlowdown.getValue());
 
     private final FloatValue swordSidewaysMultiplier = new FloatValue(
-            this.swordSlowDown,
-            SIDEWAYS,
-            SIDEWAYS + " slowdown multiplier.",
+            this,
+            "Sword Sideways Multiplier",
+            "Sword sideways slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9) && this.modifySwordSlowdown.getValue());
 
-    private final ValueGroup tridentSlowDown = new ValueGroup(this, "Trident", "Trident Slowdown settings.").visibleCondition(() ->
-            ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12));
+    private final BooleanValue modifyTridentSlowdown = new BooleanValue(
+            this,
+            "Modify Trident Slowdown",
+            "Modifies the slowdown when using a trident.",
+            true
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12));
 
     private final FloatValue tridentForwardMultiplier = new FloatValue(
-            this.tridentSlowDown,
-            FORWARD,
-            FORWARD + " slowdown multiplier.",
+            this,
+            "Trident Forward Multiplier",
+            "Trident forward slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12) && this.modifyTridentSlowdown.getValue());
 
     private final FloatValue tridentSidewaysMultiplier = new FloatValue(
-            this.tridentSlowDown,
-            SIDEWAYS,
-            SIDEWAYS + " slowdown multiplier.",
+            this,
+            "Trident Sideways Multiplier",
+            "Trident sideways slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12) && this.modifyTridentSlowdown.getValue());
 
-    private final ValueGroup bowSlowDown = new ValueGroup(this, "Bow", "Bow Slowdown settings.");
+    private final BooleanValue modifyBowSlowdown = new BooleanValue(
+            this,
+            "Modify Bow Slowdown",
+            "Modifies the slowdown when using a bow.",
+            true
+    );
 
     private final FloatValue bowForwardMultiplier = new FloatValue(
-            this.bowSlowDown,
-            FORWARD,
-            FORWARD + " slowdown multiplier.",
+            this,
+            "Bow Forward Multiplier",
+            "Bow forward slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifyBowSlowdown::getValue);
 
     private final FloatValue bowSidewaysMultiplier = new FloatValue(
-            this.bowSlowDown,
-            SIDEWAYS,
-            SIDEWAYS + " slowdown multiplier.",
+            this,
+            "Bow Sideways Multiplier",
+            "Bow sideways slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifyBowSlowdown::getValue);
 
-    private final ValueGroup sneakSlowDown = new ValueGroup(this, "Sneak", "Sneak Slowdown settings.");
+    private final BooleanValue modifySneakSlowdown = new BooleanValue(
+            this,
+            "Modify Sneak Slowdown",
+            "Modifies the slowdown when sneaking.",
+            true
+    );
 
     private final FloatValue sneakForwardMultiplier = new FloatValue(
-            this.sneakSlowDown,
-            FORWARD,
-            FORWARD + " slowdown multiplier.",
+            this,
+            "Sneak Forward Multiplier",
+            "Sneak forward slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifySneakSlowdown::getValue);
 
     private final FloatValue sneakSidewaysMultiplier = new FloatValue(
-            this.sneakSlowDown,
-            SIDEWAYS,
-            SIDEWAYS + " slowdown multiplier.",
+            this,
+            "Sneak Sideways Multiplier",
+            "Sneak sideways slowdown multiplier.",
             1.0f,
             0.2f,
             1.0f
-    );
+    ).visibleCondition(this.modifySneakSlowdown::getValue);
 
     public NoSlowModule() {
         super(
@@ -201,32 +250,32 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
         final ItemStack stack = this.mc.player.getActiveItem();
         if (!stack.isEmpty()) {
             final Item item = this.mc.player.getActiveItem().getItem();
-            if (item.getComponents().contains(DataComponentTypes.FOOD)) {
+            if (item.getComponents().contains(DataComponentTypes.FOOD) && this.modifyFoodSlowdown.getValue()) {
                 return this.foodForwardMultiplier.getValue();
             }
-            if (item instanceof PotionItem) {
+            if (item instanceof PotionItem && this.modifyPotionSlowdown.getValue()) {
                 return this.potionForwardMultiplier.getValue();
             }
             if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
-                if (item instanceof ShieldItem) {
+                if (item instanceof ShieldItem && this.modifyShieldSlowdown.getValue()) {
                     return this.shieldForwardMultiplier.getValue();
                 }
             }
             if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
-                if (item instanceof SwordItem) {
+                if (item instanceof SwordItem && this.modifySwordSlowdown.getValue()) {
                     return this.swordForwardMultiplier.getValue();
                 }
             }
             if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
-                if (item instanceof TridentItem) {
+                if (item instanceof TridentItem && this.modifyTridentSlowdown.getValue()) {
                     return this.tridentForwardMultiplier.getValue();
                 }
             }
-            if (item instanceof BowItem) {
+            if (item instanceof BowItem && this.modifyBowSlowdown.getValue()) {
                 return this.bowForwardMultiplier.getValue();
             }
         }
-        if (this.mc.player.isSneaking()) {
+        if (this.mc.player.isSneaking() && this.modifySneakSlowdown.getValue()) {
             return this.sneakForwardMultiplier.getValue();
         }
         return defaultValue;
@@ -237,32 +286,32 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
         final ItemStack stack = this.mc.player.getActiveItem();
         if (!stack.isEmpty()) {
             final Item item = this.mc.player.getActiveItem().getItem();
-            if (item.getComponents().contains(DataComponentTypes.FOOD)) {
+            if (item.getComponents().contains(DataComponentTypes.FOOD) && this.modifyFoodSlowdown.getValue()) {
                 return this.foodSidewaysMultiplier.getValue();
             }
-            if (item instanceof PotionItem) {
+            if (item instanceof PotionItem && this.modifyPotionSlowdown.getValue()) {
                 return this.potionSidewaysMultiplier.getValue();
             }
             if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
-                if (item instanceof ShieldItem) {
+                if (item instanceof ShieldItem && this.modifyShieldSlowdown.getValue()) {
                     return this.shieldSidewaysMultiplier.getValue();
                 }
             }
             if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
-                if (item instanceof SwordItem) {
+                if (item instanceof SwordItem && this.modifySwordSlowdown.getValue()) {
                     return this.swordSidewaysMultiplier.getValue();
                 }
             }
             if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
-                if (item instanceof TridentItem) {
+                if (item instanceof TridentItem && this.modifyTridentSlowdown.getValue()) {
                     return this.tridentSidewaysMultiplier.getValue();
                 }
             }
-            if (item instanceof BowItem) {
+            if (item instanceof BowItem && this.modifyBowSlowdown.getValue()) {
                 return this.bowSidewaysMultiplier.getValue();
             }
         }
-        if (this.mc.player.isSneaking()) {
+        if (this.mc.player.isSneaking() && this.modifySneakSlowdown.getValue()) {
             return this.sneakSidewaysMultiplier.getValue();
         }
         return defaultValue;

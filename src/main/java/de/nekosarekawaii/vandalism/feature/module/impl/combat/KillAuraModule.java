@@ -187,13 +187,6 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             true
     );
 
-    public final BooleanValue noHitSlow = new BooleanValue(
-            this,
-            "No Hit Slow",
-            "Whether the player should not be slowed down when hitting.",
-            false
-    );
-
     // Target
     @Getter
     private Entity target;

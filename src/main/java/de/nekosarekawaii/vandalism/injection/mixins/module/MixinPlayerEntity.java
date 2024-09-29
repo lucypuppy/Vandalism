@@ -18,16 +18,16 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastBreakModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.NoSlowModule;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
@@ -41,26 +41,26 @@ public abstract class MixinPlayerEntity implements MinecraftWrapper {
         }
     }
 
-    @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"))
-    private void hookSlowVelocity(PlayerEntity instance, Vec3d vec3d) {
-        if(instance == mc.player) {
-            KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
-            if(killAuraModule.isActive() && killAuraModule.noHitSlow.getValue() && killAuraModule.getTarget() != null) {
-                return;
+    @WrapWithCondition(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"))
+    private boolean hookNoSlow(final PlayerEntity entity, final Vec3d vec3d) {
+        if (entity == mc.player) {
+            final NoSlowModule noSlowModule = Vandalism.getInstance().getModuleManager().getNoSlowModule();
+            if (noSlowModule.isActive() && noSlowModule.noHitSlowdown.getValue()) {
+                return false;
             }
         }
-        instance.setVelocity(vec3d);
+        return true;
     }
 
-    @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setSprinting(Z)V"))
-    private void hookSlowSprint(PlayerEntity instance, boolean b) {
-        if(instance == mc.player) {
-            KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
-            if(killAuraModule.isActive() && killAuraModule.noHitSlow.getValue() && killAuraModule.getTarget() != null && !b) {
-                return;
+    @WrapWithCondition(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setSprinting(Z)V"))
+    private boolean hookNoSlow(final PlayerEntity instance, final boolean b) {
+        if (instance == mc.player) {
+            final NoSlowModule noSlowModule = Vandalism.getInstance().getModuleManager().getNoSlowModule();
+            if (noSlowModule.isActive() && noSlowModule.noHitSlowdown.getValue() && !b) {
+                return false;
             }
         }
-        instance.setSprinting(b);
+        return true;
     }
 
 }
