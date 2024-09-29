@@ -3,6 +3,7 @@
   "java": [
   ],
   "mixins": [
-    "TransformerMixinEntity"
+    "TransformerMixinEntity",
+    "TransformerMixinClientPlayerInteractionManager"
   ]
 }
