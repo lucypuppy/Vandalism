@@ -121,6 +121,7 @@ public class ServerUtil implements MinecraftWrapper {
                 if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(5000, true)) {
                     if (!LAST_SERVER_ADDRESS.equals(address)) {
                         LAST_SERVER_ADDRESS = serverInfo.address;
+                        LAST_SERVER_ADDRESS_INFO = null;
                         EXECUTOR_SERVICE.submit(() -> {
                             final Pair<String, Integer> serverAddress = resolveServerAddress(address);
                             final String resolvedAddress = serverAddress.getLeft();

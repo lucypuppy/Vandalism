@@ -86,6 +86,7 @@ public class AccountManager extends Storage<Account> implements UpdateSessionLis
                             if (tokenExpirationTime - System.currentTimeMillis() <= 0) {
                                 Vandalism.getInstance().getLogger().info("Refreshing microsoft account {}...", account.getDisplayName());
                                 try {
+                                    Thread.sleep(5000);
                                     account.refresh();
                                     final Session currentSession = this.currentAccount.getSession();
                                     if (currentSession != null) {

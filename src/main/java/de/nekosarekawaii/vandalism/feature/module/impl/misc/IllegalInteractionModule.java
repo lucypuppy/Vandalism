@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
@@ -66,13 +64,13 @@ public class IllegalInteractionModule extends Module implements PlayerUpdateList
             GLFW.GLFW_KEY_Z
     );
 
-    // TODO: Fix this setting because it doesnt work anymore.
     public BooleanValue viaVersionBug = new BooleanValue(
             this,
             "ViaVersion Bug",
-            "Allows you to place blocks inside yourself on versions lower than 1.9.0 on servers that are using the plugin ViaVersion.",
+            "Allows you to place blocks inside yourself when playing on 1.8 servers with the ViaVersion plugin installed.\n" +
+                    "Requires you to select 1.8.x in ViaFabricPlus.",
             true
-    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8));
+    );
 
     private double scrollAmount;
 
