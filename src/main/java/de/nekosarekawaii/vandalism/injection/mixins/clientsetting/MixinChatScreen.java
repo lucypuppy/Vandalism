@@ -18,26 +18,36 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsetting;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
+import de.nekosarekawaii.vandalism.injection.access.IChatHud;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
 import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
 import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
+import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.lwjgl.opengl.GL45C;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.awt.*;
@@ -53,6 +63,15 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
     @Unique
     private static final Style vandalism$RED_COLORED_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()));
+
+    @Unique
+    private final DirectionalLayoutWidget vandalism$layout = DirectionalLayoutWidget.vertical();
+
+    @Unique
+    private boolean vandalism$renderButtonContext;
+
+    @Unique
+    private ChatHudLine lastHovered;
 
     protected MixinChatScreen(final Text ignored) {
         super(ignored);
@@ -71,6 +90,52 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
         if (chatSettings.fixChatFieldWidth.getValue()) {
             this.chatField.setWidth(this.chatField.getWidth() - this.chatField.getX() - 5);
         }
+    }
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void init(final CallbackInfo ci) {
+        if (!Vandalism.getInstance().getClientSettings().getChatSettings().quickAccessOnRightClick.getValue()) {
+            return;
+        }
+
+        this.vandalism$layout.spacing(0).getMainPositioner().alignHorizontalCenter();
+        this.vandalism$renderButtonContext = false;
+
+        this.vandalism$layout.add(
+                ButtonWidget.builder(Text.of("Copy"), (button) ->
+                        this.mc.keyboard.setClipboard(lastHovered.content().toString())).size(50, 10).build()
+        );
+
+        this.vandalism$layout.add(
+                ButtonWidget.builder(Text.of("Copy Strip"), (button) ->
+                        this.mc.keyboard.setClipboard(Formatting.strip(lastHovered.content().toString()))).size(50, 10).build()
+        );
+
+        this.vandalism$layout.add(
+                ButtonWidget.builder(Text.of("Reply"), (button) -> {
+                    final String text = lastHovered.content().toString();
+                    final PlayerListEntry sender = WorldUtil.getPlayerFromTab(text);
+
+                    if (sender == null) {
+                        return;
+                    }
+
+                    this.chatField.setText("/msg " + sender.getProfile().getName());
+                }).size(50, 10).build()
+        );
+
+        this.vandalism$layout.add(
+                ButtonWidget.builder(Text.of("Teleport to"), (button) -> {
+                    final String text = lastHovered.content().toString();
+                    final PlayerListEntry sender = WorldUtil.getPlayerFromTab(text);
+
+                    if (sender == null) {
+                        return;
+                    }
+
+                    this.chatField.setText("/tp " + sender.getProfile().getName());
+                }).size(50, 10).build()
+        );
     }
 
     @ModifyConstant(method = "init", constant = @Constant(intValue = 10))
@@ -95,6 +160,8 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void customChatAreaRendering(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
+        ((IChatHud) this.client.inGameHud.getChatHud()).vandalism$resetLastHovered(); // Reset last hovered line
+
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.displayTypedChars.getValue()) {
             final int currentLength = this.chatField.getText().length();
@@ -118,7 +185,7 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
                     final Identifier playerSkin = accountPlayerSkin.getSkin();
                     if (playerSkin != null) {
                         GLStateTracker.BLEND.save(true);
-                        if  (chatSettings.modulateHead.getValue()) {
+                        if (chatSettings.modulateHead.getValue()) {
                             PlayerSkinDrawer.draw(context, playerSkin, 1, this.chatField.getY() - 4, 15, true, false);
                         } else {
                             PlayerSkinDrawer.draw(context, playerSkin, 2, this.chatField.getY() - 2, 12, true, false);
@@ -148,6 +215,66 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
             }
         }
         return instance.handleTextClick(style);
+    }
+
+    @Inject(method = "mouseClicked", at = @At(value = "HEAD"), cancellable = true)
+    private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+        if (!Vandalism.getInstance().getClientSettings().getChatSettings().quickAccessOnRightClick.getValue()) {
+            return;
+        }
+
+        if (this.vandalism$renderButtonContext) {
+            this.vandalism$layout.forEachChild(child -> {
+                if (child.mouseClicked(mouseX, mouseY, button)) {
+                    cir.setReturnValue(true);
+                    return;
+                }
+            });
+        }
+
+        if (button == 1 && (cir.getReturnValue() == null || !cir.getReturnValue())) {
+            final ChatHudLine lastHovered = ((IChatHud) this.client.inGameHud.getChatHud()).vandalism$getLastHovered();
+
+            if (lastHovered != null) {
+                this.vandalism$layout.refreshPositions();
+                this.vandalism$layout.setPosition((int) mouseX, (int) mouseY - this.vandalism$layout.getHeight());
+                this.lastHovered = lastHovered;
+
+                final boolean detectedPlayer = WorldUtil.getPlayerFromTab(lastHovered.content().toString()) != null;
+                this.vandalism$layout.forEachChild(child -> {
+                    if (child instanceof final ButtonWidget buttonWidget) {
+                        final String name = buttonWidget.getMessage().getString();
+
+                        if (!name.equalsIgnoreCase("Copy") && !name.equalsIgnoreCase("Copy Strip")) {
+                            buttonWidget.active = detectedPlayer;
+                        }
+                    }
+                });
+
+                this.vandalism$renderButtonContext = true;
+            } else {
+                this.vandalism$renderButtonContext = false;
+            }
+        } else {
+            this.vandalism$renderButtonContext = false;
+        }
+    }
+
+    @Inject(method = "render", at = @At(value = "RETURN"))
+    private void renderButtons(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
+        if (!Vandalism.getInstance().getClientSettings().getChatSettings().quickAccessOnRightClick.getValue() ||
+                !this.vandalism$renderButtonContext) {
+            return;
+        }
+
+        RenderSystem.clear(GL45C.GL_DEPTH_BUFFER_BIT, MinecraftClient.IS_SYSTEM_MAC);
+        RenderSystem.depthFunc(GL45C.GL_ALWAYS);
+        context.fill(this.vandalism$layout.getX(), this.vandalism$layout.getY(),
+                this.vandalism$layout.getX() + this.vandalism$layout.getWidth(),
+                this.vandalism$layout.getY() + this.vandalism$layout.getHeight(), Integer.MIN_VALUE);
+
+        this.vandalism$layout.forEachChild(child -> child.render(context, mouseX, mouseY, delta));
+        RenderSystem.depthFunc(GL45C.GL_LEQUAL);
     }
 
 }
