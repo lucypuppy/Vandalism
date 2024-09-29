@@ -86,6 +86,9 @@ public class GaussianClicker extends Clicker implements HandleInputListener {
 
     @Override
     public void onHandleInputEvent(final HandleInputEvent event) {
+        if (!this.clickerModule.mode.isSelected(this)) {
+            return;
+        }
         // Handle input only if auto-soup and lag-range modules are not interfering
         final LagRangeModule lagRangeModule = Vandalism.getInstance().getModuleManager().getLagRangeModule();
         final AutoSoupModule autoSoupModule = Vandalism.getInstance().getModuleManager().getAutoSoupModule();

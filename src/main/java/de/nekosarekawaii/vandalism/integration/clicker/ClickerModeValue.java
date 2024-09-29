@@ -22,13 +22,14 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ClassModeValue;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import de.nekosarekawaii.vandalism.integration.clicker.clickers.CooldownClicker;
 import de.nekosarekawaii.vandalism.integration.clicker.clickers.GaussianClicker;
 import de.nekosarekawaii.vandalism.integration.clicker.clickers.TestClicker;
 
 public class ClickerModeValue extends ClassModeValue<Clicker> {
 
     public ClickerModeValue(final ValueParent parent, final String name, final String description, final ClickerModule clickerModule) {
-        super(parent, name, description, new GaussianClicker(clickerModule), new TestClicker(clickerModule));
+        super(parent, name, description, new CooldownClicker(clickerModule), new GaussianClicker(clickerModule), new TestClicker(clickerModule));
 
         for (final Clicker clicker : getOptions()) {
             for (final Value<?> value : clicker.getValues()) {
@@ -36,6 +37,10 @@ public class ClickerModeValue extends ClassModeValue<Clicker> {
                 parent.getValues().add(value);
             }
         }
+    }
+
+    public boolean isSelected(final Clicker clicker) {
+        return this.getValue() == clicker;
     }
 
 }
