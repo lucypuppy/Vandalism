@@ -24,10 +24,10 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -69,23 +69,25 @@ public class TeleportHitModule extends Module implements PlayerUpdateListener {
             final BlockPos pos = target.getBlockPos();
             final Vec3d startPos = mc.player.getPos();
             final Vec3d finalPos = new Vec3d(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
-            teleport(finalPos);
-            this.mc.getNetworkHandler().getConnection().channel.writeAndFlush(PlayerInteractEntityC2SPacket.attack(target, mc.player.isSneaking()));
-            teleport(startPos);
-        }
-    }
+            MovementUtil.bypassClip(
+                    mc.player.getPos().getX(),
+                    mc.player.getPos().getY(),
+                    mc.player.getPos().getZ(),
+                    finalPos.getX() + 0.5,
+                    finalPos.getY() + 1,
+                    finalPos.getZ() + 0.5
+            );
 
-    private void teleport(final Vec3d pos) {
-        final double dis = mc.player.getPos().distanceTo(pos);
-        for (double d = 0.0D; d < dis; d += 2.0D) {
-            final double x = this.mc.player.getX() + (pos.x - (double) this.mc.player.getHorizontalFacing().getOffsetX() - this.mc.player.getX()) * d / dis;
-            final double y = this.mc.player.getY() + (pos.y - this.mc.player.getY()) * d / dis;
-            final double z = this.mc.player.getZ() + (pos.z - (double) this.mc.player.getHorizontalFacing().getOffsetZ() - this.mc.player.getZ()) * d / dis;
-            this.mc.getNetworkHandler().getConnection().channel.writeAndFlush(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+            this.mc.getNetworkHandler().getConnection().channel.writeAndFlush(PlayerInteractEntityC2SPacket.attack(target, mc.player.isSneaking()));
+
+            MovementUtil.bypassClip(
+                    mc.player.getPos().getX(),
+                    mc.player.getPos().getY(),
+                    mc.player.getPos().getZ(),
+                    startPos.getX(),
+                    startPos.getY(),
+                    startPos.getZ()
+            );
         }
-        final double x = pos.x;
-        final double y = pos.y;
-        final double z = pos.z;
-        this.mc.getNetworkHandler().getConnection().channel.writeAndFlush(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
     }
 }
