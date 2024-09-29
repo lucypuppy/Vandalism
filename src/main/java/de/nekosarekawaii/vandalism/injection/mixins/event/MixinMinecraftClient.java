@@ -111,4 +111,9 @@ public abstract class MixinMinecraftClient {
         Vandalism.getInstance().getEventSystem().callExceptionally(HandleInputListener.HandleInputEvent.ID, new HandleInputListener.HandleInputEvent());
     }
 
+    @Inject(method = "tick", at = @At("HEAD"))
+    public void callGameTickListener(final CallbackInfo ci) {
+        Vandalism.getInstance().getEventSystem().callExceptionally(GameTickListener.GameTickEvent.ID, new GameTickListener.GameTickEvent());
+    }
+
 }
