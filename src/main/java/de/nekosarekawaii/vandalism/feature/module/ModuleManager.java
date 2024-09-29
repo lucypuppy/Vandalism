@@ -96,6 +96,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private AutoSoupModule autoSoupModule;
     private AutoSprintModule autoSprintModule;
     private ShowClickEventsModule showClickEventsModule;
+    private NoSlowModule noSlowModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -141,6 +142,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.autoSoupModule = new AutoSoupModule(),
                 this.autoSprintModule = new AutoSprintModule(),
                 this.showClickEventsModule = new ShowClickEventsModule(),
+                this.noSlowModule = new NoSlowModule(),
                 new FakeLagModule(),
                 new AutoClickerModule(),
                 new AutoRodModule(),
@@ -186,7 +188,6 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new BlockNormalizerModule(),
                 new FOVFuckerModule(),
                 new LongJumpModule(),
-                new NoSlowModule(),
                 new PushVelocityModule(),
                 new ScaffoldModule(),
                 new StrafeModule(),
