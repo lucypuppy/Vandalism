@@ -65,6 +65,9 @@ public class TestClicker extends Clicker implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (!this.clickerModule.mode.isSelected(this)) {
+            return;
+        }
         long currentTime = System.currentTimeMillis();
 
         while (currentTime - this.lastClickTime >= this.delay) {
