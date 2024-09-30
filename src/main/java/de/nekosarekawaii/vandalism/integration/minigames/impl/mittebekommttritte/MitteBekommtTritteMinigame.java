@@ -253,7 +253,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
             this.levelUp = false;
             this.mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_PLAYER_LEVELUP, this.count % 1000 == 0 ? 0.7f : this.count % 100 == 0 ? 0.8f : 1f));
         }
-        final int maxScore = 100000;
+        final int maxScore = 5000;
         final float percentage = this.blood.get() ? Percentage.percentage(Math.min(maxScore, this.count), maxScore) : 0;
         final Identifier background = Identifier.of(FabricBootstrap.MOD_ID, this.backgroundPath + (int) (percentage / 100 * this.maxBackgrounds) + ".png");
         this.mc.getTextureManager().getTexture(background).setFilter(

@@ -45,12 +45,20 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardEntry;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KillAuraModule extends ClickerModule implements RaytraceListener, RotationListener {
+
+    private final BooleanValue onlyClickWhenLooking = new BooleanValue(
+            this,
+            "Only Click When Looking",
+            "Whether the player should only click when looking at the target.",
+            false
+    );
 
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
@@ -458,6 +466,9 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
     @Override
     public void onClick() {
         if (mc.player == null || mc.world == null || this.hitPoint == null) {
+            return;
+        }
+        if (onlyClickWhenLooking.getValue() && (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY)) {
             return;
         }
 
