@@ -24,8 +24,10 @@ import de.nekosarekawaii.vandalism.integration.minigames.config.MinigamesConfig;
 import de.nekosarekawaii.vandalism.integration.minigames.gui.MinigamesClientWindow;
 import de.nekosarekawaii.vandalism.integration.minigames.impl.mittebekommttritte.MitteBekommtTritteMinigame;
 import de.nekosarekawaii.vandalism.util.storage.NamedStorage;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+@Getter
 public class MinigamesManager extends NamedStorage<Minigame> {
 
     private Minigame currentMinigame;
@@ -41,10 +43,6 @@ public class MinigamesManager extends NamedStorage<Minigame> {
         this.add(
                 new MitteBekommtTritteMinigame()
         );
-    }
-
-    public Minigame getCurrentMinigame() {
-        return this.currentMinigame;
     }
 
     public void setCurrentMinigame(@Nullable final Minigame minigame) {
