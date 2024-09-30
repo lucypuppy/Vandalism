@@ -35,7 +35,7 @@ public class VehicleControlModule extends Module implements PlayerUpdateListener
             this,
             "Always Saddle",
             "Allows you to ride entities that dont have a saddle.",
-            true
+            false
     );
 
     private final BooleanValue vehicleFlight = new BooleanValue(
