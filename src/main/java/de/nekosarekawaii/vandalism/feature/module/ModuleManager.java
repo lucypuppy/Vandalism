@@ -97,6 +97,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private AutoSprintModule autoSprintModule;
     private ShowClickEventsModule showClickEventsModule;
     private NoSlowModule noSlowModule;
+    private HenklerSprenklerModule henklerSprenklerModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -209,7 +210,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new KaboomFuckerModule(),
                 new ProtocolIdChangerModule(),
                 new NoObfuscatedTextModule(),
-                new HenklerSprenklerModule(),
+                this.henklerSprenklerModule = new HenklerSprenklerModule(),
+                new HenkelPortModule(),
                 new DerpModule()
         );
         this.configManager.add(new ModuleConfig(this));

@@ -27,7 +27,7 @@ public abstract class ClickerModule extends Module {
 
     private final ValueGroup clickerGroup = new ValueGroup(this, "Clicker", "The settings for the clicker.");
 
-    private final ClickerModeValue mode = new ClickerModeValue(this.clickerGroup, "Mode", "The mode of the clicker.", this);
+    public final ClickerModeValue mode = new ClickerModeValue(this.clickerGroup, "Mode", "The mode of the clicker.", this);
 
     public ClickerModule(final String name, final String description, final Category category) {
         this(name, description, category, null);
