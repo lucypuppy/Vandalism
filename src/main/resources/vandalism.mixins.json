@@ -79,6 +79,7 @@
     "fix.minecraft.MixinScanningEntry",
     "fix.minecraft.MixinWindow",
     "fix.worldtools.MixinEvents",
+    "integration.MixinChatHud",
     "integration.MixinClientPlayerEntity",
     "integration.MixinConnectScreen",
     "integration.MixinDrawContext",

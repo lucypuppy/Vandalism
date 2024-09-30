@@ -26,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -136,6 +137,25 @@ public class WorldUtil implements MinecraftWrapper {
                 return playerEntry.getGameMode();
             }
         }
+        return null;
+    }
+
+    public static PlayerListEntry getPlayerFromTab(String message) {
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+
+        if (networkHandler == null) {
+            return null;
+        }
+
+        message = Formatting.strip(message);
+        for (final String messageSnippet : message.split(" ")) {
+            for (final PlayerListEntry playerEntry : networkHandler.getPlayerList()) {
+                if (StringUtils.contains(messageSnippet, playerEntry.getProfile().getName())) {
+                    return playerEntry;
+                }
+            }
+        }
+
         return null;
     }
 

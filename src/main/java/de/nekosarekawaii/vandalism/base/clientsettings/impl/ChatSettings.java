@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class ChatSettings extends ValueGroup {
 
@@ -162,6 +162,13 @@ public class ChatSettings extends ValueGroup {
             this,
             "Add TP Quick Action to Show Entity Component",
             "Makes messages in the chat which contains a show entity component clickable to teleport to the entity.",
+            true
+    );
+
+    public final BooleanValue quickAccessOnRightClick = new BooleanValue(
+            this,
+            "Quick Access on Right Click",
+            "Enables a quick access to the chat on right click.",
             true
     );
 

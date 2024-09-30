@@ -25,13 +25,21 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.HandFuckerModule;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.RandomUtils;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.network.packet.c2s.common.ClientOptionsC2SPacket;
+import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
+import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
+import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Comparator;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 public class FOVFuckerModule extends Module implements PlayerUpdateListener {
@@ -76,6 +84,20 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             true
     );
 
+    private final BooleanValue useSneakFromTarget = new BooleanValue(
+            this,
+            "Use Sneak From Target",
+            "Uses the sneak from the target.",
+            true
+    );
+
+    private final BooleanValue useSwingFromTarget = new BooleanValue(
+            this,
+            "Use Swing From Target",
+            "Uses the swing from the target.",
+            true
+    );
+
     private final BooleanValue alwaysFOV = new BooleanValue(
             this,
             "Always FOV",
@@ -88,7 +110,7 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             "Sneak Spam",
             "Spams sneak while moving.",
             true
-    );
+    ).visibleCondition(() -> !this.useSneakFromTarget.getValue());
 
     private final IntegerValue sneakSpamDelay = new IntegerValue(
             this,
@@ -97,14 +119,32 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             250,
             0,
             1000
-    );
+    ).visibleCondition(this.sneakSpam.isVisible());
 
     private final MSTimer sneakTimer = new MSTimer();
     private boolean sneaking;
+    private Arm serverArm;
+    private boolean swung;
+
     private AbstractClientPlayerEntity target;
     private double x, y, z;
 
     private void reset() {
+        final SyncedClientOptions options = mc.options.getSyncedOptions();
+        if (this.serverArm != null && this.serverArm != options.mainArm()) {
+            mc.player.networkHandler.sendPacket(new ClientOptionsC2SPacket(new SyncedClientOptions(
+                    options.language(),
+                    options.viewDistance(),
+                    options.chatVisibility(),
+                    options.chatColorsEnabled(),
+                    options.playerModelParts(),
+                    options.mainArm(),
+                    options.filtersText(),
+                    options.allowsServerListing()
+            )));
+        }
+        this.serverArm = options.mainArm();
+        this.swung = false;
         this.sneaking = false;
         this.target = null;
         this.x = -1;
@@ -160,6 +200,35 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
                 this.target.sidewaysSpeed
         ) / Math.PI * 180.0f + this.target.getYaw()) * Math.PI / 180.0f;
 
+        if (this.useSwingFromTarget.getValue()) {
+            //0.16666667
+            //0.33333334
+            //0.5
+            //0.6666667
+            //0.8333333
+            if (this.target.handSwingProgress > 0.16666667) {
+                if (!this.swung) {
+                    this.swung = true;
+                    boolean switchHand = this.mc.player.preferredHand != this.target.preferredHand;
+                    final SyncedClientOptions options = mc.options.getSyncedOptions();
+                    mc.player.networkHandler.sendPacket(new ClientOptionsC2SPacket(new SyncedClientOptions(
+                            options.language(),
+                            options.viewDistance(),
+                            options.chatVisibility(),
+                            options.chatColorsEnabled(),
+                            options.playerModelParts(),
+                            this.target.getMainArm(),
+                            options.filtersText(),
+                            options.allowsServerListing()
+                    )));
+                    this.serverArm = this.target.getMainArm();
+                    this.mc.player.swingHand(switchHand ? Hand.OFF_HAND : Hand.MAIN_HAND);
+                }
+            } else {
+                this.swung = false;
+            }
+        }
+
         if (this.useYawFromTarget.getValue()) {
             this.mc.player.setYaw(this.target.getHeadYaw());
             this.mc.player.setBodyYaw(this.target.getBodyYaw());
@@ -170,7 +239,9 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             this.mc.player.setPitch(this.target.getPitch());
         }
 
-        if (this.sneakSpam.getValue()) {
+        if (this.useSneakFromTarget.getValue()) {
+            this.mc.options.sneakKey.setPressed(this.target.isSneaking());
+        } else if (this.sneakSpam.getValue()) {
             if (this.sneakTimer.hasReached(this.sneakSpamDelay.getValue(), true)) {
                 this.sneaking = !this.sneaking;
             }
