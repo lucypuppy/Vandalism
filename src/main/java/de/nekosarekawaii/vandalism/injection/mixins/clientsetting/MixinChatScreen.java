@@ -103,17 +103,12 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
         this.vandalism$layout.add(
                 ButtonWidget.builder(Text.of("Copy"), (button) ->
-                        this.mc.keyboard.setClipboard(lastHovered.content().toString())).size(50, 10).build()
-        );
-
-        this.vandalism$layout.add(
-                ButtonWidget.builder(Text.of("Copy Strip"), (button) ->
-                        this.mc.keyboard.setClipboard(Formatting.strip(lastHovered.content().toString()))).size(50, 10).build()
+                        this.mc.keyboard.setClipboard(lastHovered.content().getString())).size(50, 10).build()
         );
 
         this.vandalism$layout.add(
                 ButtonWidget.builder(Text.of("Reply"), (button) -> {
-                    final String text = lastHovered.content().toString();
+                    final String text = lastHovered.content().getString();
                     final PlayerListEntry sender = WorldUtil.getPlayerFromTab(text);
 
                     if (sender == null) {
@@ -126,7 +121,7 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
         this.vandalism$layout.add(
                 ButtonWidget.builder(Text.of("Teleport to"), (button) -> {
-                    final String text = lastHovered.content().toString();
+                    final String text = lastHovered.content().getString();
                     final PlayerListEntry sender = WorldUtil.getPlayerFromTab(text);
 
                     if (sender == null) {
@@ -240,12 +235,12 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
                 this.vandalism$layout.setPosition((int) mouseX, (int) mouseY - this.vandalism$layout.getHeight());
                 this.lastHovered = lastHovered;
 
-                final boolean detectedPlayer = WorldUtil.getPlayerFromTab(lastHovered.content().toString()) != null;
+                final boolean detectedPlayer = WorldUtil.getPlayerFromTab(lastHovered.content().getString()) != null;
                 this.vandalism$layout.forEachChild(child -> {
                     if (child instanceof final ButtonWidget buttonWidget) {
                         final String name = buttonWidget.getMessage().getString();
 
-                        if (!name.equalsIgnoreCase("Copy") && !name.equalsIgnoreCase("Copy Strip")) {
+                        if (!name.equalsIgnoreCase("Copy")) {
                             buttonWidget.active = detectedPlayer;
                         }
                     }

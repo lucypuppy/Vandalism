@@ -147,10 +147,14 @@ public class WorldUtil implements MinecraftWrapper {
             return null;
         }
 
-        message = Formatting.strip(message);
+        message = Formatting.strip(message).trim();
         for (final String messageSnippet : message.split(" ")) {
+            final String trimmedSnippet = messageSnippet.trim();
+
             for (final PlayerListEntry playerEntry : networkHandler.getPlayerList()) {
-                if (StringUtils.contains(messageSnippet, playerEntry.getProfile().getName())) {
+                final String playerName = playerEntry.getProfile().getName();
+
+                if (StringUtils.contains(trimmedSnippet, playerName)) {
                     return playerEntry;
                 }
             }
