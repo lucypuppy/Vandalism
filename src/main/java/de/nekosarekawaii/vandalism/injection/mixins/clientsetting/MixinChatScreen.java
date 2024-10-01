@@ -102,8 +102,13 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
         this.vandalism$renderButtonContext = false;
 
         this.vandalism$layout.add(
-                ButtonWidget.builder(Text.of("Copy"), (button) ->
+                ButtonWidget.builder(Text.of("Copy String"), (button) ->
                         this.mc.keyboard.setClipboard(lastHovered.content().getString())).size(50, 10).build()
+        );
+
+        this.vandalism$layout.add(
+                ButtonWidget.builder(Text.of("Copy Context"), (button) ->
+                        this.mc.keyboard.setClipboard(lastHovered.content().toString())).size(50, 10).build()
         );
 
         this.vandalism$layout.add(
@@ -238,9 +243,9 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
                 final boolean detectedPlayer = WorldUtil.getPlayerFromTab(lastHovered.content().getString()) != null;
                 this.vandalism$layout.forEachChild(child -> {
                     if (child instanceof final ButtonWidget buttonWidget) {
-                        final String name = buttonWidget.getMessage().getString();
+                        final String name = buttonWidget.getMessage().getString().toLowerCase();
 
-                        if (!name.equalsIgnoreCase("Copy")) {
+                        if (!name.startsWith("copy")) {
                             buttonWidget.active = detectedPlayer;
                         }
                     }
