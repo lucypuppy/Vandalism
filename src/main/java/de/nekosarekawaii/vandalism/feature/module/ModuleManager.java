@@ -98,6 +98,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private ShowClickEventsModule showClickEventsModule;
     private NoSlowModule noSlowModule;
     private HenklerSprenklerModule henklerSprenklerModule;
+    private FlightModule flightModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -144,6 +145,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.autoSprintModule = new AutoSprintModule(),
                 this.showClickEventsModule = new ShowClickEventsModule(),
                 this.noSlowModule = new NoSlowModule(),
+                this.flightModule = new FlightModule(),
                 new FakeLagModule(),
                 new AutoClickerModule(),
                 new AutoRodModule(),
@@ -180,7 +182,6 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new AirJumpModule(),
                 new BlinkModule(),
                 new ElytraFlightModule(),
-                new FlightModule(),
                 new JesusModule(),
                 new NoFallModule(),
                 new PhaseModule(),
