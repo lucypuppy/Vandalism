@@ -352,7 +352,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                         if (this.customizeIP.get()) {
                             ip += this.customIP.get();
                         } else {
-                            ip += PacketHelper.getRandomIpPart() + "." + PacketHelper.getRandomIpPart() + "." + PacketHelper.getRandomIpPart() + "." + PacketHelper.getRandomIpPart();
+                            ip += RandomUtils.getRandomIp();
                         }
                         ip += "\u0000";
                         ip += uuid.replace("-", "");

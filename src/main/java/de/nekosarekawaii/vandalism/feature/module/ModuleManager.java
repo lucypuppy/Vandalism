@@ -99,6 +99,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private NoSlowModule noSlowModule;
     private HenklerSprenklerModule henklerSprenklerModule;
     private FlightModule flightModule;
+    private HAProxySpooferModule haProxySpooferModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -146,6 +147,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.showClickEventsModule = new ShowClickEventsModule(),
                 this.noSlowModule = new NoSlowModule(),
                 this.flightModule = new FlightModule(),
+                this.haProxySpooferModule = new HAProxySpooferModule(),
                 new FakeLagModule(),
                 new AutoClickerModule(),
                 new AutoRodModule(),
