@@ -21,6 +21,8 @@ package de.nekosarekawaii.vandalism.util;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This class contains some useful methods for generating random numbers.
@@ -219,4 +221,9 @@ public final class RandomUtils {
         return builder.toString();
     }
 
+    public static String getRandomIp() {
+        final byte[] bytes = new byte[4];
+        ThreadLocalRandom.current().nextBytes(bytes);
+        return IntStream.range(0, 4).mapToObj(value -> String.valueOf(bytes[value] & 0xFF)).collect(Collectors.joining("."));
+    }
 }
