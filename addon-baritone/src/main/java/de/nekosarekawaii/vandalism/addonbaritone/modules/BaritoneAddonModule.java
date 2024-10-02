@@ -25,11 +25,11 @@ import baritone.api.pathing.calc.IPathingControlManager;
 import baritone.api.process.IBaritoneProcess;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 
-public class BaritoneAddonModule extends AbstractModule implements PlayerUpdateListener {
+public class BaritoneAddonModule extends Module implements PlayerUpdateListener {
 
     private final IBaritone baritone;
 
