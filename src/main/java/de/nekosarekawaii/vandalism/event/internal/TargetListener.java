@@ -31,9 +31,11 @@ public interface TargetListener {
 
         public Entity entity;
         public boolean isTarget = true;
+        public final boolean ignoreFriends;
 
-        public TargetEvent(final Entity entity) {
+        public TargetEvent(final Entity entity, final boolean ignoreFriends) {
             this.entity = entity;
+            this.ignoreFriends = ignoreFriends;
         }
 
         @Override
