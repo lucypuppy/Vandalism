@@ -72,42 +72,42 @@ public class BaritoneSettingMapper implements ValueParent {
         if (undefinedSetting.value instanceof Boolean) {
             final Settings.Setting<Boolean> setting = (Settings.Setting<Boolean>) undefinedSetting;
 
-            final BooleanValue booleanValue = new BooleanValue(this, setting.getName(), "", setting.defaultValue)
+            final BooleanValue booleanValue = new BooleanValue(this, setting.getName(), null, setting.defaultValue)
                     .onValueChange((oldVal, newVal) -> setting.value = newVal);
 
             booleanValue.setValue(setting.value);
         } else if (undefinedSetting.value instanceof Color) {
             final Settings.Setting<Color> setting = (Settings.Setting<Color>) undefinedSetting;
 
-            final ColorValue colorValue = new ColorValue(this, setting.getName(), "", setting.defaultValue)
+            final ColorValue colorValue = new ColorValue(this, setting.getName(), null, setting.defaultValue)
                     .onValueChange((oldVal, newVal) -> setting.value = newVal.getColor());
 
             colorValue.setValue(setting.value);
         } else if (undefinedSetting.value instanceof Float) {
             final Settings.Setting<Float> setting = (Settings.Setting<Float>) undefinedSetting;
 
-            final FloatValue floatValue = new FloatValue(this, setting.getName(), "", setting.defaultValue, 0.0F, 10.0F)
+            final FloatValue floatValue = new FloatValue(this, setting.getName(), null, setting.defaultValue, 0.0F, 10.0F)
                     .onValueChange((oldVal, newVal) -> setting.value = newVal);
 
             floatValue.setValue(setting.value);
         } else if (undefinedSetting.value instanceof Double) {
             final Settings.Setting<Double> setting = (Settings.Setting<Double>) undefinedSetting;
 
-            final DoubleValue doubleValue = new DoubleValue(this, setting.getName(), "", setting.defaultValue, 0.0, 50.0)
+            final DoubleValue doubleValue = new DoubleValue(this, setting.getName(), null, setting.defaultValue, 0.0, 50.0)
                     .onValueChange((oldVal, newVal) -> setting.value = newVal);
 
             doubleValue.setValue(setting.value);
         } else if (undefinedSetting.value instanceof Integer) {
             final Settings.Setting<Integer> setting = (Settings.Setting<Integer>) undefinedSetting;
 
-            final IntegerValue integerValue = new IntegerValue(this, setting.getName(), "", setting.defaultValue, -5000, 5000)
+            final IntegerValue integerValue = new IntegerValue(this, setting.getName(), null, setting.defaultValue, -5000, 5000)
                     .onValueChange((oldVal, newVal) -> setting.value = newVal);
 
             integerValue.setValue(setting.value);
         } else if (undefinedSetting.value instanceof Long) {
             final Settings.Setting<Long> setting = (Settings.Setting<Long>) undefinedSetting;
 
-            final LongValue longValue = new LongValue(this, setting.getName(), "", setting.defaultValue, 0L, 146008555100680L)
+            final LongValue longValue = new LongValue(this, setting.getName(), null, setting.defaultValue, 0L, 146008555100680L)
                     .onValueChange((oldVal, newVal) -> setting.value = newVal);
 
             longValue.setValue(setting.value);
