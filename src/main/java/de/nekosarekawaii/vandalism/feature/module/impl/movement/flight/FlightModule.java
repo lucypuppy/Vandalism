@@ -26,9 +26,14 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
+import lombok.Getter;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends Module implements OutgoingPacketListener, PlayerUpdateListener {
+
+    @Getter
+    private double flownDistance;
+    private double lastX, lastZ;
 
     private final ModuleModeValue<FlightModule> mode = new ModuleModeValue<>(
             this,
@@ -63,6 +68,9 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
 
     @Override
     public void onActivate() {
+        this.lastX = Double.NaN;
+        this.lastZ = Double.NaN;
+        this.flownDistance = 0.0;
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
     }
@@ -71,10 +79,21 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
+        this.flownDistance = 0.0;
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        final double x = this.mc.player.getX();
+        final double z = this.mc.player.getZ();
+
+        if (!Double.isNaN(this.lastX) && !Double.isNaN(this.lastZ)) {
+            this.flownDistance += Math.hypot(x - this.lastX, z - this.lastZ);
+        }
+
+        this.lastX = x;
+        this.lastZ = z;
+
         if (!this.antiKick.getValue()) {
             return;
         }

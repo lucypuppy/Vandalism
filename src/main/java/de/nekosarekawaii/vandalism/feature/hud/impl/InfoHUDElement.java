@@ -282,6 +282,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
+    private final BooleanValue flownDistance = new BooleanValue(
+            this,
+            "Flown Distance",
+            "Shows the distance you have flown.",
+            true
+    );
+
     private final BooleanValue clientTPS = new BooleanValue(
             this,
             "Client TPS",
@@ -584,6 +591,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             if (charge > 0) {
                 infoMap.put("Tick Base Charge", charge + " t");
             }
+        }
+
+        if (this.flownDistance.getValue()) {
+            final double flownDistance = Vandalism.getInstance().getModuleManager().getFlightModule().getFlownDistance();
+
+            if (flownDistance > 0.0)
+                infoMap.put("Flown Distance", String.format("%.2f", flownDistance));
         }
 
         if (this.clientTPS.getValue()) {

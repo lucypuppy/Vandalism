@@ -67,11 +67,12 @@ public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.damage.getValue() && mc.player.fallDistance < 0.1F) {
-            if (mc.player.hurtTime > 8) {
-                mc.player.setVelocity(0, 9.0, 0);
+            if (mc.player.hurtTime > 2) {
+                mc.player.setPos(mc.player.getX(), mc.player.getY() + 4.4, mc.player.getZ());
+                mc.player.setVelocity(0, 5.6, 0);
             }
 
-            if (mc.player.hurtTime == 5) {
+            if (mc.player.hurtTime == 1) {
                 mc.player.setVelocity(0, 0, 0);
             }
             return;
