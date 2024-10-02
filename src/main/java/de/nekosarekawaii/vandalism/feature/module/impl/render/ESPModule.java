@@ -134,6 +134,9 @@ public class ESPModule extends Module implements BlockStateListener, BlockStateU
     }
 
     public boolean isTarget(final Entity entity) {
+        if (!this.entityGroup.isTarget(entity)) {
+            return false;
+        }
         if (entity instanceof final PlayerEntity player) {
             final GameProfile gameProfile = player.getGameProfile();
             if (gameProfile != null) {
@@ -142,7 +145,7 @@ public class ESPModule extends Module implements BlockStateListener, BlockStateU
                 }
             }
         }
-        return this.entityGroup.isTarget(entity) || entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
+        return entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
     }
 
     public Color getEntityColor(final Entity entity) {
