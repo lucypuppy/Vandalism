@@ -22,7 +22,6 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
@@ -59,11 +58,8 @@ public class UseItemSpammerModule extends Module implements PlayerUpdateListener
 
     @Override
     public final void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final long delay = this.delay.getValue();
-        if (delay > 0) {
-            if (!this.timer.hasReached(delay, true)) {
-                return;
-            }
+        if (!this.timer.hasReached(this.delay.getValue(), true)) {
+            return;
         }
         this.mc.player.networkHandler.sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, this.mc.world.getPendingUpdateManager().incrementSequence().getSequence(), mc.player.getYaw(), mc.player.getPitch()));
         this.mc.player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, Direction.DOWN));
