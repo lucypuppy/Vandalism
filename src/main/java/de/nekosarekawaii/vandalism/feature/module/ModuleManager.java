@@ -148,6 +148,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.noSlowModule = new NoSlowModule(),
                 this.flightModule = new FlightModule(),
                 this.haProxySpooferModule = new HAProxySpooferModule(),
+                this.henklerSprenklerModule = new HenklerSprenklerModule(),
                 new FakeLagModule(),
                 new AutoClickerModule(),
                 new AutoRodModule(),
@@ -213,7 +214,6 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new KaboomFuckerModule(),
                 new ProtocolIdChangerModule(),
                 new NoObfuscatedTextModule(),
-                this.henklerSprenklerModule = new HenklerSprenklerModule(),
                 new HenkelPortModule(),
                 new DerpModule()
         );
