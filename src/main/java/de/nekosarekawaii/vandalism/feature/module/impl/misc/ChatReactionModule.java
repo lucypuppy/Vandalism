@@ -26,14 +26,15 @@ import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.util.Placeholders;
-import de.nekosarekawaii.vandalism.util.RandomUtils;
-import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 
 import java.io.File;
@@ -42,21 +43,16 @@ import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ChatReactionModule extends Module implements IncomingPacketListener, PlayerUpdateListener, DisconnectListener {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private final Map<String[], String[]> contentMap = new HashMap<>();
-    private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "chat-reaction.json");
-
-    private final Map<String, Long> queuedMessages = new ConcurrentHashMap<>();
 
     private final LongValue minDelay = new LongValue(
             this,
             "Min Delay",
             "The minimum delay in milliseconds.",
-            500L,
+            2000L,
             0L,
             10000L
     );
@@ -65,7 +61,7 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
             this,
             "Max Delay",
             "The maximum delay in milliseconds.",
-            1000L,
+            2500L,
             0L,
             10000L
     );
@@ -78,35 +74,41 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
         }
     });
 
+    private final Map<String[], String[]> contentMap = new HashMap<>();
+    private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "chat-reaction.json");
+    private final Map<String, Long> queuedMessages = new ConcurrentHashMap<>();
+
     public ChatReactionModule() {
         super(
                 "Chat Reaction",
                 "If activated the client will react to certain words in the chat and will answer with a certain message.",
                 Category.MISC
         );
-        this.setup();
     }
 
     @Override
     public void onActivate() {
-        this.queuedMessages.clear();
-        this.setup();
+        this.reset();
+        this.reloadContent();
         Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID, DisconnectEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID, DisconnectEvent.ID);
+        this.reset();
+    }
+
+    private void reset() {
         this.contentMap.clear();
         this.queuedMessages.clear();
     }
 
-    private void setup() {
+    private void reloadContent() {
         if (!this.contentFile.exists()) {
             try (final FileWriter fw = new FileWriter(this.contentFile)) {
                 final JsonObject jsonObject = new JsonObject();
                 final JsonArray reactions = new JsonArray();
-
                 final JsonObject reaction1 = new JsonObject();
                 final JsonArray reaction1Triggers = new JsonArray();
                 reaction1Triggers.add("%mod_name%");
@@ -117,7 +119,6 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
                 reaction1.add("triggers", reaction1Triggers);
                 reaction1.add("responses", reaction1Responses);
                 reactions.add(reaction1);
-
                 final JsonObject reaction2 = new JsonObject();
                 final JsonArray reaction2Triggers = new JsonArray();
                 reaction2Triggers.add("cool");
@@ -130,13 +131,11 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
                 reaction2.add("triggers", reaction2Triggers);
                 reaction2.add("responses", reaction2Responses);
                 reactions.add(reaction2);
-
                 jsonObject.add("reactions", reactions);
-
                 fw.write(GSON.toJson(jsonObject));
                 fw.flush();
-            } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to create chat reaction file!", e);
+            } catch (final Exception e) {
+                ChatUtil.errorChatMessage("Failed to create chat reaction file: " + e.getMessage());
             }
         }
         if (this.contentMap.isEmpty()) {
@@ -162,38 +161,38 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
                         this.contentMap.put(triggersArray, responsesArray);
                     }
                 }
-            } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to load chat reaction file!", e);
+            } catch (final Exception e) {
+                ChatUtil.errorChatMessage("Failed to load chat reaction file: " + e.getMessage());
             }
         }
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        for (final Map.Entry<String, Long> entry : this.queuedMessages.entrySet()) {
-            if (System.currentTimeMillis() - entry.getValue() >= RandomUtils.randomLong(this.minDelay.getValue(), this.maxDelay.getValue())) {
-                final String message = entry.getKey();
-                this.queuedMessages.remove(message);
-                final String targetPlaceholder = "%target%";
-                final AtomicReference<String> targetName = new AtomicReference<>(targetPlaceholder);
-                final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-                if (networkHandler != null) {
-                    for (final PlayerListEntry playerListEntry : networkHandler.getPlayerList()) {
-                        final String playerName = playerListEntry.getProfile().getName();
-                        if (StringUtils.contains(message, playerName)) {
-                            targetName.set(playerName);
-                            break;
-                        }
+        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+        if (networkHandler != null) {
+            for (final Map.Entry<String, Long> entry : this.queuedMessages.entrySet()) {
+                if (System.currentTimeMillis() - entry.getValue() >= RandomUtils.randomLong(this.minDelay.getValue(), this.maxDelay.getValue())) {
+                    final String message = entry.getKey();
+                    this.queuedMessages.remove(message);
+                    final String self = this.mc.getGameProfile().getName();
+                    final String targetPlaceholder = "%target%";
+                    String target = targetPlaceholder;
+                    final PlayerListEntry playerListEntry = WorldUtil.getPlayerFromTab(message);
+                    if (playerListEntry != null) {
+                        target = playerListEntry.getProfile().getName();
                     }
-                    this.setup();
+                    if (StringUtils.contains(target, self)) {
+                        target = targetPlaceholder;
+                    }
+                    final String targetPlayer = target;
                     this.contentMap.forEach((triggers, responses) -> {
                         for (final String trigger : triggers) {
                             if (StringUtils.contains(Placeholders.applyReplacements(message), trigger)) {
                                 String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomIndex(responses.length)];
                                 answer = Placeholders.applyReplacements(answer);
-                                final String target = targetName.get();
-                                if (answer.contains(targetPlaceholder) && !target.equals(targetPlaceholder)) {
-                                    answer = answer.replace(targetPlaceholder, target);
+                                if (answer.contains(targetPlaceholder) && !targetPlayer.equals(targetPlaceholder)) {
+                                    answer = answer.replace(targetPlaceholder, targetPlayer);
                                 }
                                 if (answer.startsWith("/")) {
                                     networkHandler.sendChatCommand(answer.substring(1));
@@ -211,16 +210,31 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (event.packet instanceof final GameMessageS2CPacket gameMessageS2CPacket) {
+        String message = "";
+        final Packet<?> packet = event.packet;
+        if (packet instanceof final GameMessageS2CPacket gameMessageS2CPacket) {
             if (!gameMessageS2CPacket.overlay()) {
-                this.queuedMessages.put(gameMessageS2CPacket.content().getString(), System.currentTimeMillis());
+                message = gameMessageS2CPacket.content().getString();
+            }
+        } else if (packet instanceof final ChatMessageS2CPacket chatMessageS2CPacket) {
+            final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(chatMessageS2CPacket.sender());
+            if (playerListEntry != null) {
+                message = "<" + playerListEntry.getProfile().getName() + "> " + chatMessageS2CPacket.body().content();
             }
         }
+        if (message.startsWith(ChatUtil.getChatPrefix().getString())) {
+            return;
+        }
+        message = Formatting.strip(message);
+        if (message.replace(" ", "").isEmpty()) {
+            return;
+        }
+        this.queuedMessages.put(message, System.currentTimeMillis());
     }
 
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
-        this.queuedMessages.clear();
+        this.reset();
     }
 
 }
