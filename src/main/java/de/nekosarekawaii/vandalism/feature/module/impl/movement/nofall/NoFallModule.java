@@ -30,7 +30,7 @@ public class NoFallModule extends Module {
             "The current no fall mode.",
             new GroundSpoofModuleMode(),
             new CubeCraftModuleMode(),
-            new PositionSpoofModuleMode(),
+            new ChunkUnloadModuleMode(),
             new VulcanModuleMode(),
             new LegitModuleMode()
     );

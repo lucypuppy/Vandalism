@@ -26,9 +26,26 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallMod
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
+
+//Todo only need to bypass the OnGround Flags
 public class VulcanModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener, MoveInputListener {
 
     private boolean stopMove;
+    private boolean fixFlag;
+    private int airTicks;
+
+    private final double[] vulcanStepCValues = new double[]{
+            -0.0785000026226043,
+            -0.1553000062704086,
+            -0.2305999994277954,
+            -0.3043999969959259,
+            -0.376800000667572,
+            -0.4474999904632568,
+            -0.5170999765396118,
+            -0.5860000252723694,
+            -0.6520000100135803,
+            -0.7171000242233276,
+    };
 
     public VulcanModuleMode() {
         super("Vulcan");
@@ -44,27 +61,44 @@ public class VulcanModuleMode extends ModuleMulti<NoFallModule> implements Outgo
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID, MoveInputEvent.ID);
-        stopMove = false;
+        this.stopMove = false;
+        this.fixFlag = false;
     }
 
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketListener.OutgoingPacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket playerPacket && this.mc.player.fallDistance > 3.0f) {
-            if (isAirStop()) {
-                mc.player.setVelocity(0, -0.029, 0);
-                stopMove = true;
+        if (event.packet instanceof final PlayerMoveC2SPacket playerPacket) {
+            if (!mc.player.isOnGround()) {
+                if (this.airTicks < this.vulcanStepCValues.length - 1) {
+                    this.airTicks++;
+                }
+            } else {
+                this.airTicks = 0;
             }
-            playerPacket.onGround = true;
-            mc.player.fallDistance = 0;
+
+            if (this.mc.player.fallDistance > 3.0f) {
+                if (isAirStop()) {
+                    mc.player.setVelocity(0, -0.1, 0);
+                    this.stopMove = true;
+                    this.fixFlag = true;
+                }
+
+                playerPacket.onGround = true;
+                this.airTicks = 0;
+                mc.player.fallDistance = 0;
+            } else if (this.fixFlag) {
+                mc.player.setVelocity(0, this.vulcanStepCValues[this.airTicks] + 0.05, 0);
+                this.fixFlag = false;
+            }
         }
     }
 
     @Override
     public void onMoveInput(MoveInputEvent event) {
-        if (stopMove && isAirStop()) {
+        if (this.stopMove && isAirStop()) {
             event.cancel();
-            stopMove = false;
+            this.stopMove = false;
         }
     }
 
