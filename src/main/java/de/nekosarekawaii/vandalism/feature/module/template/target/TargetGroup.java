@@ -79,13 +79,17 @@ public class TargetGroup extends ValueGroup {
     }
 
     public boolean isTarget(final Entity entity) {
+        return this.isTarget(entity, false);
+    }
+
+    public boolean isTarget(final Entity entity, final boolean ignoreFriends) {
         if (entity == this.mc.player || (!entity.isAlive() && this.isAlive.getValue())) {
             return false;
         }
         if (!this.targets.isSelected(entity.getType())) {
             return false;
         }
-        final TargetListener.TargetEvent event = new TargetListener.TargetEvent(entity);
+        final TargetListener.TargetEvent event = new TargetListener.TargetEvent(entity, ignoreFriends);
         Vandalism.getInstance().getEventSystem().callExceptionally(TargetListener.TargetEvent.ID, event);
         return event.isTarget;
     }

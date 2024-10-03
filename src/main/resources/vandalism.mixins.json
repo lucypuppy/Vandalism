@@ -102,6 +102,7 @@
     "module.MixinAnvilScreenHandler",
     "module.MixinBlock",
     "module.MixinChatHud",
+    "module.MixinClientConnection",
     "module.MixinClientPlayerEntity",
     "module.MixinClientPlayerInteractionManager",
     "module.MixinClientPlayNetworkAddon",

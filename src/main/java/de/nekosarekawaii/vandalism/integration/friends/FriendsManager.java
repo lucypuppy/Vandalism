@@ -46,6 +46,9 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
 
     @Override
     public void onTarget(final TargetEvent event) {
+        if (event.ignoreFriends) {
+            return;
+        }
         if (event.entity instanceof final PlayerEntity player) {
             final GameProfile gameProfile = player.getGameProfile();
             if (gameProfile == null) {
