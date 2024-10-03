@@ -23,11 +23,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.HAProxySpooferMod
 import de.nekosarekawaii.vandalism.util.RandomUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.haproxy.HAProxyCommand;
-import io.netty.handler.codec.haproxy.HAProxyMessage;
-import io.netty.handler.codec.haproxy.HAProxyMessageEncoder;
-import io.netty.handler.codec.haproxy.HAProxyProtocolVersion;
-import io.netty.handler.codec.haproxy.HAProxyProxiedProtocol;
+import io.netty.handler.codec.haproxy.*;
 import net.minecraft.network.ClientConnection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,13 +39,9 @@ public class MixinClientConnection {
 
     @Inject(method = "channelActive", at = @At("TAIL"))
     public void channelActive(final ChannelHandlerContext context, final CallbackInfo info) {
-        final HAProxySpooferModule module = Vandalism.getInstance().getModuleManager().getHaProxySpooferModule();
-        if (!module.isActive()) {
-            return;
-        }
-
-        System.out.println("CHANNEL CLASS");
-        final HAProxyMessage haProxyMessage = new HAProxyMessage(HAProxyProtocolVersion.V2, HAProxyCommand.PROXY, HAProxyProxiedProtocol.TCP4, module.getCustomizeIP().getValue() ? module.getIp().getValue() : RandomUtils.getRandomIp(), "0.0.0.0", 1, 1);
+        final HAProxySpooferModule haProxySpooferModule = Vandalism.getInstance().getModuleManager().getHaProxySpooferModule();
+        if (!haProxySpooferModule.isActive()) return;
+        final HAProxyMessage haProxyMessage = new HAProxyMessage(HAProxyProtocolVersion.V2, HAProxyCommand.PROXY, HAProxyProxiedProtocol.TCP4, haProxySpooferModule.customizeIP.getValue() ? haProxySpooferModule.ip.getValue() : RandomUtils.getRandomIp(), "0.0.0.0", 1, 1);
         this.channel.pipeline().addFirst("haproxy", HAProxyMessageEncoder.INSTANCE);
         this.channel.writeAndFlush(haProxyMessage);
         this.channel.pipeline().remove(HAProxyMessageEncoder.INSTANCE);
