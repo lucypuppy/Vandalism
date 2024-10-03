@@ -177,14 +177,14 @@ public class ESPModule extends Module implements BlockStateListener, BlockStateU
 
     @Override
     public void onBlockState(final BlockPos pos, final BlockState state) {
-        if (!this.espBlocks.contains(pos) && this.blockList.isSelected(state.getBlock())) {
+        if (this.blocks.getValue() && !this.espBlocks.contains(pos) && this.blockList.isSelected(state.getBlock())) {
             this.espBlocks.add(pos);
         }
     }
 
     @Override
     public void onBlockStateUpdate(final BlockPos pos, final BlockState previousState, final BlockState state) {
-        if (this.espBlocks.contains(pos) && previousState != state) {
+        if (this.blocks.getValue() && this.espBlocks.contains(pos) && previousState != state) {
             this.espBlocks.remove(pos);
         }
     }
