@@ -215,7 +215,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new ProtocolIdChangerModule(),
                 new NoObfuscatedTextModule(),
                 new HenkelPortModule(),
-                new DerpModule()
+                new DerpModule(),
+                new UseItemSpammerModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
