@@ -32,7 +32,7 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
     private final ImString searchInput = new ImString();
 
     public BaritoneSettingsClientWindow(final BaritoneSettingMapper baritoneSettingMapper) {
-        super("Baritone Settings", Category.MISC, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+        super("Baritone Settings", Category.MISC, 600f, 500f, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
         this.baritoneSettingMapper = baritoneSettingMapper;
     }
 

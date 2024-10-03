@@ -149,10 +149,6 @@ public class PacketHelper {
         }
     }
 
-    public static String getRandomIpPart() {
-        return String.valueOf(RandomUtils.randomInt(255));
-    }
-
     public static byte[] readBuffer(ByteBuf in) {
         final byte[] bytes = new byte[in.readableBytes()];
         in.readBytes(bytes);
