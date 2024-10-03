@@ -28,6 +28,7 @@ import de.nekosarekawaii.vandalism.event.game.BlockStateListener;
 import de.nekosarekawaii.vandalism.event.game.BlockStateUpdateListener;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
@@ -54,7 +55,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ESPModule extends Module implements BlockStateListener, BlockStateUpdateListener, WorldListener, DisconnectListener, Render3DListener {
+public class ESPModule extends Module implements PlayerUpdateListener, BlockStateListener, BlockStateUpdateListener, WorldListener, DisconnectListener, Render3DListener {
 
     private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.");
 
@@ -93,7 +94,9 @@ public class ESPModule extends Module implements BlockStateListener, BlockStateU
             "Blocks",
             "Whether blocks should have an ESP.",
             false
-    );
+    ).onValueChange((oldValue, newValue) -> {
+        if (!newValue) this.espBlocks.clear();
+    });
 
     private final DoubleValue maxBlockDistance = new DoubleValue(
             this,
@@ -156,12 +159,12 @@ public class ESPModule extends Module implements BlockStateListener, BlockStateU
     @Override
     public void onActivate() {
         this.espBlocks.clear();
-        Vandalism.getInstance().getEventSystem().subscribe(this, BlockStateEvent.ID, BlockStateUpdateEvent.ID, WorldLoadEvent.ID, DisconnectEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, BlockStateEvent.ID, BlockStateUpdateEvent.ID, WorldLoadEvent.ID, DisconnectEvent.ID, Render3DEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, BlockStateEvent.ID, BlockStateUpdateEvent.ID, WorldLoadEvent.ID, DisconnectEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, BlockStateEvent.ID, BlockStateUpdateEvent.ID, WorldLoadEvent.ID, DisconnectEvent.ID, Render3DEvent.ID);
         this.espBlocks.clear();
     }
 
@@ -190,12 +193,15 @@ public class ESPModule extends Module implements BlockStateListener, BlockStateU
     }
 
     @Override
+    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+        this.espBlocks.removeIf(pos -> pos.toCenterPos().distanceTo(this.mc.player.getPos()) > this.maxBlockDistance.getValue() || !this.blockList.isSelected(this.mc.world.getBlockState(pos).getBlock()));
+    }
+
+    @Override
     public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         if (!this.blocks.getValue() || this.mc.player == null) {
             return;
         }
-        this.espBlocks.removeIf(pos -> pos.toCenterPos().distanceTo(this.mc.player.getPos()) > this.maxBlockDistance.getValue() ||
-                !this.blockList.isSelected(this.mc.world.getBlockState(pos).getBlock()));
         final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
         matrixStack.push();
         for (final BlockPos pos : this.espBlocks) {
