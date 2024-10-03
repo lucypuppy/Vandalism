@@ -36,9 +36,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.zip.Deflater;
 
 public class PacketHelper {
