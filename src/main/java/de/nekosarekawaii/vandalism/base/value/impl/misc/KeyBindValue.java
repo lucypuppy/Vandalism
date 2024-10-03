@@ -24,16 +24,23 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import imgui.ImGui;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.util.Language;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class KeyBindValue extends Value<Integer> implements KeyboardInputListener, MouseInputListener {
 
     private final boolean onlyInGame;
-
     private boolean waitingForInput;
+    private final List<String> alreadyBoundTo = new ArrayList<>();
 
     public KeyBindValue(ValueParent parent, String name, String description) {
         this(parent, name, description, GLFW.GLFW_KEY_UNKNOWN);
@@ -72,6 +79,19 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
                 Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
                 Vandalism.getInstance().getEventSystem().subscribe(MouseEvent.ID, this);
             }
+
+            if (this.alreadyBoundTo.size() > 2) {
+                ImGui.sameLine();
+                ImGui.textWrapped("(Key is already bound)");
+                if (ImGui.isItemHovered()) {
+                    ImGui.beginTooltip();
+                    for (final String string : this.alreadyBoundTo) {
+                        ImGui.text(string);
+                    }
+                    ImGui.newLine();
+                    ImGui.endTooltip();
+                }
+            }
         } else {
             ImGui.textWrapped("Listening for key input...");
             width = 100;
@@ -100,9 +120,32 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
             if (key != GLFW.GLFW_KEY_ESCAPE) {
                 if (key == GLFW.GLFW_KEY_BACKSPACE) {
                     this.setValue(GLFW.GLFW_KEY_UNKNOWN);
-                }
-                else {
+                } else {
                     this.setValue(key);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setValue(Integer value) {
+        super.setValue(value);
+
+        this.alreadyBoundTo.clear();
+        if (getValue() > 0) {
+            this.alreadyBoundTo.add("Modules:");
+
+            for (final Module module : Vandalism.getInstance().getModuleManager().getList()) {
+                if (Objects.equals(this.getValue(), module.getKeyBind().getValue())) {
+                    this.alreadyBoundTo.add(module.getName());
+                }
+            }
+            this.alreadyBoundTo.add("");
+            this.alreadyBoundTo.add("Minecraft:");
+
+            for (final KeyBinding key : MinecraftClient.getInstance().options.allKeys) {
+                if (this.getValue() == key.boundKey.getCode()) {
+                    this.alreadyBoundTo.add(Language.getInstance().get(key.getTranslationKey()));
                 }
             }
         }
@@ -120,7 +163,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
 
     public boolean isPressed() {
         final MinecraftClient mc = MinecraftClient.getInstance();
-        if (this.onlyInGame && (mc.player == null || mc.currentScreen != null)){
+        if (this.onlyInGame && (mc.player == null || mc.currentScreen != null)) {
             return false;
         }
         return InputType.isPressed(this.getValue());
@@ -128,7 +171,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
 
     public boolean isReleased() {
         final MinecraftClient mc = MinecraftClient.getInstance();
-        if (this.onlyInGame && (mc.player == null || mc.currentScreen != null)){
+        if (this.onlyInGame && (mc.player == null || mc.currentScreen != null)) {
             return false;
         }
         return InputType.isReleased(this.getValue());
