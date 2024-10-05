@@ -93,7 +93,7 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
 
     @Override
     public void onKeyInput(long window, int key, int scanCode, int action, int modifiers) {
-        if (this.selectedPos != null && key == GLFW.GLFW_KEY_LEFT_SHIFT) {
+        if (this.selectedPos != null && key == GLFW.GLFW_KEY_LEFT_SHIFT && this.mc.currentScreen == null) {
             this.teleport = true;
         }
     }
