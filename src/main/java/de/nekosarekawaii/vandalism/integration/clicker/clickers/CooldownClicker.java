@@ -44,9 +44,10 @@ public class CooldownClicker extends Clicker implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (!this.clickerModule.mode.isSelected(this)) {
+        if (!this.clickerModule.mode.isSelected(this) || !clickerModule.shouldClick()) {
             return;
         }
+
         final float baseAttackDamage = (float) mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         final float attackCooldown = mc.player.getAttackCooldownProgress(0);
         final float finalAttackDamage = baseAttackDamage * (0.2f + attackCooldown * attackCooldown * 0.8f);

@@ -49,4 +49,8 @@ public abstract class ClickerModule extends Module {
 
     public abstract void onClick();
 
+    public boolean shouldClick() {
+        return true;
+    }
+
 }
