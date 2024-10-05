@@ -100,7 +100,7 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (GLFW.glfwGetMouseButton(this.mc.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == 1 && this.hoverPos != null) {
+        if (GLFW.glfwGetMouseButton(this.mc.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == 1 && this.hoverPos != null && this.mc.currentScreen == null) {
             this.selectedPos = this.hoverPos.toCenterPos();
         }
         this.hoverPos = this.getBlockHitResult();
