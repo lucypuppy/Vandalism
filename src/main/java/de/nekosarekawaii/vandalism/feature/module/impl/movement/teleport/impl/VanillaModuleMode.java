@@ -22,8 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.teleport.TeleportModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
 public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements PlayerUpdateListener {
@@ -44,25 +43,29 @@ public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements Pl
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.parent.canTeleport()) return;
-        final Vec3d target = this.parent.getBlockHitResult();
+        if (!this.parent.teleport) return;
+        final Vec3d target = this.parent.selectedPos;
         if (target == null) return;
-        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-        if (networkHandler == null) return;
-        final Vec3d finalPos = new Vec3d(target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5);
-        final double dis = this.mc.player.getPos().distanceTo(target);
-        for (double d = 0.0D; d < dis; d += 2.0D) {
-            final double x = this.mc.player.getX() + (finalPos.x - (double) this.mc.player.getHorizontalFacing().getOffsetX() - this.mc.player.getX()) * d / dis;
-            final double y = this.mc.player.getY() + (finalPos.y - this.mc.player.getY()) * d / dis;
-            final double z = this.mc.player.getZ() + (finalPos.z - (double) this.mc.player.getHorizontalFacing().getOffsetZ() - this.mc.player.getZ()) * d / dis;
-            networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
-            this.mc.player.setPosition(x, y, z);
-        }
-        final double x = finalPos.x;
-        final double y = finalPos.y;
-        final double z = finalPos.z;
-        networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
-        this.mc.player.setPosition(x, y, z);
+        Vec3d pos = this.mc.player.getPos();
+        MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY() + 1, target.getZ());
+        this.parent.selectedPos = null;
+        this.parent.teleport = false;
+//        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+//        if (networkHandler == null) return;
+//        final Vec3d finalPos = new Vec3d(target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5);
+//        final double dis = this.mc.player.getPos().distanceTo(target);
+//        for (double d = 0.0D; d < dis; d += 2.0D) {
+//            final double x = this.mc.player.getX() + (finalPos.x - (double) this.mc.player.getHorizontalFacing().getOffsetX() - this.mc.player.getX()) * d / dis;
+//            final double y = this.mc.player.getY() + (finalPos.y - this.mc.player.getY()) * d / dis;
+//            final double z = this.mc.player.getZ() + (finalPos.z - (double) this.mc.player.getHorizontalFacing().getOffsetZ() - this.mc.player.getZ()) * d / dis;
+//            networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+//            this.mc.player.setPosition(x, y, z);
+//        }
+//        final double x = finalPos.x;
+//        final double y = finalPos.y;
+//        final double z = finalPos.z;
+//        networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+//        this.mc.player.setPosition(x, y, z);
     }
 
 }
