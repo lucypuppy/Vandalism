@@ -59,7 +59,7 @@ public class VulcanModuleMode extends ModuleMulti<TeleportModule> implements Pla
 //            this.executed = false;
 //            return;
 //        }
-        final Vec3d target = this.parent.selectedPos;
+        final Vec3d target = this.parent.getSelectedPos();
         if (target == null) return;
         final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
         if (networkHandler == null) return;
