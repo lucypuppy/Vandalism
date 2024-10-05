@@ -44,8 +44,7 @@ import java.util.List;
 public class TeleportModule extends Module implements Render3DListener, PlayerUpdateListener, KeyboardInputListener {
 
     public boolean teleport;
-    public Vec3d selectedPos;
-    private BlockPos hoverPos;
+    private BlockPos hoverPos, selectedPos;
     private final List<Block> blackList = Arrays.asList(Blocks.AIR, Blocks.CAVE_AIR, Blocks.VOID_AIR);
 
     public final IntegerValue maxDistance = new IntegerValue(
@@ -91,6 +90,23 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
         return null;
     }
 
+    public boolean isTeleportPositionValid() {
+        if (this.selectedPos == null) return false;
+        Block block = this.mc.world.getBlockState(new BlockPos(this.selectedPos.up())).getBlock();
+        Block block2 = this.mc.world.getBlockState(new BlockPos(this.selectedPos.up().up())).getBlock();
+        if (this.blackList.contains(block) && this.blackList.contains(block2)) return true;
+        return false;
+    }
+
+    public Vec3d getSelectedPos() {
+        return this.selectedPos.toCenterPos();
+    }
+
+    public void reset() {
+        this.selectedPos = null;
+        this.teleport = false;
+    }
+
     @Override
     public void onKeyInput(long window, int key, int scanCode, int action, int modifiers) {
         if (this.selectedPos != null && key == GLFW.GLFW_KEY_LEFT_SHIFT && this.mc.currentScreen == null) {
@@ -101,7 +117,7 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (GLFW.glfwGetMouseButton(this.mc.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == 1 && this.hoverPos != null && this.mc.currentScreen == null) {
-            this.selectedPos = this.hoverPos.toCenterPos();
+            this.selectedPos = this.hoverPos;
         }
         this.hoverPos = this.getBlockHitResult();
     }
@@ -112,7 +128,7 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
         Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
         matrixStack.push();
         matrixStack.translate(vec.x, vec.y, vec.z);
-        if (this.hoverPos != null && !this.hoverPos.toCenterPos().equals(this.selectedPos)) {
+        if (this.hoverPos != null && !this.hoverPos.equals(this.selectedPos)) {
             DebugRenderer.drawBox(
                     matrixStack,
                     immediate,
@@ -132,12 +148,12 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
             DebugRenderer.drawBox(
                     matrixStack,
                     immediate,
-                    this.selectedPos.getX() - 0.5,
-                    this.selectedPos.getY() - 0.5,
-                    this.selectedPos.getZ() - 0.5,
-                    this.selectedPos.getX() + 0.5,
-                    this.selectedPos.getY() + 0.5,
-                    this.selectedPos.getZ() + 0.5,
+                    this.selectedPos.getX(),
+                    this.selectedPos.getY(),
+                    this.selectedPos.getZ(),
+                    this.selectedPos.getX() + 1,
+                    this.selectedPos.getY() + 1,
+                    this.selectedPos.getZ() + 1,
                     0F,
                     1F,
                     0F,

@@ -44,12 +44,13 @@ public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements Pl
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (!this.parent.teleport) return;
-        final Vec3d target = this.parent.selectedPos;
+        final Vec3d target = this.parent.getSelectedPos();
         if (target == null) return;
-        Vec3d pos = this.mc.player.getPos();
-        MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY() + 1, target.getZ());
-        this.parent.selectedPos = null;
-        this.parent.teleport = false;
+        if(this.parent.isTeleportPositionValid()) {
+            Vec3d pos = this.mc.player.getPos();
+            MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY() + 1, target.getZ());
+            this.parent.reset();
+        }
 //        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
 //        if (networkHandler == null) return;
 //        final Vec3d finalPos = new Vec3d(target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5);
