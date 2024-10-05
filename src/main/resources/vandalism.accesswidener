@@ -176,3 +176,4 @@ accessible method net/minecraft/client/resource/server/ServerResourcePackLoader 
 accessible method net/minecraft/client/resource/server/ServerResourcePackLoader toHashCode (Ljava/lang/String;)Lcom/google/common/hash/HashCode;
 accessible field com/mojang/blaze3d/systems/RenderSystem modelViewMatrix Lorg/joml/Matrix4f;
 accessible field net/minecraft/client/network/ClientPlayNetworkHandler session Lnet/minecraft/network/encryption/ClientPlayerSession;
+accessible method net/minecraft/client/world/ClientWorld getPendingUpdateManager ()Lnet/minecraft/client/network/PendingUpdateManager;

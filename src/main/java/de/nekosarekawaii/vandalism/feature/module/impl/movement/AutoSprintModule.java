@@ -20,20 +20,12 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.effect.StatusEffects;
 
 public class AutoSprintModule extends Module implements PlayerUpdateListener {
-
-    private final BooleanValue legit = new BooleanValue(
-            this,
-            "Legit",
-            "Only sprints if its allowed.",
-            true
-    );
-
-    private boolean stopSprinting;
 
     public AutoSprintModule() {
         super("Auto Sprint", "Automatically lets you sprint!", Category.MOVEMENT);
@@ -42,7 +34,6 @@ public class AutoSprintModule extends Module implements PlayerUpdateListener {
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this, Priorities.LOW);
-        stopSprinting = false;
     }
 
     @Override
@@ -52,28 +43,52 @@ public class AutoSprintModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (stopSprinting) {
-            this.mc.options.sprintKey.setPressed(false);
-            this.mc.player.setSprinting(false);
-            stopSprinting(false);
-            return;
-        }
-        if (this.legit.getValue()) {
-            this.mc.options.sprintKey.setPressed(true);
-            return;
-        }
-        if (
-                !this.mc.player.horizontalCollision &&
-                !this.mc.player.isSneaking() &&
-                !this.mc.player.isSprinting() &&
-                (Math.abs(this.mc.player.input.movementForward) >= 0.8F || Math.abs(this.mc.player.sidewaysSpeed) >= 0.8F)
-        ) {
+        boolean bl2 = this.mc.player.input.sneaking;
+        boolean bl3 = this.isWalking();
+        boolean bl5 = this.canStartSprinting();
+        boolean bl6 = this.mc.player.hasVehicle() ? this.mc.player.getVehicle().isOnGround() : this.mc.player.isOnGround();
+        boolean bl7 = !bl2 && !bl3;
+        if ((bl6 || this.mc.player.isSubmergedInWater()) && bl7 && bl5) {
             this.mc.player.setSprinting(true);
+        }
+
+        if ((!this.mc.player.isTouchingWater() || this.mc.player.isSubmergedInWater()) && bl5) {
+            this.mc.player.setSprinting(true);
+        }
+
+        if (this.mc.player.isSprinting()) {
+            boolean bl8 = !this.mc.player.input.hasForwardMovement() || !this.canSprint();
+            boolean bl9 = bl8 || this.mc.player.horizontalCollision && !this.mc.player.collidedSoftly || this.mc.player.isTouchingWater() && !this.mc.player.isSubmergedInWater();
+            if (this.mc.player.isSwimming()) {
+                if (!this.mc.player.isOnGround() && !this.mc.player.input.sneaking && bl8 || !this.mc.player.isTouchingWater()) {
+                    this.mc.player.setSprinting(false);
+                }
+            } else if (bl9) {
+                this.mc.player.setSprinting(false);
+            }
         }
     }
 
-    public void stopSprinting(boolean shouldStop) {
-        stopSprinting = shouldStop;
+    private boolean canStartSprinting() {
+        return !this.mc.player.isSprinting()
+                && this.isWalking()
+                && this.canSprint()
+                && !this.mc.player.isUsingItem()
+                && !this.mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
+                && (!this.mc.player.hasVehicle() || this.canVehicleSprint(this.mc.player.getVehicle()))
+                && !this.mc.player.isFallFlying();
+    }
+
+    private boolean canSprint() {
+        return this.mc.player.hasVehicle() || (float) this.mc.player.getHungerManager().getFoodLevel() > 6.0F || this.mc.player.getAbilities().allowFlying;
+    }
+
+    private boolean isWalking() {
+        return this.mc.player.isSubmergedInWater() ? this.mc.player.input.hasForwardMovement() : (double) this.mc.player.input.movementForward >= 0.8;
+    }
+
+    private boolean canVehicleSprint(Entity vehicle) {
+        return vehicle.canSprintAsVehicle() && vehicle.isLogicalSideForUpdatingMovement();
     }
 
 }
