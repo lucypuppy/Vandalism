@@ -98,6 +98,13 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
         return false;
     }
 
+    public boolean isPositionValid(BlockPos blockPos) {
+        Block block = this.mc.world.getBlockState(new BlockPos(blockPos.up())).getBlock();
+        Block block2 = this.mc.world.getBlockState(new BlockPos(blockPos.up().up())).getBlock();
+        if (this.blackList.contains(block) && this.blackList.contains(block2)) return true;
+        return false;
+    }
+
     public Vec3d getSelectedPos() {
         return this.selectedPos.toCenterPos();
     }
@@ -117,7 +124,9 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (GLFW.glfwGetMouseButton(this.mc.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == 1 && this.hoverPos != null && this.mc.currentScreen == null) {
-            this.selectedPos = this.hoverPos;
+            if (this.isPositionValid(this.hoverPos)) {
+                this.selectedPos = this.hoverPos;
+            }
         }
         this.hoverPos = this.getBlockHitResult();
     }
