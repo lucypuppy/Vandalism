@@ -55,11 +55,11 @@ public class VulcanModuleMode extends ModuleMulti<TeleportModule> implements Pla
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.parent.canTeleport()) {
-            this.executed = false;
-            return;
-        }
-        final Vec3d target = this.parent.getBlockHitResult();
+//        if (!this.parent.canTeleport()) {
+//            this.executed = false;
+//            return;
+//        }
+        final Vec3d target = this.parent.getSelectedPos();
         if (target == null) return;
         final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
         if (networkHandler == null) return;
@@ -79,7 +79,7 @@ public class VulcanModuleMode extends ModuleMulti<TeleportModule> implements Pla
             this.mc.player.setPosition(x, y, z);
             this.flagged = this.damaged = this.executed = false;
         }
-        if (!this.damaged && this.mc.player.isOnGround() && target != null && !this.executed) {
+        if (!this.damaged && this.mc.player.isOnGround() && !this.executed) {
             PlayerDamageUtil.damagePlayerVulcan();
             this.executed = true;
         }

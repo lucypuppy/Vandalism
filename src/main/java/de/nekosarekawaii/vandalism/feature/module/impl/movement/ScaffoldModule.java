@@ -103,7 +103,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        autoSprintModule.stopSprinting(!allowSprint.getValue());
+        this.mc.player.setSprinting(this.allowSprint.getValue());
         final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock((int) Math.round(mc.player.getBlockInteractionRange()));
 
         if (placeBlock == null) {

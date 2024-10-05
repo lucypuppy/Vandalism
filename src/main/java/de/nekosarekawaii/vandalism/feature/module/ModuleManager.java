@@ -216,6 +216,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new NoObfuscatedTextModule(),
                 new HenkelPortModule(),
                 new DerpModule(),
+                new UseItemSpammerModule(),
                 new TriggerBotModule()
         );
         this.configManager.add(new ModuleConfig(this));
