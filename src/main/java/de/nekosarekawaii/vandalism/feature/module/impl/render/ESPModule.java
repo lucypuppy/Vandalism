@@ -210,15 +210,14 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
         if (this.blocks.getValue() && !this.espBlocks.contains(pos) && this.blockList.isSelected(state.getBlock())) {
             double distance = pos.toCenterPos().distanceTo(this.mc.player.getPos());
             if (distance <= this.maxBlockDistance.getValue()) {
-                boolean passedFOVCheck = true;
                 if (this.fovCheck.getValue()) {
                     double rotationDeltaX = pos.toCenterPos().x - this.mc.player.getPos().x;
                     double rotationDeltaZ = pos.toCenterPos().z - this.mc.player.getPos().z;
                     float rotationYaw = (float) (Math.atan2(rotationDeltaZ, rotationDeltaX) * 180.0D / Math.PI) - 90.0F;
                     float deltaYaw = MathHelper.wrapDegrees(rotationYaw - this.mc.player.getYaw() + (this.mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
-                    passedFOVCheck = Math.abs(deltaYaw) > this.mc.options.getFov().getValue();
+                    if (Math.abs(deltaYaw) > this.mc.options.getFov().getValue()) return;
                 }
-                if (this.espBlocks.size() < this.maxBlockAmount.getValue() && passedFOVCheck) {
+                if (this.espBlocks.size() < this.maxBlockAmount.getValue()) {
                     this.espBlocks.add(pos);
                 }
             }
@@ -237,8 +236,6 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
         for (int i = 0; i < this.espBlocks.size(); i++) {
             BlockPos blockPos = this.espBlocks.get(i);
             double distance = blockPos.toCenterPos().distanceTo(this.mc.player.getPos());
-
-
             if (distance > this.maxBlockDistance.getValue() || !this.blockList.isSelected(this.mc.world.getBlockState(blockPos).getBlock())) {
                 this.espBlocks.remove(i);
             } else if (this.fovCheck.getValue()) {
