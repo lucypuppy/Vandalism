@@ -28,7 +28,11 @@ import net.minecraft.entity.effect.StatusEffects;
 public class AutoSprintModule extends Module implements PlayerUpdateListener {
 
     public AutoSprintModule() {
-        super("Auto Sprint", "Automatically lets you sprint!", Category.MOVEMENT);
+        super(
+                "Auto Sprint",
+                "Automatically lets you sprint!",
+                Category.MOVEMENT
+        );
     }
 
     @Override
@@ -43,27 +47,25 @@ public class AutoSprintModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        boolean bl2 = this.mc.player.input.sneaking;
-        boolean bl3 = this.isWalking();
-        boolean bl5 = this.canStartSprinting();
-        boolean bl6 = this.mc.player.hasVehicle() ? this.mc.player.getVehicle().isOnGround() : this.mc.player.isOnGround();
-        boolean bl7 = !bl2 && !bl3;
-        if ((bl6 || this.mc.player.isSubmergedInWater()) && bl7 && bl5) {
+        final boolean sneaking = this.mc.player.input.sneaking;
+        final boolean walking = this.isWalking();
+        final boolean canStartSprinting = this.canStartSprinting();
+        final boolean onGround = this.mc.player.hasVehicle() ? this.mc.player.getVehicle().isOnGround() : this.mc.player.isOnGround();
+        final boolean noSneakingAndNoWalking = !sneaking && !walking;
+        if ((onGround || this.mc.player.isSubmergedInWater()) && noSneakingAndNoWalking && canStartSprinting) {
             this.mc.player.setSprinting(true);
         }
-
-        if ((!this.mc.player.isTouchingWater() || this.mc.player.isSubmergedInWater()) && bl5) {
+        if ((!this.mc.player.isTouchingWater() || this.mc.player.isSubmergedInWater()) && canStartSprinting) {
             this.mc.player.setSprinting(true);
         }
-
         if (this.mc.player.isSprinting()) {
-            boolean bl8 = !this.mc.player.input.hasForwardMovement() || !this.canSprint();
-            boolean bl9 = bl8 || this.mc.player.horizontalCollision && !this.mc.player.collidedSoftly || this.mc.player.isTouchingWater() && !this.mc.player.isSubmergedInWater();
+            final boolean noForwardMovementOrNoSprint = !this.mc.player.input.hasForwardMovement() || !this.canSprint();
+            final boolean isColliding = noForwardMovementOrNoSprint || this.mc.player.horizontalCollision && !this.mc.player.collidedSoftly || this.mc.player.isTouchingWater() && !this.mc.player.isSubmergedInWater();
             if (this.mc.player.isSwimming()) {
-                if (!this.mc.player.isOnGround() && !this.mc.player.input.sneaking && bl8 || !this.mc.player.isTouchingWater()) {
+                if (!this.mc.player.isOnGround() && !this.mc.player.input.sneaking && noForwardMovementOrNoSprint || !this.mc.player.isTouchingWater()) {
                     this.mc.player.setSprinting(false);
                 }
-            } else if (bl9) {
+            } else if (isColliding) {
                 this.mc.player.setSprinting(false);
             }
         }
@@ -87,7 +89,7 @@ public class AutoSprintModule extends Module implements PlayerUpdateListener {
         return this.mc.player.isSubmergedInWater() ? this.mc.player.input.hasForwardMovement() : (double) this.mc.player.input.movementForward >= 0.8;
     }
 
-    private boolean canVehicleSprint(Entity vehicle) {
+    private boolean canVehicleSprint(final Entity vehicle) {
         return vehicle.canSprintAsVehicle() && vehicle.isLogicalSideForUpdatingMovement();
     }
 

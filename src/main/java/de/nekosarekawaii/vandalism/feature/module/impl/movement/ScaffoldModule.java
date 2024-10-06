@@ -38,18 +38,6 @@ import net.minecraft.util.shape.VoxelShape;
 
 public class ScaffoldModule extends Module implements PlayerUpdateListener, RotationListener {
 
-    private BlockPos pos = null;
-    private Vec3d posVec = null;
-    private Direction direction = null;
-    private PrioritizedRotation rotation = null;
-    private AutoSprintModule autoSprintModule;
-    private PrioritizedRotation prevRotation;
-
-    public ScaffoldModule() {
-        super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
-        this.markExperimental();
-    }
-
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
@@ -86,6 +74,18 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
             false
     );
 
+    private BlockPos pos = null;
+    private Vec3d posVec = null;
+    private Direction direction = null;
+    private PrioritizedRotation rotation = null;
+    private AutoSprintModule autoSprintModule;
+    private PrioritizedRotation prevRotation;
+
+    public ScaffoldModule() {
+        super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
+        this.markExperimental();
+    }
+
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
@@ -102,7 +102,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
     }
 
     @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         this.mc.player.setSprinting(this.allowSprint.getValue());
         final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock((int) Math.round(mc.player.getBlockInteractionRange()));
 
@@ -126,10 +126,10 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
         final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(Vandalism.getInstance().getRotationManager().getClientRotation(), mc.player.getBlockInteractionRange());
         if (raycastBlocks.getBlockPos().equals(this.pos)) {
             if (raycastBlocks.getSide() == this.direction || mc.options.jumpKey.isPressed()) {
-                if (fastBridge.getValue())
+                if (fastBridge.getValue()) {
                     mc.options.sneakKey.setPressed(true);
+                }
 
-//                if(mc.player.age % 2 == 0)
                 mc.doItemUse();
 
             } else {
@@ -140,12 +140,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
     }
 
     @Override
-    public void onPostPlayerUpdate(PlayerUpdateEvent event) {
-
-    }
-
-    @Override
-    public void onRotation(RotationEvent event) {
+    public void onRotation(final RotationEvent event) {
         if (this.pos != null) {
             this.rotation = rotation(this.pos);
 
@@ -195,7 +190,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 //        return theChosenOne;
 //    }
 
-    private Pair<Vec3d, BlockPos> getPlaceBlock(int scanRange) {
+    private Pair<Vec3d, BlockPos> getPlaceBlock(final int scanRange) {
         double distance = -1;
         Pair<Vec3d, BlockPos> theChosenOne = null;
 
@@ -235,7 +230,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 
         for (int yaw = -45; yaw <= 45; yaw++) {
             for (int pitch = 0; pitch <= 90; pitch++) {
-                PrioritizedRotation currentRotation = new PrioritizedRotation(mc.player.getYaw() - (180 + yaw), pitch, RotationPriority.NORMAL);
+                final PrioritizedRotation currentRotation = new PrioritizedRotation(mc.player.getYaw() - (180 + yaw), pitch, RotationPriority.NORMAL);
                 final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(currentRotation, mc.player.getBlockInteractionRange());
 
                 if (raycastBlocks.getSide() != this.direction || !raycastBlocks.getBlockPos().equals(blockPos)) {
@@ -250,7 +245,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 
     }
 
-    public static Direction getDirection(Vec3d playerPos, BlockPos blockpos) {
+    public static Direction getDirection(final Vec3d playerPos, final BlockPos blockpos) {
         final double dx = (blockpos.getX() + 0.5) - playerPos.x;
         final double dz = (blockpos.getZ() + 0.5) - playerPos.z;
         final double maxAxis = Math.max(Math.abs(dx), Math.abs(dz));

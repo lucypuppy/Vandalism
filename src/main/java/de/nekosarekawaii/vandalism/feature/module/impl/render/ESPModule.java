@@ -68,7 +68,11 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
             true
     );
 
-    private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.").visibleCondition(this.entities::getValue);
+    private final TargetGroup entityGroup = new TargetGroup(
+            this,
+            "Entities",
+            "The entities to target."
+    ).visibleCondition(this.entities::getValue);
 
     private final ColorValue entityColor = new ColorValue(
             this.entityGroup,
@@ -165,7 +169,7 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
 
     public boolean isTarget(final Entity entity) {
         if (entity instanceof final ItemEntity itemEntity) {
-            return this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
+            return this.items.getValue() && this.itemList.isSelected(itemEntity.getStack().getItem());
         } else {
             return this.entities.getValue() && this.entityGroup.isTarget(entity, true);
         }
@@ -234,17 +238,17 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         for (int i = 0; i < this.espBlocks.size(); i++) {
-            BlockPos blockPos = this.espBlocks.get(i);
-            double distance = blockPos.toCenterPos().distanceTo(this.mc.player.getPos());
+            final BlockPos blockPos = this.espBlocks.get(i);
+            final double distance = blockPos.toCenterPos().distanceTo(this.mc.player.getPos());
             if (distance > this.maxBlockDistance.getValue() || !this.blockList.isSelected(this.mc.world.getBlockState(blockPos).getBlock())) {
-                this.espBlocks.remove(i);
+                this.espBlocks.remove(blockPos);
             } else if (this.fovCheck.getValue()) {
-                double rotationDeltaX = blockPos.toCenterPos().x - this.mc.player.getPos().x;
-                double rotationDeltaZ = blockPos.toCenterPos().z - this.mc.player.getPos().z;
-                float rotationYaw = (float) (Math.atan2(rotationDeltaZ, rotationDeltaX) * 180.0D / Math.PI) - 90.0F;
-                float deltaYaw = MathHelper.wrapDegrees(rotationYaw - this.mc.player.getYaw() - (this.mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
+                final double rotationDeltaX = blockPos.toCenterPos().x - this.mc.player.getPos().x;
+                final double rotationDeltaZ = blockPos.toCenterPos().z - this.mc.player.getPos().z;
+                final float rotationYaw = (float) (Math.atan2(rotationDeltaZ, rotationDeltaX) * 180.0D / Math.PI) - 90.0F;
+                final float deltaYaw = MathHelper.wrapDegrees(rotationYaw - this.mc.player.getYaw() - (this.mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
                 if (Math.abs(deltaYaw) > this.mc.options.getFov().getValue()) {
-                    this.espBlocks.remove(i);
+                    this.espBlocks.remove(blockPos);
                 }
             }
         }
@@ -256,16 +260,16 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
             return;
         }
         final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
-        int color = this.blockColor.getColor().getRGB();
-        float red = ((color >> 16) & 0xff) / 255f;
-        float green = ((color >> 8) & 0xff) / 255f;
-        float blue = ((color) & 0xff) / 255f;
-        float alpha = ((color >> 24) & 0xff) / 255f;
-        Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
+        final int color = this.blockColor.getColor().getRGB();
+        final float red = ((color >> 16) & 0xff) / 255f;
+        final float green = ((color >> 8) & 0xff) / 255f;
+        final float blue = ((color) & 0xff) / 255f;
+        final float alpha = ((color >> 24) & 0xff) / 255f;
+        final Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
         matrixStack.push();
         matrixStack.translate(vec.x, vec.y, vec.z);
         for (int i = 0; i < this.espBlocks.size(); i++) {
-            BlockPos blockPos = this.espBlocks.get(i);
+            final BlockPos blockPos = this.espBlocks.get(i);
             DebugRenderer.drawBox(
                     matrixStack,
                     immediate,
