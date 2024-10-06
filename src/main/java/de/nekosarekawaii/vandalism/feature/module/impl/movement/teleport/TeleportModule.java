@@ -111,7 +111,7 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
         return this.blackList.contains(block) && this.blackList.contains(block2);
     }
 
-    public boolean isPositionValid(BlockPos blockPos) {
+    public boolean isPositionValid(final BlockPos blockPos) {
         final Block block = this.mc.world.getBlockState(new BlockPos(blockPos.up())).getBlock();
         final Block block2 = this.mc.world.getBlockState(new BlockPos(blockPos.up().up())).getBlock();
         return this.blackList.contains(block) && this.blackList.contains(block2);
@@ -128,19 +128,15 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.selectedPos != null && this.teleportKey.isPressed() && this.mc.currentScreen == null) {
+            this.teleport = true;
+        }
         if (this.teleportSelectKey.isPressed() && this.hoverPos != null && this.mc.currentScreen == null) {
             if (this.isPositionValid(this.hoverPos)) {
                 this.selectedPos = this.hoverPos;
             }
         }
         this.hoverPos = this.getBlockHitResult();
-    }
-
-    @Override
-    public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.selectedPos != null && this.teleportKey.isPressed() && this.mc.currentScreen == null) {
-            this.teleport = true;
-        }
     }
 
     @Override
