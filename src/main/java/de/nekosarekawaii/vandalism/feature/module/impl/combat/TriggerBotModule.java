@@ -24,7 +24,7 @@ import net.minecraft.util.hit.HitResult;
 public class TriggerBotModule extends ClickerModule {
 
     public TriggerBotModule() {
-        super("Trigget Bot", "Automatically clicks lol.", Category.COMBAT);
+        super("Trigget Bot", "Automatically attacks players as soon as they are in reach and on the crosshair. ", Category.COMBAT);
     }
 
     @Override
