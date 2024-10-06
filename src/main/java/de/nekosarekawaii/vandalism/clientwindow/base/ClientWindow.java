@@ -75,6 +75,9 @@ public class ClientWindow implements IName, MinecraftWrapper {
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
     }
 
+    public void tick() {
+    }
+
     public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
     }
 

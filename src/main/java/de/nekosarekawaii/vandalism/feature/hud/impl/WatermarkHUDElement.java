@@ -103,10 +103,7 @@ public class WatermarkHUDElement extends HUDElement {
     @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Identifier identifier = this.logoSelection.getValue().getIdentifier();
-        this.mc.getTextureManager().getTexture(identifier).setFilter(
-                true,
-                true
-        );
+        this.mc.getTextureManager().getTexture(identifier).setFilter(true, true);
         GLStateTracker.BLEND.save(true);
         final Color selectedColor = this.color.getValue().getColor();
         context.setShaderColor(

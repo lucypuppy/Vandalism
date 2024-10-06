@@ -111,6 +111,13 @@ public class ClientWindowScreen extends Screen {
     }
 
     @Override
+    public void tick() {
+        for (final ClientWindow clientWindow : this.clientWindowManager.getList()) {
+            clientWindow.tick();
+        }
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (final ClientWindow window : this.clientWindowManager.getList()) {
             if (!window.isActive()) {
