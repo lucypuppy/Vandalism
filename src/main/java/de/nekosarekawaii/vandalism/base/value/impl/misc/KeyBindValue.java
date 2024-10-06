@@ -27,20 +27,17 @@ import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import imgui.ImGui;
+import imgui.flag.ImGuiMouseButton;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Language;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class KeyBindValue extends Value<Integer> implements KeyboardInputListener, MouseInputListener {
 
     private final boolean onlyInGame;
     private boolean waitingForInput;
-    private final List<String> alreadyBoundTo = new ArrayList<>();
 
     public KeyBindValue(ValueParent parent, String name, String description) {
         this(parent, name, description, GLFW.GLFW_KEY_UNKNOWN);
@@ -79,21 +76,42 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
                 Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
                 Vandalism.getInstance().getEventSystem().subscribe(MouseEvent.ID, this);
             }
-
-            if (this.alreadyBoundTo.size() > 2) {
-                ImGui.sameLine();
-                ImGui.textWrapped("(Key is already bound)");
-                if (ImGui.isItemHovered()) {
-                    ImGui.beginTooltip();
-                    for (final String string : this.alreadyBoundTo) {
-                        ImGui.text(string);
+            if (this.getDescription() != null && ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text(this.getDescription());
+                ImGui.endTooltip();
+            }
+            if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+                this.resetValue();
+            }
+            if (this.getValue() != GLFW.GLFW_KEY_UNKNOWN) {
+                final List<String> modules = new ArrayList<>();
+                for (final Module module : Vandalism.getInstance().getModuleManager().getList()) {
+                    final KeyBindValue moduleKeyBind = module.getKeyBind();
+                    if (moduleKeyBind == this) {
+                        continue;
                     }
-                    ImGui.newLine();
-                    ImGui.endTooltip();
+                    if (this.getValue().intValue() == moduleKeyBind.getValue()) {
+                        modules.add(module.getName());
+                    }
+                }
+                if (!modules.isEmpty()) {
+                    ImGui.sameLine();
+                    ImGui.text("(Key is already bound)");
+                    if (ImGui.isItemHovered()) {
+                        ImGui.beginTooltip();
+                        final List<String> alreadyBoundTo = new ArrayList<>();
+                        alreadyBoundTo.add("Modules:");
+                        alreadyBoundTo.addAll(modules);
+                        for (final String string : alreadyBoundTo) {
+                            ImGui.text(string);
+                        }
+                        ImGui.endTooltip();
+                    }
                 }
             }
         } else {
-            ImGui.textWrapped("Listening for key input...");
+            ImGui.text("Listening for key input...");
             width = 100;
             ImGui.sameLine();
             if (ImGui.button("Cancel" + id + "cancel", width, ImGui.getTextLineHeightWithSpacing())) {
@@ -122,30 +140,6 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
                     this.setValue(GLFW.GLFW_KEY_UNKNOWN);
                 } else {
                     this.setValue(key);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void setValue(Integer value) {
-        super.setValue(value);
-
-        this.alreadyBoundTo.clear();
-        if (getValue() > 0) {
-            this.alreadyBoundTo.add("Modules:");
-
-            for (final Module module : Vandalism.getInstance().getModuleManager().getList()) {
-                if (Objects.equals(this.getValue(), module.getKeyBind().getValue())) {
-                    this.alreadyBoundTo.add(module.getName());
-                }
-            }
-            this.alreadyBoundTo.add("");
-            this.alreadyBoundTo.add("Minecraft:");
-
-            for (final KeyBinding key : MinecraftClient.getInstance().options.allKeys) {
-                if (this.getValue() == key.boundKey.getCode()) {
-                    this.alreadyBoundTo.add(Language.getInstance().get(key.getTranslationKey()));
                 }
             }
         }
