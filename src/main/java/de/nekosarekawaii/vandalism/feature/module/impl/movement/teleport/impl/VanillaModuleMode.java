@@ -46,7 +46,7 @@ public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements Pl
         if (!this.parent.teleport) return;
         final Vec3d target = this.parent.getSelectedPos();
         if (target == null) return;
-        if(this.parent.isTeleportPositionValid()) {
+        if (this.parent.isTeleportPositionValid()) {
             final Vec3d pos = this.mc.player.getPos();
             MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY() + 1, target.getZ());
             this.parent.reset();
