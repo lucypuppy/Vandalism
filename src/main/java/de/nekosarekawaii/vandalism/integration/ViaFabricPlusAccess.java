@@ -94,7 +94,11 @@ public class ViaFabricPlusAccess {
         customPayload.write(Types.STRING, channel);
         customPayload.write(Types.REMAINING_BYTES, data.array());
 
-        customPayload.sendToServer(Protocol1_8To1_9.class);
+        try {
+            customPayload.sendToServer(Protocol1_8To1_9.class);
+        } catch (final Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to send a 1.8 custom payload.", e);
+        }
     }
 
     public static void send1_8SignUpdatePacket(final BlockPos pos, final String line1, final String line2, final String line3, final String line4) {
@@ -110,7 +114,11 @@ public class ViaFabricPlusAccess {
         signUpdate.write(Types.STRING, line3);
         signUpdate.write(Types.STRING, line4);
 
-        signUpdate.sendToServer(Protocol1_8To1_9.class);
+        try {
+            signUpdate.sendToServer(Protocol1_8To1_9.class);
+        } catch (final Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to send a 1.8 sign update packet.", e);
+        }
     }
 
     public static void send1_8BlockPlacePacket(final BlockPos pos, final int face, final ItemStack item, final float cX, final float cY, final float cZ) {
@@ -127,7 +135,11 @@ public class ViaFabricPlusAccess {
         blockPlacement.write(Types.UNSIGNED_BYTE, (short) cY);
         blockPlacement.write(Types.UNSIGNED_BYTE, (short) cZ);
 
-        blockPlacement.sendToServer(Protocol1_8To1_9.class);
+        try {
+            blockPlacement.sendToServer(Protocol1_8To1_9.class);
+        } catch (final Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to send a 1.8 block place packet.", e);
+        }
     }
 
     /**
