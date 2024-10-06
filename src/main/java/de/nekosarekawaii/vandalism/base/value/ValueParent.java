@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.base.value;
 
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
@@ -111,7 +112,7 @@ public interface ValueParent extends IName {
                 }
             }
             value.render();
-            if (!(value instanceof ColorValue) && !(value instanceof StringValue) && !(value instanceof ModuleModeValue)) {
+            if (!(value instanceof ColorValue) && !(value instanceof StringValue) && !(value instanceof ModuleModeValue) && !(value instanceof KeyBindValue)) {
                 this.renderValueDescription(value);
                 if (!isRenderValue && (ImGui.isItemClicked(ImGuiMouseButton.Middle))) {
                     value.resetValue();
