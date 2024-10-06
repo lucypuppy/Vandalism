@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.teleport;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
@@ -41,11 +41,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Arrays;
 import java.util.List;
 
-public class TeleportModule extends Module implements Render3DListener, PlayerUpdateListener, KeyboardInputListener {
-
-    public boolean teleport;
-    private BlockPos hoverPos, selectedPos;
-    private final List<Block> blackList = Arrays.asList(Blocks.AIR, Blocks.CAVE_AIR, Blocks.VOID_AIR);
+public class TeleportModule extends Module implements Render3DListener, PlayerUpdateListener {
 
     public final IntegerValue maxDistance = new IntegerValue(
             this,
@@ -56,10 +52,28 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
             250
     );
 
+    private final KeyBindValue teleportSelectKey = new KeyBindValue(
+            this,
+            "Teleport Select Key",
+            "The key to select the block you want to teleport to.",
+            GLFW.GLFW_MOUSE_BUTTON_RIGHT
+    );
+
+    private final KeyBindValue teleportKey = new KeyBindValue(
+            this,
+            "Teleport Key",
+            "The key to teleport to the selected block.",
+            GLFW.GLFW_KEY_LEFT_SHIFT
+    );
+
     public final ModuleModeValue<TeleportModule> mode = new ModuleModeValue<>(this, "Mode", "The mode of the teleport.",
             new VanillaModuleMode(this)
-            //new VulcanModuleMode(this) TODO: (Not needed Vanilla bypasses Vulcan) Fix vulcan teleport
+            // new VulcanModuleMode(this) TODO: Fix vulcan teleport
     );
+
+    public boolean teleport;
+    private BlockPos hoverPos, selectedPos;
+    private final List<Block> blackList = Arrays.asList(Blocks.AIR, Blocks.CAVE_AIR, Blocks.VOID_AIR);
 
     public TeleportModule() {
         super(
@@ -71,18 +85,18 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, KeyboardInputEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, Render3DEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, KeyboardInputEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, Render3DEvent.ID);
     }
 
     private BlockPos getBlockHitResult() {
         final HitResult result = this.mc.player.raycast(this.maxDistance.getValue(), this.mc.getRenderTickCounter().getTickDelta(false), false);
         if (result instanceof BlockHitResult blockHitResult) {
-            Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
+            final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
             if (!this.blackList.contains(block)) {
                 return blockHitResult.getBlockPos();
             }
@@ -92,17 +106,15 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
 
     public boolean isTeleportPositionValid() {
         if (this.selectedPos == null) return false;
-        Block block = this.mc.world.getBlockState(new BlockPos(this.selectedPos.up())).getBlock();
-        Block block2 = this.mc.world.getBlockState(new BlockPos(this.selectedPos.up().up())).getBlock();
-        if (this.blackList.contains(block) && this.blackList.contains(block2)) return true;
-        return false;
+        final Block block = this.mc.world.getBlockState(new BlockPos(this.selectedPos.up())).getBlock();
+        final Block block2 = this.mc.world.getBlockState(new BlockPos(this.selectedPos.up().up())).getBlock();
+        return this.blackList.contains(block) && this.blackList.contains(block2);
     }
 
     public boolean isPositionValid(BlockPos blockPos) {
-        Block block = this.mc.world.getBlockState(new BlockPos(blockPos.up())).getBlock();
-        Block block2 = this.mc.world.getBlockState(new BlockPos(blockPos.up().up())).getBlock();
-        if (this.blackList.contains(block) && this.blackList.contains(block2)) return true;
-        return false;
+        final Block block = this.mc.world.getBlockState(new BlockPos(blockPos.up())).getBlock();
+        final Block block2 = this.mc.world.getBlockState(new BlockPos(blockPos.up().up())).getBlock();
+        return this.blackList.contains(block) && this.blackList.contains(block2);
     }
 
     public Vec3d getSelectedPos() {
@@ -115,15 +127,8 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
     }
 
     @Override
-    public void onKeyInput(long window, int key, int scanCode, int action, int modifiers) {
-        if (this.selectedPos != null && key == GLFW.GLFW_KEY_LEFT_SHIFT && this.mc.currentScreen == null) {
-            this.teleport = true;
-        }
-    }
-
-    @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (GLFW.glfwGetMouseButton(this.mc.getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == 1 && this.hoverPos != null && this.mc.currentScreen == null) {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.teleportSelectKey.isPressed() && this.hoverPos != null && this.mc.currentScreen == null) {
             if (this.isPositionValid(this.hoverPos)) {
                 this.selectedPos = this.hoverPos;
             }
@@ -132,9 +137,16 @@ public class TeleportModule extends Module implements Render3DListener, PlayerUp
     }
 
     @Override
+    public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.selectedPos != null && this.teleportKey.isPressed() && this.mc.currentScreen == null) {
+            this.teleport = true;
+        }
+    }
+
+    @Override
     public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
-        Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
+        final Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
         matrixStack.push();
         matrixStack.translate(vec.x, vec.y, vec.z);
         if (this.hoverPos != null && !this.hoverPos.equals(this.selectedPos)) {

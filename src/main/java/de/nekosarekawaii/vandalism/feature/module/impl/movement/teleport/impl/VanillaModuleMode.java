@@ -47,26 +47,10 @@ public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements Pl
         final Vec3d target = this.parent.getSelectedPos();
         if (target == null) return;
         if(this.parent.isTeleportPositionValid()) {
-            Vec3d pos = this.mc.player.getPos();
+            final Vec3d pos = this.mc.player.getPos();
             MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY() + 1, target.getZ());
             this.parent.reset();
         }
-//        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-//        if (networkHandler == null) return;
-//        final Vec3d finalPos = new Vec3d(target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5);
-//        final double dis = this.mc.player.getPos().distanceTo(target);
-//        for (double d = 0.0D; d < dis; d += 2.0D) {
-//            final double x = this.mc.player.getX() + (finalPos.x - (double) this.mc.player.getHorizontalFacing().getOffsetX() - this.mc.player.getX()) * d / dis;
-//            final double y = this.mc.player.getY() + (finalPos.y - this.mc.player.getY()) * d / dis;
-//            final double z = this.mc.player.getZ() + (finalPos.z - (double) this.mc.player.getHorizontalFacing().getOffsetZ() - this.mc.player.getZ()) * d / dis;
-//            networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
-//            this.mc.player.setPosition(x, y, z);
-//        }
-//        final double x = finalPos.x;
-//        final double y = finalPos.y;
-//        final double z = finalPos.z;
-//        networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
-//        this.mc.player.setPosition(x, y, z);
     }
 
 }
