@@ -70,7 +70,7 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
 
     private final TargetGroup entityGroup = new TargetGroup(
             this,
-            "Entities",
+            "Entity List",
             "The entities to target."
     ).visibleCondition(this.entities::getValue);
 
