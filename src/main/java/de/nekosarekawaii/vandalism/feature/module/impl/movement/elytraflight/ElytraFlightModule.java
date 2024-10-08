@@ -63,7 +63,7 @@ public class ElytraFlightModule extends Module implements PlayerUpdateListener {
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         final ItemStack itemStack = this.mc.player.getEquippedStack(EquipmentSlot.CHEST);
         if (itemStack.getItem() != Items.ELYTRA || !ElytraItem.isUsable(itemStack)) {
-            ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));
+            ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."), true);
             this.deactivate();
         }
     }
