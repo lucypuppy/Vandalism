@@ -88,12 +88,12 @@ public class TeleportModule extends Module implements Render3DListener, Keyboard
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, KeyboardInputEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, Render3DEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, KeyboardInputEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, Render3DEvent.ID);
     }
 
     private BlockPos getBlockHitResult() {
@@ -128,20 +128,16 @@ public class TeleportModule extends Module implements Render3DListener, Keyboard
     }
 
     @Override
-    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (this.selectedPos != null && this.teleportKey.isPressed() && this.mc.currentScreen == null) {
-            this.teleport = true;
-        }
-    }
-
-    @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        this.hoverPos = this.getBlockHitResult();
         if (this.teleportSelectKey.isPressed() && this.hoverPos != null && this.mc.currentScreen == null) {
             if (this.isPositionValid(this.hoverPos)) {
                 this.selectedPos = this.hoverPos;
             }
         }
-        this.hoverPos = this.getBlockHitResult();
+        if (this.selectedPos != null && this.teleportKey.isPressed() && this.mc.currentScreen == null) {
+            this.teleport = true;
+        }
     }
 
     @Override

@@ -48,7 +48,7 @@ public class BypassClipModuleMode extends ModuleMulti<TeleportModule> implements
         if (target == null) return;
         if (this.parent.isTeleportPositionValid()) {
             final Vec3d pos = this.mc.player.getPos();
-            MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY(), target.getZ());
+            MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY() + 1, target.getZ());
             this.parent.reset();
         }
     }
