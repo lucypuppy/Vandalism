@@ -29,41 +29,44 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class TargetGroup extends ValueGroup {
+
+    private static final List<EntityType<?>> BLACKLISTED_ENTITY_TYPES = Arrays.asList(
+            EntityType.ITEM,
+            EntityType.EXPERIENCE_ORB,
+            EntityType.AREA_EFFECT_CLOUD,
+            EntityType.FISHING_BOBBER,
+            EntityType.LIGHTNING_BOLT,
+            EntityType.ARROW,
+            EntityType.SPECTRAL_ARROW,
+            EntityType.TRIDENT,
+            EntityType.EGG,
+            EntityType.POTION,
+            EntityType.SNOWBALL,
+            EntityType.ENDER_PEARL,
+            EntityType.EXPERIENCE_BOTTLE,
+            EntityType.BLOCK_DISPLAY,
+            EntityType.TEXT_DISPLAY,
+            EntityType.ITEM_DISPLAY,
+            EntityType.INTERACTION,
+            EntityType.MARKER,
+            EntityType.FALLING_BLOCK,
+            EntityType.EVOKER_FANGS,
+            EntityType.WITHER_SKULL,
+            EntityType.FIREWORK_ROCKET,
+            EntityType.TNT,
+            EntityType.LLAMA_SPIT,
+            EntityType.EYE_OF_ENDER
+    );
 
     private final MultiRegistryBlacklistValue<EntityType<?>> targets = new MultiRegistryBlacklistValue<>(
             this,
             "Targets",
             "The entities to target.",
             Registries.ENTITY_TYPE,
-            Arrays.asList(
-                    EntityType.ITEM,
-                    EntityType.EXPERIENCE_ORB,
-                    EntityType.AREA_EFFECT_CLOUD,
-                    EntityType.FISHING_BOBBER,
-                    EntityType.LIGHTNING_BOLT,
-                    EntityType.ARROW,
-                    EntityType.SPECTRAL_ARROW,
-                    EntityType.TRIDENT,
-                    EntityType.EGG,
-                    EntityType.POTION,
-                    EntityType.SNOWBALL,
-                    EntityType.ENDER_PEARL,
-                    EntityType.EXPERIENCE_BOTTLE,
-                    EntityType.BLOCK_DISPLAY,
-                    EntityType.TEXT_DISPLAY,
-                    EntityType.ITEM_DISPLAY,
-                    EntityType.INTERACTION,
-                    EntityType.MARKER,
-                    EntityType.FALLING_BLOCK,
-                    EntityType.EVOKER_FANGS,
-                    EntityType.WITHER_SKULL,
-                    EntityType.FIREWORK_ROCKET,
-                    EntityType.TNT,
-                    EntityType.LLAMA_SPIT,
-                    EntityType.EYE_OF_ENDER
-            ),
+            BLACKLISTED_ENTITY_TYPES,
             false
     );
 
