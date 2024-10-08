@@ -136,9 +136,6 @@ public class TeleportModule extends Module implements Render3DListener, Keyboard
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.selectedPos != null && this.teleportKey.isPressed() && this.mc.currentScreen == null) {
-            this.teleport = true;
-        }
         if (this.teleportSelectKey.isPressed() && this.hoverPos != null && this.mc.currentScreen == null) {
             if (this.isPositionValid(this.hoverPos)) {
                 this.selectedPos = this.hoverPos;
