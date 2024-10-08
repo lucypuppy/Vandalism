@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.BlockStateListener;
 import de.nekosarekawaii.vandalism.event.game.BlockStateUpdateListener;
 import de.nekosarekawaii.vandalism.event.game.WorldListener;
@@ -61,85 +62,114 @@ import java.util.List;
 
 public class ESPModule extends Module implements PlayerUpdateListener, BlockStateListener, BlockStateUpdateListener, WorldListener, DisconnectListener, Render3DListener {
 
-    private final BooleanValue entities = new BooleanValue(
+    // Entity settings
+    private final BooleanValue renderEntities = new BooleanValue(
             this,
-            "Entities",
-            "Whether entities should also have an ESP.",
+            "Render entities",
+            "Whether entities should have an ESP.",
             true
     );
 
     private final TargetGroup entityGroup = new TargetGroup(
             this,
-            "Entity List",
-            "The entities to target."
-    ).visibleCondition(this.entities::getValue);
+            "Entity settings",
+            "The ESP settings for entities."
+    ).visibleCondition(this.renderEntities::getValue);
 
     private final ColorValue entityColor = new ColorValue(
             this.entityGroup,
             "Entity Color",
             "The color of the ESP for entities."
-    ).visibleCondition(this.entities::getValue);
+    ).visibleCondition(this.renderEntities::getValue);
+
+    private final ColorValue playerColor = new ColorValue(
+            this.entityGroup,
+            "Player Color",
+            "The color of the ESP for players.",
+            Color.RED
+    ).visibleCondition(this.renderEntities::getValue);
 
     private final ColorValue friendsColor = new ColorValue(
             this.entityGroup,
             "Friends Color",
             "The color of the ESP for friends.",
             Color.GREEN
-    ).visibleCondition(this.entities::getValue);
+    ).visibleCondition(this.renderEntities::getValue);
 
-    private final BooleanValue items = new BooleanValue(
+    // Item settings
+    private final BooleanValue renderItems = new BooleanValue(
             this,
-            "Items",
-            "Whether items should also have an ESP.",
+            "Render items",
+            "Whether items should have an ESP.",
             false
     );
 
-    private final MultiRegistryBlacklistValue<Item> itemList = new MultiRegistryBlacklistValue<>(
+    private final ValueGroup itemsGroup = new ValueGroup(
             this,
+            "Item settings",
+            "The ESP settings for items."
+    ).visibleCondition(this.renderItems::getValue);
+
+    private final MultiRegistryBlacklistValue<Item> itemList = new MultiRegistryBlacklistValue<>(
+            this.itemsGroup,
             "Item List",
             "The items to target.",
             Registries.ITEM,
             Collections.singletonList(
                     Items.AIR
             )
-    ).visibleCondition(this.items::getValue);
+    ).visibleCondition(this.renderItems::getValue);
 
-    private final BooleanValue blocks = new BooleanValue(
+    private final ColorValue itemColor = new ColorValue(
+            this.itemsGroup,
+            "Item color",
+            "The color of the ESO for items.",
+            new Color(50, 255, 255)
+    ).visibleCondition(this.renderItems::getValue);
+
+    // Block settings
+    private final BooleanValue renderBlocks = new BooleanValue(
             this,
-            "Blocks",
+            "Render blocks",
             "Whether blocks should have an ESP.",
             false
     ).onValueChange((oldValue, newValue) -> {
         if (!newValue) this.espBlocks.clear();
     });
 
-    private final DoubleValue maxBlockDistance = new DoubleValue(
+    private final ValueGroup blocksGroup = new ValueGroup(
             this,
+            "Block settings",
+            "The ESP settings for blocks."
+    ).visibleCondition(this.renderBlocks::getValue);
+
+    private final DoubleValue maxBlockDistance = new DoubleValue(
+            this.blocksGroup,
             "Max Block Distance",
-            "The maximum distance to render the ESP for blocks.",
+            "The maximum ESP render distance for blocks.",
             50d,
             1d,
             100d
-    ).visibleCondition(this.blocks::getValue);
+    ).visibleCondition(this.renderBlocks::getValue);
 
     private final IntegerValue maxBlockAmount = new IntegerValue(
-            this,
+            this.blocksGroup,
             "Max block amount",
             "The maximum amount of blocks to render",
             150,
             50,
             1000
-    ).visibleCondition(this.blocks::getValue);
+    ).visibleCondition(this.renderBlocks::getValue);
 
     private final BooleanValue fovCheck = new BooleanValue(
-            this,
+            this.blocksGroup,
             "FOV check",
             "Checks if the block is in fov",
             true
-    ).visibleCondition(this.blocks::getValue);
+    ).visibleCondition(this.renderBlocks::getValue);
 
     private final MultiRegistryBlacklistValue<Block> blockList = new MultiRegistryBlacklistValue<>(
-            this,
+            this.blocksGroup,
             "Block List",
             "The blocks to target.",
             Registries.BLOCK,
@@ -148,14 +178,14 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
                     Blocks.CAVE_AIR,
                     Blocks.VOID_AIR
             )
-    ).visibleCondition(this.blocks::getValue);
+    ).visibleCondition(this.renderBlocks::getValue);
 
     private final ColorValue blockColor = new ColorValue(
-            this,
+            this.blocksGroup,
             "Block Color",
             "The color of the ESP for blocks.",
-            new Color(221, 120, 246, 125)
-    ).visibleCondition(this.blocks::getValue);
+            new Color(255, 255, 255, 100)
+    ).visibleCondition(this.renderBlocks::getValue);
 
     private final List<BlockPos> espBlocks = new ArrayList<>();
 
@@ -169,9 +199,9 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
 
     public boolean isTarget(final Entity entity) {
         if (entity instanceof final ItemEntity itemEntity) {
-            return this.items.getValue() && this.itemList.isSelected(itemEntity.getStack().getItem());
+            return this.renderItems.getValue() && this.itemList.isSelected(itemEntity.getStack().getItem());
         } else {
-            return this.entities.getValue() && this.entityGroup.isTarget(entity, true);
+            return this.renderEntities.getValue() && this.entityGroup.isTarget(entity, true);
         }
     }
 
@@ -183,6 +213,9 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
                     return this.friendsColor.getColor();
                 }
             }
+            return this.playerColor.getColor();
+        } else if (entity instanceof ItemEntity) {
+            return this.itemColor.getColor();
         }
         return this.entityColor.getColor();
     }
@@ -211,15 +244,22 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
 
     @Override
     public void onBlockState(final BlockPos pos, final BlockState state) {
-        if (this.blocks.getValue() && !this.espBlocks.contains(pos) && this.blockList.isSelected(state.getBlock())) {
+        if (this.renderBlocks.getValue() && !this.espBlocks.contains(pos) && this.blockList.isSelected(state.getBlock())) {
             double distance = pos.toCenterPos().distanceTo(this.mc.player.getPos());
             if (distance <= this.maxBlockDistance.getValue()) {
                 if (this.fovCheck.getValue()) {
-                    double rotationDeltaX = pos.toCenterPos().x - this.mc.player.getPos().x;
-                    double rotationDeltaZ = pos.toCenterPos().z - this.mc.player.getPos().z;
-                    float rotationYaw = (float) (Math.atan2(rotationDeltaZ, rotationDeltaX) * 180.0D / Math.PI) - 90.0F;
-                    float deltaYaw = MathHelper.wrapDegrees(rotationYaw - this.mc.player.getYaw() + (this.mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
-                    if (Math.abs(deltaYaw) > this.mc.options.getFov().getValue()) return;
+                    final double rotationDeltaX = pos.toCenterPos().x - this.mc.player.getPos().x;
+                    final double rotationDeltaY = pos.toCenterPos().y - (this.mc.player.getPos().y + this.mc.player.getEyeHeight(this.mc.player.getPose()));
+                    final double rotationDeltaZ = pos.toCenterPos().z - this.mc.player.getPos().z;
+
+                    final float rotationYaw = (float) (Math.atan2(rotationDeltaZ, rotationDeltaX) * 180.0D / Math.PI) - 90.0F;
+                    final float rotationPitch = (float) (-(Math.atan2(rotationDeltaY, Math.hypot(rotationDeltaX, rotationDeltaZ)) * 180.0D / Math.PI));
+
+                    final float deltaYaw = MathHelper.wrapDegrees(rotationYaw - this.mc.player.getYaw() - (this.mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
+                    final float deltaPitch = rotationPitch - this.mc.player.getPitch();
+                    if (Math.abs(deltaYaw) > this.mc.options.getFov().getValue() || Math.abs(deltaPitch) > this.mc.options.getFov().getValue() * 0.5) {
+                        return;
+                    }
                 }
                 if (this.espBlocks.size() < this.maxBlockAmount.getValue()) {
                     this.espBlocks.add(pos);
@@ -230,7 +270,7 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
 
     @Override
     public void onBlockStateUpdate(final BlockPos pos, final BlockState previousState, final BlockState state) {
-        if (this.blocks.getValue() && state != null && !this.blockList.isSelected(state.getBlock())) {
+        if (this.renderBlocks.getValue() && state != null && !this.blockList.isSelected(state.getBlock())) {
             this.espBlocks.remove(pos);
         }
     }
@@ -244,10 +284,15 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
                 this.espBlocks.remove(blockPos);
             } else if (this.fovCheck.getValue()) {
                 final double rotationDeltaX = blockPos.toCenterPos().x - this.mc.player.getPos().x;
+                final double rotationDeltaY = blockPos.toCenterPos().y - (this.mc.player.getPos().y + this.mc.player.getEyeHeight(this.mc.player.getPose()));
                 final double rotationDeltaZ = blockPos.toCenterPos().z - this.mc.player.getPos().z;
+
                 final float rotationYaw = (float) (Math.atan2(rotationDeltaZ, rotationDeltaX) * 180.0D / Math.PI) - 90.0F;
+                final float rotationPitch = (float) (-(Math.atan2(rotationDeltaY, Math.hypot(rotationDeltaX, rotationDeltaZ)) * 180.0D / Math.PI));
+
                 final float deltaYaw = MathHelper.wrapDegrees(rotationYaw - this.mc.player.getYaw() - (this.mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
-                if (Math.abs(deltaYaw) > this.mc.options.getFov().getValue()) {
+                final float deltaPitch = rotationPitch - this.mc.player.getPitch();
+                if (Math.abs(deltaYaw) > this.mc.options.getFov().getValue() || Math.abs(deltaPitch) > this.mc.options.getFov().getValue() * 0.5) {
                     this.espBlocks.remove(blockPos);
                 }
             }
@@ -256,7 +301,7 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
 
     @Override
     public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
-        if (!this.blocks.getValue() || this.mc.player == null) {
+        if (!this.renderBlocks.getValue() || this.mc.player == null) {
             return;
         }
         final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
