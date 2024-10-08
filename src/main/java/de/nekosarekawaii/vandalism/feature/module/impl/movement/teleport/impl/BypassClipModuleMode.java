@@ -22,12 +22,12 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.teleport.TeleportModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
-public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements PlayerUpdateListener {
+public class BypassClipModuleMode extends ModuleMulti<TeleportModule> implements PlayerUpdateListener {
 
-    public VanillaModuleMode(final TeleportModule parent) {
+    public BypassClipModuleMode(final TeleportModule parent) {
         super("Vanilla", parent);
     }
 
@@ -48,20 +48,8 @@ public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements Pl
         if (target == null) return;
         if (this.parent.isTeleportPositionValid()) {
             final Vec3d pos = this.mc.player.getPos();
-            final Vec3d start = new Vec3d(pos.x, pos.y, pos.z);
-            final double distance = start.distanceTo(target);
-            final int packetsRequired = (int) Math.ceil(Math.abs(distance) / 10);
-            if (packetsRequired > 1) {
-                for (int i = 1; i <= packetsRequired; i++) {
-                    double x = start.x + (target.x - start.x) / packetsRequired * i;
-                    double y = start.y + (target.y - start.y) / packetsRequired * i;
-                    double z = start.z + (target.z - start.z) / packetsRequired * i;
-                    mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
-                }
-            }
-            this.mc.player.setPos(target.x, target.y, target.z);
+            MovementUtil.bypassClip(pos.x, pos.y, pos.z, target.getX(), target.getY(), target.getZ());
             this.parent.reset();
         }
     }
-
 }
