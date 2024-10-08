@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.clicker.clickers;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
@@ -28,7 +29,16 @@ import static de.nekosarekawaii.vandalism.util.MinecraftWrapper.mc;
 
 public class CooldownClicker extends Clicker implements PlayerUpdateListener {
 
-    public CooldownClicker(ClickerModule clickerModule) {
+    private final IntegerValue minDamagePercentage = new IntegerValue(
+            this,
+            "Min damage percentage",
+            "Min percent of max damage for click.",
+            100,
+            1,
+            100
+    );
+
+    public CooldownClicker(final ClickerModule clickerModule) {
         super(clickerModule, "Cooldown");
     }
 
@@ -43,7 +53,7 @@ public class CooldownClicker extends Clicker implements PlayerUpdateListener {
     }
 
     @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (!this.clickerModule.mode.isSelected(this) || !clickerModule.shouldClick()) {
             return;
         }
@@ -51,8 +61,9 @@ public class CooldownClicker extends Clicker implements PlayerUpdateListener {
         final float baseAttackDamage = (float) mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         final float attackCooldown = mc.player.getAttackCooldownProgress(0);
         final float finalAttackDamage = baseAttackDamage * (0.2f + attackCooldown * attackCooldown * 0.8f);
-        if (finalAttackDamage >= 0.98f) {
+        if (finalAttackDamage >= this.minDamagePercentage.getValue() * 0.01) {
             this.clickerModule.onClick();
         }
     }
+
 }
