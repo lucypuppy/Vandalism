@@ -60,6 +60,13 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             false
     );
 
+    private final BooleanValue hitThroughWalls = new BooleanValue(
+            this,
+            "Hit Through Walls",
+            "Whether the player should hit through walls.",
+            false
+    );
+
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
             "Target Selection",
@@ -468,7 +475,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         if (mc.player == null || mc.world == null || this.hitPoint == null) {
             return;
         }
-        if (onlyClickWhenLooking.getValue() && (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY)) {
+        if (!hitThroughWalls.getValue() && onlyClickWhenLooking.getValue() && (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY)) {
             return;
         }
 
@@ -483,7 +490,13 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             return;
         }
 
-        mc.doAttack();
+        if (hitThroughWalls.getValue()) {
+            mc.interactionManager.attackEntity(mc.player, target);
+            mc.player.swingHand(mc.player.getActiveHand());
+        } else {
+            mc.doAttack();
+        }
+
     }
 
     private enum SelectionMode implements IName {
