@@ -152,11 +152,18 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             false
     );
 
+    private final BooleanValue useRotations = new BooleanValue(
+            this,
+            "Use Rotations",
+            "Whether the player should use rotations to the target.",
+            true
+    );
+
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
             "The rotation group of the " + this.getName() + "."
-    );
+    ).visibleCondition(this.useRotations::getValue);
 
     private final ValueGroup rotationSpeedGroup = new ValueGroup(
             this.rotationGroup,
@@ -227,7 +234,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
     );
 
     private final BooleanValue visualizeHitPoint = new BooleanValue(
-            this,
+            this.rotationGroup,
             "Visualize Hit Point",
             "Whether the hit point should be visualized.",
             false
@@ -339,6 +346,9 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         // Update the current reaction time
 //        updateReactionTime(rotation);
 
+        if (!this.useRotations.getValue()) {
+            return;
+        }
 
         // This code sets the rotation
         if (this.rotationDelay == 0L || this.rotationTimer.hasReached(this.rotationDelay)) {
