@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import org.lwjgl.glfw.GLFW;
 
@@ -77,6 +78,23 @@ public class AutoClickerModule extends ClickerModule implements MouseInputListen
 
         if (!this.onlyWhenHolding.getValue() || this.isPressed) {
             this.mc.doAttack();
+        }
+    }
+
+    @Override
+    public void onFailClick() {
+        if (mc.player == null || mc.world == null) {
+            return;
+        }
+
+        mc.options.attackKey.setPressed(this.checkBreakable() && this.isPressed);
+
+        if (mc.options.attackKey.isPressed()) {
+            return;
+        }
+
+        if (!this.onlyWhenHolding.getValue() || this.isPressed) {
+            mc.player.swingHand(Hand.MAIN_HAND);
         }
     }
 
