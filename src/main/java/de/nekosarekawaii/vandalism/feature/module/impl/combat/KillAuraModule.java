@@ -84,6 +84,13 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             false
     );
 
+    private final BooleanValue waitForHurtTime = new BooleanValue(
+            this.clickerGroup,
+            "Wait For Hurt Time",
+            "Only hit when the target hurt time is 0.",
+            false
+    );
+
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
             "Target Selection",
@@ -546,6 +553,10 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         }
 
         if (mc.player.getEyePos().distanceTo(this.hitPoint) > this.getClickRange()) {
+            return;
+        }
+
+        if (this.waitForHurtTime.getValue() && this.target instanceof final LivingEntity livingEntity && livingEntity.hurtTime > 0) {
             return;
         }
 
