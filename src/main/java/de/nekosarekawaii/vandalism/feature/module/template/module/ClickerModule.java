@@ -25,7 +25,7 @@ import net.raphimc.vialoader.util.VersionRange;
 
 public abstract class ClickerModule extends Module {
 
-    private final ValueGroup clickerGroup = new ValueGroup(this, "Clicker", "The settings for the clicker.");
+    public final ValueGroup clickerGroup = new ValueGroup(this, "Clicker", "The settings for the clicker.");
 
     public final ClickerModeValue mode = new ClickerModeValue(this.clickerGroup, "Mode", "The mode of the clicker.", this);
 
@@ -48,6 +48,8 @@ public abstract class ClickerModule extends Module {
     }
 
     public abstract void onClick();
+
+    public abstract void onFailClick();
 
     public boolean shouldClick() {
         return true;
