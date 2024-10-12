@@ -23,11 +23,14 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.base.value.impl.target.TargetGroup;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
+import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
@@ -38,25 +41,54 @@ import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.No
 import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
 import lombok.Getter;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardEntry;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KillAuraModule extends ClickerModule implements RaytraceListener, RotationListener {
+public class KillAuraModule extends ClickerModule implements RaytraceListener, RotationListener, Render3DListener {
+
+    private final ModeValue clickMode = new ModeValue(
+            this.clickerGroup,
+            "Click Mode",
+            "Which click method should be used.",
+            "Legit",
+            "Packet"
+    );
 
     private final BooleanValue onlyClickWhenLooking = new BooleanValue(
-            this,
+            this.clickerGroup,
             "Only Click When Looking",
             "Whether the player should only click when looking at the target.",
+            false
+    );
+
+    private final BooleanValue hitThroughWalls = new BooleanValue(
+            this.clickerGroup,
+            "Hit Through Walls",
+            "Whether the player should hit through walls.",
+            false
+    );
+
+    private final BooleanValue waitForHurtTime = new BooleanValue(
+            this.clickerGroup,
+            "Wait For Hurt Time",
+            "Only hit when the target hurt time is 0.",
             false
     );
 
@@ -121,11 +153,18 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             false
     );
 
+    private final BooleanValue useRotations = new BooleanValue(
+            this,
+            "Use Rotations",
+            "Whether the player should use rotations to the target.",
+            true
+    );
+
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
             "The rotation group of the " + this.getName() + "."
-    );
+    ).visibleCondition(this.useRotations::getValue);
 
     private final ValueGroup rotationSpeedGroup = new ValueGroup(
             this.rotationGroup,
@@ -195,6 +234,13 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             true
     );
 
+    private final BooleanValue visualizeHitPoint = new BooleanValue(
+            this.rotationGroup,
+            "Visualize Hit Point",
+            "Whether the hit point should be visualized.",
+            false
+    );
+
     // Target
     @Getter
     private Entity target;
@@ -215,12 +261,12 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
     @Override
     protected void onActivate() {
         super.onActivate();
-        Vandalism.getInstance().getEventSystem().subscribe(this, RaytraceEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, RaytraceEvent.ID, RotationEvent.ID, Render3DEvent.ID);
     }
 
     @Override
     protected void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, RaytraceEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, RaytraceEvent.ID, RotationEvent.ID, Render3DEvent.ID);
         Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGH);
         this.target = null;
         this.hitPoint = null;
@@ -301,6 +347,9 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         // Update the current reaction time
 //        updateReactionTime(rotation);
 
+        if (!this.useRotations.getValue()) {
+            return;
+        }
 
         // This code sets the rotation
         if (this.rotationDelay == 0L || this.rotationTimer.hasReached(this.rotationDelay)) {
@@ -320,6 +369,39 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
     public void onRaytrace(final RaytraceEvent event) {
         if (this.target != null && Vandalism.getInstance().getRotationManager().getClientRotation() != null) {
             event.range = getAttackRange();
+        }
+    }
+
+    @Override
+    public void onRender3D(float tickDelta, MatrixStack matrixStack) {
+        if (this.visualizeHitPoint.getValue() && mc.player != null && mc.world != null && this.hitPoint != null) {
+            final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
+            final int color = Color.RED.getRGB();
+            final float red = ((color >> 16) & 0xff) / 255f;
+            final float green = ((color >> 8) & 0xff) / 255f;
+            final float blue = ((color) & 0xff) / 255f;
+            final float alpha = ((color >> 24) & 0xff) / 255f;
+            final Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
+            matrixStack.push();
+            matrixStack.translate(vec.x, vec.y, vec.z);
+
+            DebugRenderer.drawBox(
+                    matrixStack,
+                    immediate,
+                    hitPoint.getX() - 0.05,
+                    hitPoint.getY() - 0.05,
+                    hitPoint.getZ() - 0.05,
+                    hitPoint.getX() + 0.05,
+                    hitPoint.getY() + 0.05,
+                    hitPoint.getZ() + 0.05,
+                    red,
+                    green,
+                    blue,
+                    alpha
+            );
+
+            immediate.draw();
+            matrixStack.pop();
         }
     }
 
@@ -468,22 +550,62 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         if (mc.player == null || mc.world == null || this.hitPoint == null) {
             return;
         }
-        if (onlyClickWhenLooking.getValue() && (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY)) {
+
+        final PrioritizedRotation pseudoRotation = RotationUtil.rotationToVec(this.hitPoint, RotationPriority.NORMAL);
+        final HitResult hitResult = WorldUtil.raytrace(pseudoRotation, this.getClickRange());
+        final double raytraceDistance = hitResult != null && hitResult.getType() == HitResult.Type.ENTITY ? mc.player.getEyePos().distanceTo(hitResult.getPos()) : -1.0;
+
+        if (!hitThroughWalls.getValue() && (raytraceDistance > this.getClickRange() || raytraceDistance < 0.0)) {
             return;
         }
 
-//        final Rotation clientRotation = Vandalism.getInstance().getRotationManager().getClientRotation() != null ? Vandalism.getInstance().getRotationManager().getClientRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
-//        final HitResult hitResult = WorldUtil.raytrace(clientRotation, this.getClickRange());
-//        final double raytraceDistance = hitResult != null && hitResult.getType() == HitResult.Type.ENTITY ? mc.player.getEyePos().distanceTo(hitResult.getPos()) : -1.0;
-//
-//        if (raytraceDistance > this.getClickRange() || raytraceDistance < 0.0) {
-//            return;
-//        }
+        if (!hitThroughWalls.getValue() && onlyClickWhenLooking.getValue() && (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY)) {
+            return;
+        }
+
         if (mc.player.getEyePos().distanceTo(this.hitPoint) > this.getClickRange()) {
             return;
         }
 
-        mc.doAttack();
+        if (this.waitForHurtTime.getValue() && this.target instanceof final LivingEntity livingEntity && livingEntity.hurtTime > 0) {
+            return;
+        }
+
+        switch (clickMode.getValue()) {
+            case "Legit" -> {
+                mc.doAttack();
+            }
+            case "Packet" -> {
+                mc.interactionManager.attackEntity(mc.player, target);
+                mc.player.swingHand(mc.player.getActiveHand());
+            }
+        }
+
+    }
+
+    @Override
+    public void onFailClick() {
+        if (mc.player == null || mc.world == null || this.hitPoint == null) {
+            return;
+        }
+
+        final PrioritizedRotation pseudoRotation = RotationUtil.rotationToVec(this.hitPoint, RotationPriority.NORMAL);
+        final HitResult hitResult = WorldUtil.raytrace(pseudoRotation, this.getClickRange());
+        final double raytraceDistance = hitResult != null && hitResult.getType() == HitResult.Type.ENTITY ? mc.player.getEyePos().distanceTo(hitResult.getPos()) : -1.0;
+
+        if (!hitThroughWalls.getValue() && (raytraceDistance > this.getClickRange() || raytraceDistance < 0.0)) {
+            return;
+        }
+
+        if (!hitThroughWalls.getValue() && onlyClickWhenLooking.getValue() && (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY)) {
+            return;
+        }
+
+        if (mc.player.getEyePos().distanceTo(this.hitPoint) > this.getClickRange()) {
+            return;
+        }
+
+        mc.player.swingHand(Hand.MAIN_HAND);
     }
 
     private enum SelectionMode implements IName {
