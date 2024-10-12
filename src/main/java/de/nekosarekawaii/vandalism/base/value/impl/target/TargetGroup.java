@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.template.target;
+package de.nekosarekawaii.vandalism.base.value.impl.target;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlackl
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.internal.TargetListener;
+import lombok.Getter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
@@ -61,7 +62,8 @@ public class TargetGroup extends ValueGroup {
             EntityType.EYE_OF_ENDER
     );
 
-    private final MultiRegistryBlacklistValue<EntityType<?>> targets = new MultiRegistryBlacklistValue<>(
+    @Getter
+    private final MultiRegistryBlacklistValue<EntityType<?>> targetListValue = new MultiRegistryBlacklistValue<>(
             this,
             "Targets",
             "The entities to target.",
@@ -89,7 +91,7 @@ public class TargetGroup extends ValueGroup {
         if (entity == this.mc.player || (!entity.isAlive() && this.isAlive.getValue())) {
             return false;
         }
-        if (!this.targets.isSelected(entity.getType())) {
+        if (!this.targetListValue.isSelected(entity.getType())) {
             return false;
         }
         final TargetListener.TargetEvent event = new TargetListener.TargetEvent(entity, ignoreFriends);
