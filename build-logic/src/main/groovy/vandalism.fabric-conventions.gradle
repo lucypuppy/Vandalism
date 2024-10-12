@@ -26,7 +26,7 @@ dependencies {
     modImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
     modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 
-    modImplementation "de.florianmichael:ViaFabricPlus:3.4.5"
+    modImplementation "de.florianmichael:ViaFabricPlus:3.4.8"
 }
 
 processResources {
