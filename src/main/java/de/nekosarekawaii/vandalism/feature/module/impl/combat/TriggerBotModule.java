@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 
 public class TriggerBotModule extends ClickerModule {
@@ -30,6 +31,11 @@ public class TriggerBotModule extends ClickerModule {
     @Override
     public void onClick() {
         mc.doAttack();
+    }
+
+    @Override
+    public void onFailClick() {
+        mc.player.swingHand(Hand.MAIN_HAND);
     }
 
     @Override

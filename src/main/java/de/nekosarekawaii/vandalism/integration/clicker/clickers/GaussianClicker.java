@@ -102,6 +102,7 @@ public class GaussianClicker extends Clicker implements HandleInputListener {
         }
 
         if (ThreadLocalRandom.current().nextDouble() < this.failClickChance.getValue() * 0.01 + (this.fatigueFactor * 0.02)) {
+            this.clickerModule.onFailClick();
             return;
         }
 
