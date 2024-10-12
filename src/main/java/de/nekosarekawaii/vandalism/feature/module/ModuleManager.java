@@ -217,7 +217,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new HenkelPortModule(),
                 new DerpModule(),
                 new UseItemSpammerModule(),
-                new TriggerBotModule()
+                new TriggerBotModule(),
+                new AutoDisconnectModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
