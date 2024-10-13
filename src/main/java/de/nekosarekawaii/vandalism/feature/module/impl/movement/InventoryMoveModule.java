@@ -43,7 +43,7 @@ public class InventoryMoveModule extends Module implements PlayerUpdateListener,
             this,
             "Allow Arrow Key Rotation",
             "Allows you to rotate yourself with the arrow keys.",
-            true
+            false
     );
 
     private final FloatValue rotationSpeed = new FloatValue(
