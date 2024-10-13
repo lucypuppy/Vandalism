@@ -28,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 public class BypassClipModuleMode extends ModuleMulti<TeleportModule> implements PlayerUpdateListener {
 
     public BypassClipModuleMode(final TeleportModule parent) {
-        super("BypassClip", parent);
+        super("Bypass Clip", parent);
     }
 
     @Override
@@ -52,4 +52,5 @@ public class BypassClipModuleMode extends ModuleMulti<TeleportModule> implements
             this.parent.reset();
         }
     }
+
 }
