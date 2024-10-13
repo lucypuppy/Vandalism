@@ -33,6 +33,7 @@ mutable field net/minecraft/client/MinecraftClient socialInteractionsManager Lne
 accessible field net/minecraft/client/MinecraftClient realmsPeriodicCheckers Lnet/minecraft/client/realms/RealmsPeriodicCheckers;
 mutable field net/minecraft/client/MinecraftClient realmsPeriodicCheckers Lnet/minecraft/client/realms/RealmsPeriodicCheckers;
 accessible field net/minecraft/client/MinecraftClient abuseReportContext Lnet/minecraft/client/session/report/AbuseReportContext;
+accessible field net/minecraft/client/MinecraftClient renderTaskQueue Ljava/util/Queue;
 accessible field net/minecraft/client/network/ClientCommandSource completionId I
 accessible field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
 mutable field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
@@ -70,6 +71,7 @@ accessible field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket button
 mutable field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket button I
 accessible method net/minecraft/entity/Entity getVelocityAffectingPos ()Lnet/minecraft/util/math/BlockPos;
 accessible method net/minecraft/entity/LivingEntity getMovementSpeed (F)F
+accessible field net/minecraft/entity/LivingEntity jumping Z
 accessible method net/minecraft/entity/player/PlayerEntity getOffGroundSpeed ()F
 accessible field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;
 mutable field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;
@@ -177,3 +179,15 @@ accessible method net/minecraft/client/resource/server/ServerResourcePackLoader 
 accessible field com/mojang/blaze3d/systems/RenderSystem modelViewMatrix Lorg/joml/Matrix4f;
 accessible field net/minecraft/client/network/ClientPlayNetworkHandler session Lnet/minecraft/network/encryption/ClientPlayerSession;
 accessible method net/minecraft/client/world/ClientWorld getPendingUpdateManager ()Lnet/minecraft/client/network/PendingUpdateManager;
+
+accessible field net/minecraft/entity/Entity submergedInWater Z
+accessible field net/minecraft/entity/Entity touchingWater Z
+accessible field net/minecraft/entity/LivingEntity jumpingCooldown I
+mutable field net/minecraft/entity/Entity submergedInWater Z
+mutable field net/minecraft/entity/Entity touchingWater Z
+mutable field net/minecraft/entity/LivingEntity jumpingCooldown I
+accessible field net/minecraft/client/network/ClientPlayerEntity autoJumpEnabled Z
+accessible field net/minecraft/client/network/ClientPlayerEntity ticksToNextAutojump I
+mutable field net/minecraft/client/network/ClientPlayerEntity autoJumpEnabled Z
+mutable field net/minecraft/client/network/ClientPlayerEntity ticksToNextAutojump I
+accessible field net/minecraft/client/sound/SoundManager soundSystem Lnet/minecraft/client/sound/SoundSystem;

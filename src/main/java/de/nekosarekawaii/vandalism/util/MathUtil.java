@@ -19,10 +19,11 @@
 package de.nekosarekawaii.vandalism.util;
 
 import net.minecraft.client.input.Input;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MathUtil implements MinecraftWrapper {
@@ -96,16 +97,26 @@ public class MathUtil implements MinecraftWrapper {
         return (last <= 16384L) ? current : gcd(last, current % last);
     }
 
+    /**
+     * @return A list of all possible inputs (movement directions) in Minecraft.
+     */
     public static List<Input> possibleInputs() {
-        final List<Input> inputs = new ArrayList<>();
+        final List<Input> possibilities = new LinkedList<>();
         for (float forward = -1; forward <= 1; forward++) {
             for (float sideways = -1; sideways <= 1; sideways++) {
-                inputs.add(withPressingStates(forward, sideways));
+                possibilities.add(withPressingStates(sideways, forward));
             }
         }
-        return inputs;
+        return possibilities;
     }
 
+    /**
+     * Creates a new input with the given movement directions and automatically calculates the key presses.
+     *
+     * @param movementForward  The forward movement direction
+     * @param movementSideways The sideways movement direction
+     * @return The created input
+     */
     public static Input withPressingStates(final float movementForward, final float movementSideways) {
         final Input input = new Input();
         input.movementSideways = movementSideways;
@@ -120,8 +131,16 @@ public class MathUtil implements MinecraftWrapper {
         return input;
     }
 
+    public static Vec3d copy(final Vec3d original) {
+        return new Vec3d(original.x, original.y, original.z);
+    }
+
     public static Vec3d toVec3D(final Vec2f vector, final boolean flipped) {
         return new Vec3d(flipped ? vector.y : vector.x, 0, flipped ? vector.x : vector.y);
+    }
+
+    public static BlockPos fromVec3D(final Vec3d vector) {
+        return BlockPos.ofFloored(vector.x, vector.y, vector.z);
     }
 
 }
