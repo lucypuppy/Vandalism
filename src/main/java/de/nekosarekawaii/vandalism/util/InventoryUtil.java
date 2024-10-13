@@ -27,6 +27,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
@@ -37,6 +38,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class InventoryUtil implements MinecraftWrapper {
 
@@ -119,7 +121,6 @@ public class InventoryUtil implements MinecraftWrapper {
         if (itemStack.getItem() instanceof BlockItem)
             return 8;
 
-
         return -1;
     }
 
@@ -162,6 +163,24 @@ public class InventoryUtil implements MinecraftWrapper {
         }
         mc.player.getInventory().selectedSlot = slot;
         mc.interactionManager.syncSelectedSlot();
+    }
+
+    public static int countTotalItemsInInventory(final Inventory inventory, final BiFunction<ItemStack, Integer, Boolean> condition) {
+        int totalItemCount = 0;
+
+        for (int slot = 0; slot < inventory.size(); slot++) {
+            final ItemStack stack = inventory.getStack(slot);
+
+            if (condition.apply(stack, slot)) {
+                totalItemCount += stack.getCount();
+            }
+        }
+
+        return totalItemCount;
+    }
+
+    public static boolean isHotbarSlot(final int slot) {
+        return slot >= 0 && slot <= 8;
     }
 
 }

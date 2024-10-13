@@ -143,4 +143,17 @@ public class MathUtil implements MinecraftWrapper {
         return BlockPos.ofFloored(vector.x, vector.y, vector.z);
     }
 
+    /**
+     * Linear interpolation with a time to reach the end value
+     *
+     * @param start the start value
+     * @param end   the end value
+     * @param dt    the delta time
+     * @param h     the time to reach the end value
+     * @return the interpolated value
+     */
+    public static double fiLerp(final double start, final double end, final double dt, final double h) {
+        return start + (end - start) * Math.exp(-dt / h * Math.log(2)); //Math.pow(2, -dt / h);
+    }
+
 }
