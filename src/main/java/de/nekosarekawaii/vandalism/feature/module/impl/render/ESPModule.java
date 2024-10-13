@@ -124,7 +124,7 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
     private final ColorValue itemColor = new ColorValue(
             this.itemsGroup,
             "Item color",
-            "The color of the ESO for items.",
+            "The color of the ESP for items.",
             new Color(50, 255, 255)
     ).visibleCondition(this.renderItems::getValue);
 
