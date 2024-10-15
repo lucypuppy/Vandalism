@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.base.account.gui;
 
-import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
@@ -144,8 +143,8 @@ public class AccountsClientWindow extends ClientWindow {
             }
         }
         final String playerName = account.getDisplayName();
-        final GameProfile gameProfile = this.mc.getGameProfile();
-        final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().equals(playerUuid);
+        final Account currentAccount = this.accountManager.getCurrentAccount();
+        final boolean isCurrentAccount = currentAccount == account || !isEntry;
         if (isCurrentAccount) {
             final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
             ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);

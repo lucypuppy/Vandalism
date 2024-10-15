@@ -46,7 +46,7 @@ dependencies {
     jij "net.raphimc:NoteBlockLib:2.1.3"
 
     // https://github.com/RaphiMC/MinecraftAuth
-    jij "net.raphimc:MinecraftAuth:4.1.0"
+    jij "net.raphimc:MinecraftAuth:4.1.2-SNAPSHOT"
 
     // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
     afterEvaluate {

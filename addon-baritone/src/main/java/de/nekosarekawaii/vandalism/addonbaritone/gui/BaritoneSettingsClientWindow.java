@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.addonbaritone.settings.BaritoneSettingMapper;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
@@ -53,13 +54,16 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
         ImGui.setNextItemWidth(-1);
         ImGui.inputText(id + "input", this.searchInput);
         ImGui.separator();
+        ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
         ImGui.beginChild(id + "scrolllist", -1, -1, true);
+        final String input = this.searchInput.get().replace(" ", "").toLowerCase();
         for (final Value<?> value : this.baritoneSettingMapper.getValues()) {
-            if (this.searchInput.isEmpty() || value.getName().toLowerCase().contains(searchInput.get().toLowerCase())) {
+            if (input.isEmpty() || value.getName().replace(" ", "").toLowerCase().contains(input)) {
                 this.baritoneSettingMapper.renderValue(value, true);
             }
         }
         ImGui.endChild();
+        ImGui.popStyleColor();
     }
 
 }
