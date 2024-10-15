@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import lombok.Getter;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -62,6 +63,13 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
             true
     ).visibleCondition(() -> this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode);
 
+    public final BooleanValue resetSpeedOnDeactivate = new BooleanValue(
+            this,
+            "Reset Speed On Deactivate",
+            "Resets the speed on deactivate.",
+            true
+    );
+
     public FlightModule() {
         super("Flight", "Allows you to fly.", Category.MOVEMENT);
     }
@@ -80,6 +88,10 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
         this.flownDistance = 0.0;
+
+        if (this.resetSpeedOnDeactivate.getValue()) {
+            MovementUtil.setSpeed(MovementUtil.getBaseSpeed());
+        }
     }
 
     @Override
