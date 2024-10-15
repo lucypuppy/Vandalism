@@ -18,9 +18,11 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed;
 
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
 
 public class SpeedModule extends Module {
 
@@ -41,8 +43,22 @@ public class SpeedModule extends Module {
             new CheatGuardModuleMode()
     );
 
+    public final BooleanValue resetSpeedOnDeactivate = new BooleanValue(
+            this,
+            "Reset Speed On Deactivate",
+            "Resets the speed on deactivate.",
+            true
+    );
+
     public SpeedModule() {
         super("Speed", "Makes your on ground movement faster or better.", Category.MOVEMENT);
+    }
+
+    @Override
+    protected void onDeactivate() {
+        if (this.resetSpeedOnDeactivate.getValue()) {
+            MovementUtil.setSpeed(MovementUtil.getBaseSpeed());
+        }
     }
 
 }
