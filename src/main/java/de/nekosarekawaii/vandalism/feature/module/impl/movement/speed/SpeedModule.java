@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
+import net.minecraft.util.math.Vec3d;
 
 public class SpeedModule extends Module {
 
@@ -56,7 +57,8 @@ public class SpeedModule extends Module {
 
     @Override
     protected void onDeactivate() {
-        if (this.resetSpeedOnDeactivate.getValue()) {
+        if (this.resetSpeedOnDeactivate.getValue() && mc.player != null) {
+            mc.player.setVelocity(Vec3d.ZERO);
             MovementUtil.setSpeed(MovementUtil.getBaseSpeed());
         }
     }

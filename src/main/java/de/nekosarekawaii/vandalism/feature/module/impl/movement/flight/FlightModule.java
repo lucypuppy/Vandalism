@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.util.MovementUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import lombok.Getter;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.util.math.Vec3d;
 
 public class FlightModule extends Module implements OutgoingPacketListener, PlayerUpdateListener {
 
@@ -89,7 +90,8 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
         this.flownDistance = 0.0;
 
-        if (this.resetSpeedOnDeactivate.getValue()) {
+        if (this.resetSpeedOnDeactivate.getValue() && mc.player != null) {
+            mc.player.setVelocity(Vec3d.ZERO);
             MovementUtil.setSpeed(MovementUtil.getBaseSpeed());
         }
     }
