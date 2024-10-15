@@ -35,10 +35,7 @@ import de.nekosarekawaii.vandalism.util.tooltip.impl.TextTooltipComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.component.type.LodestoneTrackerComponent;
-import net.minecraft.component.type.MapIdComponent;
-import net.minecraft.component.type.NbtComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipData;
@@ -46,6 +43,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -100,18 +98,32 @@ public class BetterTooltipsModule extends Module implements TooltipDrawListener,
         final ItemStack itemStack = event.itemStack;
         final Item item = itemStack.getItem();
         switch (item) {
-            case CompassItem stack when stack.getComponents().contains(DataComponentTypes.LODESTONE_TRACKER) ->
-                    drawCompassTooltip(tooltipData, itemStack);
-            case BannerPatternItem patternItem -> drawBannerPatternTooltip(tooltipData, patternItem);
-            case BannerItem bannerItem -> tooltipData.add(new BannerTooltipComponent(itemStack));
+            case CompassItem stack when stack.getComponents().contains(DataComponentTypes.LODESTONE_TRACKER) -> {
+                drawCompassTooltip(tooltipData, itemStack);
+            }
+
+            case BannerPatternItem patternItem -> {
+                tooltipData.add(new BannerTooltipComponent(DyeColor.GRAY, new BannerPatternsComponent.Builder()
+                        .add(mc.player.getRegistryManager().getWrapperOrThrow(RegistryKeys.BANNER_PATTERN)
+                                .getOrThrow(patternItem.getPattern()).get(0), DyeColor.WHITE).build()));
+            }
+
+            case BannerItem bannerItem -> {
+                tooltipData.add(new BannerTooltipComponent(bannerItem));
+            }
+
             case FilledMapItem stack -> {
                 final MapIdComponent mapId = stack.getComponents().get(DataComponentTypes.MAP_ID);
                 if (mapId != null) {
                     tooltipData.add(new MapTooltipComponent(mapId));
                 }
             }
-            case null, default -> drawContainerTooltip(tooltipData, itemStack, item);
+
+            case null, default -> {
+                drawContainerTooltip(tooltipData, itemStack, item);
+            }
         }
+
         drawBytesTooltip(tooltipData, itemStack);
     }
 
@@ -146,36 +158,10 @@ public class BetterTooltipsModule extends Module implements TooltipDrawListener,
         tooltipData.add(new TextTooltipComponent(dimension.asOrderedText()));
     }
 
-    // TODO: Fix
-    private void drawBannerPatternTooltip(final List<TooltipData> tooltipData, final BannerPatternItem patternItem) {
-    /*    final Optional<RegistryEntryList.Named<BannerPattern>> optionalList = Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern());
-
-        if (optionalList.isPresent()) {
-            final RegistryEntryList.Named<BannerPattern> list = optionalList.get();
-            final RegistryEntry<BannerPattern> bannerPattern = (list.size() > 0 ? list.get(0) : null);
-
-            if (bannerPattern != null) {
-                final ItemStack bannerItem = new ItemStack(Items.GRAY_BANNER);
-
-               bannerItem.getOrCreateSubNbt("BlockEntityTag").put("Patterns",
-                        new BannerPattern.Patterns().add(
-                                BannerPatterns.BASE,
-                                DyeColor.BLACK
-                        ).add(
-                                bannerPattern,
-                                DyeColor.WHITE
-                        ).toNbt()
-                );
-                tooltipData.add(new BannerTooltipComponent(bannerItem));
-            }
-        }*/
-    }
-
     private void drawContainerTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack, final Item item) {
         final ContainerComponent containerData = itemStack.get(DataComponentTypes.CONTAINER);
         final NbtComponent blockEntityData = itemStack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
 
-        System.out.println(blockEntityData);
         if ((containerData != null || blockEntityData != null) && item instanceof BlockItem blockItem) {
             final Block block = blockItem.getBlock();
             Color color = Color.WHITE;

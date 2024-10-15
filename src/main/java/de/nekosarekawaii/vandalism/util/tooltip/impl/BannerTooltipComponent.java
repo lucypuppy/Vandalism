@@ -32,17 +32,25 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.BannerPatternsComponent;
 import net.minecraft.item.BannerItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.DyeColor;
 
 public class BannerTooltipComponent implements TooltipComponent, ConvertibleTooltipData, MinecraftWrapper {
 
-    private final ItemStack banner;
+    private final DyeColor color;
+    private final BannerPatternsComponent patterns;
     private final ModelPart bannerField;
 
-    public BannerTooltipComponent(final ItemStack banner) {
-        this.banner = banner;
+    public BannerTooltipComponent(DyeColor color, BannerPatternsComponent patterns) {
+        this.color = color;
+        this.patterns = patterns;
         this.bannerField = this.mc.getEntityModelLoader().getModelPart(EntityModelLayers.BANNER).getChild("flag");
+    }
+
+    public BannerTooltipComponent(final BannerItem banner) {
+        this(banner.getColor(),
+                banner.getComponents().getOrDefault(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT));
     }
 
     @Override
@@ -71,7 +79,6 @@ public class BannerTooltipComponent implements TooltipComponent, ConvertibleTool
         final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
         this.bannerField.pitch = 0f;
         this.bannerField.pivotY = -32f;
-        final BannerItem bannerItem = (BannerItem) this.banner.getItem();
         BannerBlockEntityRenderer.renderCanvas(
                 matrices,
                 immediate,
@@ -80,8 +87,8 @@ public class BannerTooltipComponent implements TooltipComponent, ConvertibleTool
                 this.bannerField,
                 ModelLoader.BANNER_BASE,
                 true,
-                bannerItem.getColor(),
-                this.banner.get(DataComponentTypes.BANNER_PATTERNS)
+                this.color,
+                this.patterns
         );
         matrices.pop();
         matrices.pop();
