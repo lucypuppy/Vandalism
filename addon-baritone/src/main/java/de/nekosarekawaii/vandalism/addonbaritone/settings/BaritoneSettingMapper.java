@@ -33,8 +33,11 @@ import de.nekosarekawaii.vandalism.util.render.util.HSBColor;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class BaritoneSettingMapper implements ValueParent {
+
+    private static final Pattern PATTERN = Pattern.compile("([a-z])([A-Z])");
 
     private final List<Value<?>> values;
 
@@ -44,18 +47,21 @@ public class BaritoneSettingMapper implements ValueParent {
 
     public void loadSettings() {
         this.values.clear();
-
         for (final Settings.Setting<?> setting : Baritone.settings().allSettings) {
             settingToValue(setting);
         }
+    }
+
+    private String fixSettingsName(final String name) {
+        final String result = PATTERN.matcher(name).replaceAll("$1 $2");
+        return result.substring(0, 1).toUpperCase() + result.substring(1);
     }
 
     // We need this method in case someone changes the settings via command.
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void updateSettings() {
         for (final Settings.Setting<?> setting : Baritone.settings().allSettings) {
-            final Value value = this.byName(setting.getName());
-
+            final Value value = this.byName(this.fixSettingsName(setting.getName()));
             if (value != null) {
                 if (value.getValue() instanceof HSBColor) {
                     value.setValue(new HSBColor((Color) setting.value));
@@ -70,47 +76,79 @@ public class BaritoneSettingMapper implements ValueParent {
     @SuppressWarnings("unchecked")
     private void settingToValue(final Settings.Setting<?> undefinedSetting) {
         if (undefinedSetting.value instanceof Boolean) {
+
             final Settings.Setting<Boolean> setting = (Settings.Setting<Boolean>) undefinedSetting;
-
-            final BooleanValue booleanValue = new BooleanValue(this, setting.getName(), null, setting.defaultValue)
-                    .onValueChange((oldVal, newVal) -> setting.value = newVal);
-
+            final BooleanValue booleanValue = new BooleanValue(
+                    this,
+                    this.fixSettingsName(setting.getName()),
+                    null,
+                    setting.defaultValue
+            ).onValueChange((oldVal, newVal) -> setting.value = newVal);
             booleanValue.setValue(setting.value);
+
         } else if (undefinedSetting.value instanceof Color) {
+
             final Settings.Setting<Color> setting = (Settings.Setting<Color>) undefinedSetting;
-
-            final ColorValue colorValue = new ColorValue(this, setting.getName(), null, setting.defaultValue)
-                    .onValueChange((oldVal, newVal) -> setting.value = newVal.getColor());
-
+            final ColorValue colorValue = new ColorValue(
+                    this,
+                    this.fixSettingsName(setting.getName()),
+                    null,
+                    setting.defaultValue
+            ).onValueChange((oldVal, newVal) -> setting.value = newVal.getColor());
             colorValue.setValue(setting.value);
+
         } else if (undefinedSetting.value instanceof Float) {
+
             final Settings.Setting<Float> setting = (Settings.Setting<Float>) undefinedSetting;
-
-            final FloatValue floatValue = new FloatValue(this, setting.getName(), null, setting.defaultValue, 0.0F, 10.0F)
-                    .onValueChange((oldVal, newVal) -> setting.value = newVal);
-
+            final FloatValue floatValue = new FloatValue(
+                    this,
+                    this.fixSettingsName(setting.getName()),
+                    null,
+                    setting.defaultValue,
+                    0.0F,
+                    10.0F
+            ).onValueChange((oldVal, newVal) -> setting.value = newVal);
             floatValue.setValue(setting.value);
+
         } else if (undefinedSetting.value instanceof Double) {
+
             final Settings.Setting<Double> setting = (Settings.Setting<Double>) undefinedSetting;
-
-            final DoubleValue doubleValue = new DoubleValue(this, setting.getName(), null, setting.defaultValue, 0.0, 50.0)
-                    .onValueChange((oldVal, newVal) -> setting.value = newVal);
-
+            final DoubleValue doubleValue = new DoubleValue(
+                    this,
+                    this.fixSettingsName(setting.getName()),
+                    null,
+                    setting.defaultValue,
+                    0.0,
+                    50.0
+            ).onValueChange((oldVal, newVal) -> setting.value = newVal);
             doubleValue.setValue(setting.value);
+
         } else if (undefinedSetting.value instanceof Integer) {
+
             final Settings.Setting<Integer> setting = (Settings.Setting<Integer>) undefinedSetting;
-
-            final IntegerValue integerValue = new IntegerValue(this, setting.getName(), null, setting.defaultValue, -5000, 5000)
-                    .onValueChange((oldVal, newVal) -> setting.value = newVal);
-
+            final IntegerValue integerValue = new IntegerValue(
+                    this,
+                    this.fixSettingsName(setting.getName()),
+                    null,
+                    setting.defaultValue,
+                    -5000,
+                    5000
+            ).onValueChange((oldVal, newVal) -> setting.value = newVal);
             integerValue.setValue(setting.value);
+
         } else if (undefinedSetting.value instanceof Long) {
+
             final Settings.Setting<Long> setting = (Settings.Setting<Long>) undefinedSetting;
-
-            final LongValue longValue = new LongValue(this, setting.getName(), null, setting.defaultValue, 0L, 146008555100680L)
-                    .onValueChange((oldVal, newVal) -> setting.value = newVal);
-
+            final LongValue longValue = new LongValue(
+                    this,
+                    this.fixSettingsName(setting.getName()),
+                    null,
+                    setting.defaultValue,
+                    0L,
+                    146008555100680L
+            ).onValueChange((oldVal, newVal) -> setting.value = newVal);
             longValue.setValue(setting.value);
+
         }
     }
 
