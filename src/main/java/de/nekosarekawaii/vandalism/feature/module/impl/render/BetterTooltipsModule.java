@@ -24,23 +24,38 @@ import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.ByteCountDataOutput;
+import de.nekosarekawaii.vandalism.util.InventoryNoop;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import de.nekosarekawaii.vandalism.util.tooltip.CustomContainerScreen;
 import de.nekosarekawaii.vandalism.util.tooltip.impl.BannerTooltipComponent;
+import de.nekosarekawaii.vandalism.util.tooltip.impl.ContainerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.tooltip.impl.MapTooltipComponent;
 import de.nekosarekawaii.vandalism.util.tooltip.impl.TextTooltipComponent;
+import net.minecraft.block.Block;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.component.type.LodestoneTrackerComponent;
 import net.minecraft.component.type.MapIdComponent;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipData;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.GlobalPos;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.util.List;
 
 public class BetterTooltipsModule extends Module implements TooltipDrawListener, OutgoingPacketListener {
@@ -156,52 +171,66 @@ public class BetterTooltipsModule extends Module implements TooltipDrawListener,
         }*/
     }
 
-    // TODO: Fix
     private void drawContainerTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack, final Item item) {
-        /*final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
-        if (compoundTag != null && item instanceof BlockItem blockItem) {
-            final boolean isGenericContainer = compoundTag.contains("Items", 9);
-            if (isGenericContainer || compoundTag.contains("RecordItem")) {
-                final Block block = blockItem.getBlock();
-                Color color = Color.WHITE;
-                if (block instanceof ShulkerBoxBlock shulkerBoxBlock) {
-                    final DyeColor dye = shulkerBoxBlock.getColor();
-                    if (dye != null) {
-                        final float[] dyeColor = dye.getColorComponents();
-                        if (dyeColor.length == 3) {
-                            color = new Color(dyeColor[0], dyeColor[1], dyeColor[2]);
-                        }
-                    }
-                }
-                final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                if (isGenericContainer) {
-                    Inventories.readNbt(compoundTag, itemStacks);
-                }
-                else {
-                    itemStacks.set(0, ItemStack.fromNbt(compoundTag.getCompound("RecordItem")));
-                }
-                if (!itemStacks.isEmpty()) {
-                    tooltipData.add(new TextTooltipComponent(
-                            Text.literal(
-                                    "(Press " + InputType.getName(this.openContainerKey.getValue()) + " to open this inventory)"
-                            ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
-                    ));
-                    tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
-                    if (this.openContainerKey.isPressed()) {
-                        final GenericContainerScreenHandler genericContainerScreen = GenericContainerScreenHandler.createGeneric9x3(
-                                0,
-                                this.mc.player.getInventory(),
-                                new InventoryNoop(itemStacks)
-                        );
-                        this.mc.setScreen(new CustomContainerScreen(
-                                genericContainerScreen,
-                                this.mc.player.getInventory(),
-                                Text.of(itemStack.getName())
-                        ));
-                    }
+        final ContainerComponent containerData = itemStack.get(DataComponentTypes.CONTAINER);
+        final NbtComponent blockEntityData = itemStack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+
+        System.out.println(blockEntityData);
+        if ((containerData != null || blockEntityData != null) && item instanceof BlockItem blockItem) {
+            final Block block = blockItem.getBlock();
+            Color color = Color.WHITE;
+
+            if (block instanceof ShulkerBoxBlock shulkerBoxBlock) {
+                final DyeColor dye = shulkerBoxBlock.getColor();
+
+                if (dye != null) {
+                    color = new Color(dye.getEntityColor());
                 }
             }
-        }*/
+
+            final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+
+            if (containerData != null) {
+                containerData.copyTo(itemStacks);
+            } else {
+                final NbtCompound nbtComponent = blockEntityData.copyNbt();
+
+                if (nbtComponent.contains("Items")) {
+                    Inventories.readNbt(nbtComponent, itemStacks, BuiltinRegistries.createWrapperLookup());
+                } else if (nbtComponent.contains("RecordItem")) {
+                    ItemStack.fromNbt(BuiltinRegistries.createWrapperLookup(), nbtComponent.getCompound("RecordItem"))
+                            .ifPresent(stack -> {
+                                if (!stack.isEmpty()) {
+                                    itemStacks.set(0, stack);
+                                }
+                            });
+                }
+            }
+
+            if (!itemStacks.isEmpty()) {
+                tooltipData.add(new TextTooltipComponent(
+                        Text.literal(
+                                "(Press " + InputType.getName(this.openContainerKey.getValue()) + " to open this inventory)"
+                        ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
+                ));
+
+                tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
+
+                if (this.openContainerKey.isPressed()) {
+                    final GenericContainerScreenHandler genericContainerScreen = GenericContainerScreenHandler.createGeneric9x3(
+                            0,
+                            this.mc.player.getInventory(),
+                            new InventoryNoop(itemStacks)
+                    );
+
+                    this.mc.setScreen(new CustomContainerScreen(
+                            genericContainerScreen,
+                            this.mc.player.getInventory(),
+                            Text.of(itemStack.getName())
+                    ));
+                }
+            }
+        }
     }
 
 }
