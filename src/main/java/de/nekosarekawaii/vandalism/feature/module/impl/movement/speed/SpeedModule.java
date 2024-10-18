@@ -48,7 +48,7 @@ public class SpeedModule extends Module {
             this,
             "Reset Speed On Deactivate",
             "Resets the speed on deactivate.",
-            true
+            false
     );
 
     public SpeedModule() {
