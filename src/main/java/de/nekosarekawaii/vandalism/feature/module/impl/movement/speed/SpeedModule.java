@@ -44,10 +44,10 @@ public class SpeedModule extends Module {
             new CheatGuardModuleMode()
     );
 
-    public final BooleanValue resetSpeedOnDeactivate = new BooleanValue(
+    public final BooleanValue stopMotionOnDeactivate = new BooleanValue(
             this,
-            "Reset Speed On Deactivate",
-            "Resets the speed on deactivate.",
+            "Stop Motion On Deactivate",
+            "Stops the motion on deactivate.",
             false
     );
 
@@ -57,7 +57,7 @@ public class SpeedModule extends Module {
 
     @Override
     protected void onDeactivate() {
-        if (this.resetSpeedOnDeactivate.getValue() && mc.player != null) {
+        if (this.stopMotionOnDeactivate.getValue() && mc.player != null) {
             mc.player.setVelocity(Vec3d.ZERO);
             MovementUtil.setSpeed(MovementUtil.getBaseSpeed());
         }
