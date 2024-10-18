@@ -26,8 +26,24 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import net.minecraft.util.math.MathHelper;
+import org.lwjgl.glfw.GLFW;
 
 public class VisualSettings extends ValueGroup {
+
+    private final FloatValue windowOpacity = new FloatValue(
+            this,
+            "Window Opacity",
+            "The opacity of the window.",
+            1.0f,
+            0.1f,
+            1.0f
+    ).onValueChange((oldValue, newValue) -> {
+        if (oldValue.floatValue() == newValue.floatValue()) {
+            return;
+        }
+        GLFW.glfwSetWindowOpacity(this.mc.getWindow().getHandle(), MathHelper.clamp(newValue, 0.1f, 1f));
+    });
 
     public final BooleanValue unfocusedFPS = new BooleanValue(
             this,
