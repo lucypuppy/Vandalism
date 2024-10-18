@@ -45,6 +45,15 @@ public class PathNode {
     @Setter
     private double hCost;
 
+    private static final int[][] DIRECTIONS = {
+            {1, 0, 0}, {-1, 0, 0},
+            {0, 1, 0}, {0, -1, 0},
+            {0, 0, 1}, {0, 0, -1},
+            {1, 1, 0}, {1, -1, 0}, {-1, 1, 0}, {-1, -1, 0},
+            {1, 0, 1}, {1, 0, -1}, {-1, 0, 1}, {-1, 0, -1},
+            {0, 1, 1}, {0, 1, -1}, {0, -1, 1}, {0, -1, -1}
+    };
+
     public PathNode(final World world, final BlockPos pos) {
         this.world = world;
         this.pos = pos;
@@ -58,24 +67,17 @@ public class PathNode {
     }
 
     public void generateNeighbours() {
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    if (x == 0 && y == 0 && z == 0)
-                        continue;
+        for (final int[] direction : DIRECTIONS) {
+            final BlockPos feetPos = this.pos.add(direction[0], direction[1], direction[2]);
+            final PathNode node = new PathNode(this.world, feetPos);
 
-                    final BlockPos feetPos = this.pos.add(x, y, z);
-                    final PathNode node = new PathNode(this.world, feetPos);
+            if (node.getChunk() == null) {
+                continue;
+            }
 
-                    if (node.getChunk() == null) {
-                        continue;
-                    }
-
-                    final BlockPos headPos = feetPos.up();
-                    if (node.getChunk().getBlockState(feetPos).isAir() && node.getChunk().getBlockState(headPos).isAir()) {
-                        this.neighbors.add(node);
-                    }
-                }
+            final BlockPos headPos = feetPos.up();
+            if (node.getChunk().getBlockState(feetPos).isAir() && node.getChunk().getBlockState(headPos).isAir()) {
+                this.neighbors.add(node);
             }
         }
     }
@@ -92,16 +94,18 @@ public class PathNode {
         return this.pos.equals(node.pos);
     }
 
-    public double distanceTo(final PathNode node) {
-        return Math.sqrt(this.pos.getSquaredDistance(node.pos));
+    public double getManhattanDistance(final PathNode node) {
+        return Math.abs(this.pos.getX() - node.pos.getX())
+                + Math.abs(this.pos.getY() - node.pos.getY())
+                + Math.abs(this.pos.getZ() - node.pos.getZ());
     }
 
     public double getHeuristic(final PathNode node) {
-        return distanceTo(node); // Todo: Add heuristic
+        return getManhattanDistance(node); // Todo: Add heuristic
     }
 
     public double getMovementCost(final PathNode node) {
-        return distanceTo(node); // Todo: Add movement cost
+        return getManhattanDistance(node); // Todo: Add movement cost
     }
 
 }
