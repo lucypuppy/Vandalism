@@ -20,13 +20,20 @@ package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.AddServerScreen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(AddServerScreen.class)
 public abstract class MixinAddServerScreen extends Screen {
+
+    @Shadow protected abstract void addAndClose();
+
+    @Shadow private TextFieldWidget addressField;
 
     protected MixinAddServerScreen(final Text ignored) {
         super(ignored);
@@ -35,6 +42,15 @@ public abstract class MixinAddServerScreen extends Screen {
     @Redirect(method = "updateAddButton", at = @At(value = "INVOKE", target = "Ljava/lang/String;isEmpty()Z"))
     private boolean allowEmptyServerNames(final String instance) {
         return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if(!addressField.getText().isEmpty() && keyCode == GLFW.GLFW_KEY_ENTER) {
+            this.addAndClose();
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
 }
