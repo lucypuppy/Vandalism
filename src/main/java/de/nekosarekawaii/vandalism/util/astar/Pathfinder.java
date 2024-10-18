@@ -65,7 +65,7 @@ public class Pathfinder {
                 if (closedSetForward.containsKey(neighbor.getPos()))
                     continue;
 
-                final double tentativeGCost = currentForward.getGCost() + currentForward.distanceTo(neighbor);
+                final double tentativeGCost = currentForward.getGCost() + currentForward.getMovementCost(neighbor);
                 if (tentativeGCost < neighbor.getGCost() || !openSetForward.contains(neighbor)) {
                     neighbor.setGCost(tentativeGCost);
                     neighbor.setHCost(neighbor.getHeuristic(goal));
@@ -81,7 +81,7 @@ public class Pathfinder {
                 if (closedSetBackward.containsKey(neighbor.getPos()))
                     continue;
 
-                final double tentativeGCost = currentBackward.getGCost() + currentBackward.distanceTo(neighbor);
+                final double tentativeGCost = currentBackward.getGCost() + currentBackward.getMovementCost(neighbor);
                 if (tentativeGCost < neighbor.getGCost() || !openSetBackward.contains(neighbor)) {
                     neighbor.setGCost(tentativeGCost);
                     neighbor.setHCost(neighbor.getHeuristic(start));

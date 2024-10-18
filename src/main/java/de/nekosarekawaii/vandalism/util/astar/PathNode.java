@@ -97,13 +97,11 @@ public class PathNode {
     }
 
     public double getHeuristic(final PathNode node) {
-        double baseHeuristic = distanceTo(node);
+        return distanceTo(node); // Todo: Add heuristic
+    }
 
-        if (this.pos.getY() != node.getPos().getY()) {
-            baseHeuristic *= 1.5f;
-        }
-
-        return baseHeuristic;
+    public double getMovementCost(final PathNode node) {
+        return distanceTo(node); // Todo: Add movement cost
     }
 
 }
