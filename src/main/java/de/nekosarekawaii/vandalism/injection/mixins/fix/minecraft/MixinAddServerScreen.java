@@ -31,9 +31,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(AddServerScreen.class)
 public abstract class MixinAddServerScreen extends Screen {
 
-    @Shadow protected abstract void addAndClose();
+    @Shadow
+    protected abstract void addAndClose();
 
-    @Shadow private TextFieldWidget addressField;
+    @Shadow
+    private TextFieldWidget addressField;
 
     protected MixinAddServerScreen(final Text ignored) {
         super(ignored);
@@ -45,8 +47,8 @@ public abstract class MixinAddServerScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if(!addressField.getText().isEmpty() && keyCode == GLFW.GLFW_KEY_ENTER) {
+    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
+        if (!this.addressField.getText().isEmpty() && keyCode == GLFW.GLFW_KEY_ENTER) {
             this.addAndClose();
             return true;
         }
