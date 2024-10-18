@@ -64,11 +64,11 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
             true
     ).visibleCondition(() -> this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode);
 
-    public final BooleanValue resetSpeedOnDeactivate = new BooleanValue(
+    public final BooleanValue stopMotionOnDeactivate = new BooleanValue(
             this,
-            "Reset Speed On Deactivate",
-            "Resets the speed on deactivate.",
-            true
+            "Stop Motion On Deactivate",
+            "Stops the motion on deactivate.",
+            false
     );
 
     public FlightModule() {
@@ -90,7 +90,7 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
         this.flownDistance = 0.0;
 
-        if (this.resetSpeedOnDeactivate.getValue() && mc.player != null) {
+        if (this.stopMotionOnDeactivate.getValue() && mc.player != null) {
             mc.player.setVelocity(Vec3d.ZERO);
             MovementUtil.setSpeed(MovementUtil.getBaseSpeed());
         }
