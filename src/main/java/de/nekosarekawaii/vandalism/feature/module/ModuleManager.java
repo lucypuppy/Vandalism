@@ -218,7 +218,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new DerpModule(),
                 new UseItemSpammerModule(),
                 new TriggerBotModule(),
-                new AutoDisconnectModule()
+                new AutoDisconnectModule(),
+                new TeamsModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
