@@ -36,7 +36,7 @@ public class TeamsModule extends Module implements TargetListener {
 
     @Override
     protected void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, TargetEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, TargetEvent.ID);
     }
 
     @Override
