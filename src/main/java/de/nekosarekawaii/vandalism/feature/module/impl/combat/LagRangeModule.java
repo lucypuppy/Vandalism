@@ -22,21 +22,30 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.TimeTravelListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
-import de.nekosarekawaii.vandalism.util.Prediction;
-import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.PacketHelper;
+import de.nekosarekawaii.vandalism.util.PredictionSystem;
 import lombok.Getter;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3d;
 
-public class LagRangeModule extends Module implements TimeTravelListener, PlayerUpdateListener {
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class LagRangeModule extends Module implements TimeTravelListener, PlayerUpdateListener, IncomingPacketListener, OutgoingPacketListener {
 
     private final IntegerValue tickLimit = new IntegerValue(this, "Tick Limit", "The maximum amount of ticks you can charge.", 3, 1, 10);
 
     private final IntegerValue ticksToWait = new IntegerValue(this, "Ticks to wait", "Ticks to wait before being able to charge again.", 10, 0, 20);
+
+    private final BooleanValue delayIncoming = new BooleanValue(this, "Delay Incoming", "Delays incoming packets too.", false);
 
     private final BooleanValue onlyOnGround = new BooleanValue(this, "Only On Ground", "Only charge when you are on the ground.", false);
 
@@ -45,6 +54,10 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
     private State state = State.IDLE;
     private long shifted, prevShifted;
     private boolean canShift;
+
+    private final ConcurrentLinkedQueue<DelayedPacket> packets = new ConcurrentLinkedQueue<>();
+
+    private KillAuraModule killAuraModule;
 
     @Getter
     private boolean stopAttack, prevStopAttack;
@@ -67,12 +80,13 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
     @Override
     protected void onActivate() {
         this.reset();
-        Vandalism.getInstance().getEventSystem().subscribe(this, TimeTravelEvent.ID, PlayerUpdateEvent.ID);
+        this.killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
+        Vandalism.getInstance().getEventSystem().subscribe(this, TimeTravelEvent.ID, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, OutgoingPacketEvent.ID);
     }
 
     @Override
     protected void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, TimeTravelEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, TimeTravelEvent.ID, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, OutgoingPacketEvent.ID);
         this.reset();
     }
 
@@ -87,8 +101,7 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
             this.prevStopAttack = this.stopAttack;
         }
 
-        final KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
-        if (killAuraModule.isActive() && killAuraModule.getTarget() instanceof final LivingEntity target) {
+        if (this.killAuraModule.isActive() && this.killAuraModule.getTarget() instanceof final PlayerEntity target) {
             this.dynamicShit(target);
         }
 
@@ -110,6 +123,7 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
             case UNCHARGING -> {
                 if (this.shifted > 0) {
                     this.shifted = 0;
+                    sendPackets();
                 } else {
                     this.state = State.IDLE;
                 }
@@ -124,9 +138,30 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
-        if (this.state == State.IDLE && killAuraModule.getTarget() != null) {
+        if (this.state == State.IDLE && this.killAuraModule.getTarget() != null) {
             this.ticksWaited++;
+        }
+    }
+
+    @Override
+    public void onIncomingPacket(IncomingPacketEvent event) {
+        synchronized (packets) {
+            if (mc.player == null || mc.world == null || event.isCancelled() || this.state != State.CHARGING || !this.delayIncoming.getValue()) {
+                return;
+            }
+            packets.add(new DelayedPacket(event.packet, DelayedPacket.Direction.INCOMING));
+            event.cancel();
+        }
+    }
+
+    @Override
+    public void onOutgoingPacket(OutgoingPacketEvent event) {
+        synchronized (packets) {
+            if (mc.player == null || mc.world == null || event.isCancelled() || this.state != State.CHARGING) {
+                return;
+            }
+            packets.add(new DelayedPacket(event.packet, DelayedPacket.Direction.OUTGOING));
+            event.cancel();
         }
     }
 
@@ -140,29 +175,48 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
         return (int) (this.shifted / ((RenderTickCounter.Dynamic) mc.getRenderTickCounter()).tickTime);
     }
 
-    private void dynamicShit(final LivingEntity target) {
+    private void dynamicShit(final PlayerEntity target) {
         for (int i = 2; i <= this.tickLimit.getValue(); i++) {
             this.limit = (float) (i + (int) (Math.random() * 1.55f));
 
-            final LivingEntity predictedTarget = Prediction.predictEntityMovement(target, (int) this.limit, true, false);
-            final LivingEntity currentPredictedTarget = Prediction.predictEntityMovement(target, getCharge(), true, false);
+            final Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPair = PredictionSystem.predictState((int) this.limit, target);
+            final ClientPlayerEntity predictedTarget = predictedPair.getLeft();
+            final ClientPlayerEntity predictedPlayer = PredictionSystem.predictState((int) this.limit).getLeft();
 
-            final LivingEntity predictedPlayer = Prediction.predictEntityMovement(mc.player, (int) this.limit, true, false);
-            final Vec3d targetBHV = new IcarusBHV().generateHitPoint(predictedTarget);
-            final double playerRange = WorldUtil.calculateRange(predictedPlayer.getEyePos(), targetBHV);
+            final Vec3d targetBHV = this.killAuraModule.hitPoint;
+            final double playerRange = predictedPlayer.getEyePos().distanceTo(targetBHV);
 
-            final Vec3d playerBHV = new IcarusBHV().generateHitPoint(predictedPlayer);
-            final double targetRange = WorldUtil.calculateRange(predictedTarget.getEyePos(), playerBHV);
+            final Vec3d playerBHV = this.killAuraModule.points.generateHitPoint(predictedPlayer);
+            final double targetRange = predictedTarget.getEyePos().distanceTo(playerBHV);
 
-            final Vec3d currentPlayerBHV = new IcarusBHV().generateHitPoint(mc.player);
-            final double currentTargetRange = WorldUtil.calculateRange(currentPredictedTarget.getEyePos(), currentPlayerBHV);
-
-            final boolean inRange = playerRange <= 3 && playerRange > 0 && (targetRange > 3 && currentTargetRange > 3);
+            final boolean inRange = playerRange <= 3 && playerRange > 0 && targetRange > 3;
 
             if (inRange && this.ticksWaited >= this.ticksToWait.getValue() && mc.player.hurtTime - this.limit <= 7 && (!this.onlyOnGround.getValue() || mc.player.isOnGround())) {
                 this.canShift = true;
                 break;
             }
+        }
+    }
+
+    private void sendPackets() {
+        synchronized (packets) {
+            packets.removeIf(packet -> {
+                mc.renderTaskQueue.add(() -> {
+                    if (packet.direction == DelayedPacket.Direction.INCOMING && delayIncoming.getValue()) {
+                        PacketHelper.receivePacket(packet.packet);
+                    } else if (packet.direction == DelayedPacket.Direction.OUTGOING) {
+                        PacketHelper.sendImmediately(packet.packet, null, true);
+                    }
+                });
+                return true;
+            });
+        }
+    }
+
+    private record DelayedPacket(Packet<?> packet, DelayedPacket.Direction direction) {
+        private enum Direction {
+            INCOMING,
+            OUTGOING
         }
     }
 
