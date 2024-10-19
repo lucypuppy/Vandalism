@@ -31,6 +31,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class VisualSettings extends ValueGroup {
 
+    // Danke an Holo und Bejoncé für alles <3
     private final FloatValue windowOpacity = new FloatValue(
             this,
             "Window Opacity",
