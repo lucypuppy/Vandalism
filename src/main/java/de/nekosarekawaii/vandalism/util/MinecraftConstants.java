@@ -30,5 +30,7 @@ public class MinecraftConstants {
     public static final int LAST_SLOT_IN_HOTBAR = 44;
 
     public static final String TEXTURE_ENDPOINT = "textures.minecraft.net";
+    public static final String UUID_ENDPOINT = "https://api.mojang.com/users/profiles/minecraft/";
+    public static final String PLAYER_ENDPOINT = "https://sessionserver.mojang.com/session/minecraft/profile/";
 
 }
