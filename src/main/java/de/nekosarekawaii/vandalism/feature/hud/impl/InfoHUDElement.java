@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
@@ -73,6 +74,20 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             "Shadow",
             "Whether or not the text should have a shadow.",
             true
+    );
+
+    private final StringValue leftSeparator = new StringValue(
+            this,
+            "Left Separator",
+            "The left Seperator between the info name and value.",
+            "»"
+    );
+
+    private final StringValue rightSeparator = new StringValue(
+            this,
+            "Right Separator",
+            "The right Seperator between the info name and value.",
+            "«"
     );
 
     private final ColorValue infoNameColor = new ColorValue(
@@ -405,7 +420,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         case LEFT -> {
                             text = Text.empty()
                                     .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                    .append(Text.literal(" » ").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
+                                    .append(Text.literal(String.format(" %s ", leftSeparator.getValue())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
                                     .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.infoValueColor.getColor().getRGB())));
                             this.getTextSize(text, sizeVec);
                             textWidth = (int) sizeVec.x;
@@ -415,7 +430,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         case RIGHT -> {
                             text = Text.empty()
                                     .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                    .append(Text.literal(" « ").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
+                                    .append(Text.literal(String.format(" %s ", rightSeparator.getValue())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
                                     .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.infoValueColor.getColor().getRGB())));
                             this.getTextSize(text, sizeVec);
                             textWidth = (int) sizeVec.x;
