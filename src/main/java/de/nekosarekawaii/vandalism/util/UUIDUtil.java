@@ -29,7 +29,7 @@ public class UUIDUtil {
 
     public static String getUUIDFromName(final String name) throws Exception {
         final HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.mojang.com/users/profiles/minecraft/" + name))
+                .uri(URI.create(MinecraftConstants.UUID_ENDPOINT + name))
                 .GET()
                 .build();
         final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());

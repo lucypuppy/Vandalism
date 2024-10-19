@@ -100,7 +100,8 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new CreateEntitySpawnEggCommand(),
                 new CrashSkullCommand(),
                 new KaboomKickCommand(),
-                new PlaceholdersCommand()
+                new PlaceholdersCommand(),
+                new SkullCommand()
         );
 
         // This should always be the last command
