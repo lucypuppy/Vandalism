@@ -78,7 +78,6 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
     private Vec3d posVec = null;
     private Direction direction = null;
     private PrioritizedRotation rotation = null;
-    private AutoSprintModule autoSprintModule;
     private PrioritizedRotation prevRotation;
 
     public ScaffoldModule() {
@@ -89,7 +88,6 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
-        this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
         if (mc.player != null) {
             this.prevRotation = new PrioritizedRotation(mc.player.prevYaw, mc.player.prevPitch, RotationPriority.NORMAL);
         }
@@ -141,54 +139,14 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 
     @Override
     public void onRotation(final RotationEvent event) {
-        if (this.pos != null) {
-            this.rotation = rotation(this.pos);
-
-            if (this.rotation == null) {
-                return;
-            }
-
+        if (this.posVec != null) {
+            this.rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.NORMAL);
             prevRotation = rotation;
+
             Vandalism.getInstance().getRotationManager().setRotation(this.rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
         }
     }
-
-//    private Pair<Vec3d, BlockPos> getPlaceBlock(int scanRange) {
-//        double distance = -1;
-//        Pair<Vec3d, BlockPos> theChosenOne = null;
-//
-//        for (int x = -scanRange; x < scanRange; x++) {
-//            for (int y = -scanRange; y < 0; y++) {
-//                for (int z = -scanRange; z < scanRange; z++) {
-//                    final BlockPos pos = mc.player.getBlockPos().add(x, y, z);
-//                    final BlockState state = mc.world.getBlockState(pos);
-//
-//                    if (!state.isSolidBlock(mc.world, pos)) {
-//                        continue;
-//                    }
-//
-//                    final VoxelShape shape = state.getCollisionShape(mc.world, pos);
-//                    final Box box = shape.getBoundingBox().offset(pos);
-//
-//                    // Best hit vector for scaffold mu haha
-//                    final double nearestX = MathHelper.clamp(mc.player.getX(), box.minX, box.maxX);
-//                    final double nearestY = MathHelper.clamp(mc.player.getY(), box.minY, box.maxY);
-//                    final double nearestZ = MathHelper.clamp(mc.player.getZ(), box.minZ, box.maxZ);
-//
-//                    final Vec3d nearestPoint = new Vec3d(nearestX, nearestY, nearestZ);
-//                    final double currentDistance = mc.player.getPos().distanceTo(nearestPoint);
-//
-//                    if (distance == -1 || currentDistance < distance) {
-//                        distance = currentDistance;
-//                        theChosenOne = new Pair<>(nearestPoint, pos);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return theChosenOne;
-//    }
 
     private Pair<Vec3d, BlockPos> getPlaceBlock(final int scanRange) {
         double distance = -1;
@@ -223,26 +181,6 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
         }
 
         return theChosenOne;
-    }
-
-    private PrioritizedRotation rotation(final BlockPos blockPos) {
-        PrioritizedRotation rotation = null;
-
-        for (int yaw = -45; yaw <= 45; yaw++) {
-            for (int pitch = 0; pitch <= 90; pitch++) {
-                final PrioritizedRotation currentRotation = new PrioritizedRotation(mc.player.getYaw() - (180 + yaw), pitch, RotationPriority.NORMAL);
-                final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(currentRotation, mc.player.getBlockInteractionRange());
-
-                if (raycastBlocks.getSide() != this.direction || !raycastBlocks.getBlockPos().equals(blockPos)) {
-                    continue;
-                }
-
-                rotation = currentRotation;
-            }
-        }
-
-        return rotation;
-
     }
 
     public static Direction getDirection(final Vec3d playerPos, final BlockPos blockpos) {
