@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.game.HandleInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
@@ -36,7 +37,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 
-public class ScaffoldModule extends Module implements PlayerUpdateListener, RotationListener {
+public class ScaffoldModule extends Module implements PlayerUpdateListener, RotationListener, HandleInputListener {
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -87,7 +88,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID, HandleInputEvent.ID);
         if (mc.player != null) {
             this.prevRotation = new PrioritizedRotation(mc.player.prevYaw, mc.player.prevPitch, RotationPriority.NORMAL);
         }
@@ -95,13 +96,16 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
-        Vandalism.getInstance().getRotationManager().resetRotation();
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID, HandleInputEvent.ID);
+        Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGHEST);
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.mc.player.setSprinting(this.allowSprint.getValue());
+    }
+
+    @Override
+    public void onHandleInputEvent(HandleInputEvent event) {
         final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock((int) Math.round(mc.player.getBlockInteractionRange()));
 
         if (placeBlock == null) {
@@ -140,7 +144,7 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
     @Override
     public void onRotation(final RotationEvent event) {
         if (this.posVec != null) {
-            this.rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.NORMAL);
+            this.rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.HIGHEST);
             prevRotation = rotation;
 
             Vandalism.getInstance().getRotationManager().setRotation(this.rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
