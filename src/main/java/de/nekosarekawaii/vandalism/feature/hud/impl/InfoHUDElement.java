@@ -76,14 +76,14 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
-    private final StringValue separator_l = new StringValue(
+    private final StringValue leftSeparator = new StringValue(
             this,
             "Left Separator",
             "The left Seperator between the info name and value.",
             "»"
     );
 
-    private final StringValue separator_r = new StringValue(
+    private final StringValue rightSeparator = new StringValue(
             this,
             "Right Separator",
             "The right Seperator between the info name and value.",
@@ -420,7 +420,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         case LEFT -> {
                             text = Text.empty()
                                     .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                    .append(Text.literal(String.format(" %s ", separator_l.getValue())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
+                                    .append(Text.literal(String.format(" %s ", leftSeparator.getValue())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
                                     .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.infoValueColor.getColor().getRGB())));
                             this.getTextSize(text, sizeVec);
                             textWidth = (int) sizeVec.x;
@@ -430,7 +430,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         case RIGHT -> {
                             text = Text.empty()
                                     .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                    .append(Text.literal(String.format(" %s ", separator_r.getValue())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
+                                    .append(Text.literal(String.format(" %s ", rightSeparator.getValue())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
                                     .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.infoValueColor.getColor().getRGB())));
                             this.getTextSize(text, sizeVec);
                             textWidth = (int) sizeVec.x;
