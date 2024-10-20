@@ -18,7 +18,8 @@ Alternatively you can run ``scripts/install_wurst.bat`` or ``scripts/install_wur
 ## Guidelines
 
 ### How to name commits
-- Untested changes should be marked with ``ut: `` to indicate that.
+
+- Untested changes should be marked with ``ut: `` to indicate that. <!--- Fr fr $$ -->
 - Prevent spamming commits, if you make mistakes inside a commit, and it's still latest up, rebase:
   - ``git reset HEAD~1``
   - ``Make your fixed changes``
