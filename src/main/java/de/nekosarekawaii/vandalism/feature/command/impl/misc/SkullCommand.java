@@ -18,12 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.Command;
@@ -34,16 +29,10 @@ import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.Optional;
 import java.util.UUID;
 
 public class SkullCommand extends Command {
-
-    private static final Gson GSON = new Gson();
 
     public SkullCommand() {
         super("Gives you a player head.", Category.EXPLOIT, "skull", "head");
@@ -59,7 +48,6 @@ public class SkullCommand extends Command {
             }
             new Thread(() -> {
                 final ItemStack itemStack = new ItemStack(Items.PLAYER_HEAD);
-                final PropertyMap properties = new PropertyMap();
                 final UUID uuid;
                 try {
                     uuid = UUID.fromString(UUIDUtil.getUUIDFromName(username));
@@ -67,31 +55,11 @@ public class SkullCommand extends Command {
                     ChatUtil.errorChatMessage("An error occurred while trying to get the UUID of the player.");
                     return;
                 }
-                try (final HttpClient client = HttpClient.newHttpClient()) {
-                    final HttpRequest request = HttpRequest.newBuilder().uri(URI.create(MinecraftConstants.PLAYER_ENDPOINT + uuid)).build();
-                    final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                    final String responseBody = response.body();
-                    final JsonObject jsonObject = GSON.fromJson(responseBody, JsonObject.class);
-                    final JsonArray propertiesArray = jsonObject.getAsJsonArray("properties");
-                    String texturesValue = null;
-                    for (final JsonElement element : propertiesArray) {
-                        final JsonObject property = element.getAsJsonObject();
-                        if (property.has("name")) {
-                            if ("textures".equals(property.get("name").getAsString()) && property.has("value")) {
-                                texturesValue = property.get("value").getAsString();
-                                break;
-                            }
-                        }
-                    }
-                    if (texturesValue != null) {
-                        final Property texturesProperty = new Property("textures", texturesValue);
-                        properties.put("textures", texturesProperty);
-                        itemStack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of(username), Optional.of(uuid), properties));
-                        ItemStackUtil.giveItemStack(itemStack, true);
-                    } else {
-                        ChatUtil.errorChatMessage("An error occurred while trying to get the player head textures value.");
-                    }
-                } catch (final Exception ignored) {
+                final ProfileResult profileResult = this.mc.sessionService.fetchProfile(uuid, true);
+                if (profileResult != null) {
+                    itemStack.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of(username), Optional.of(uuid), profileResult.profile().getProperties()));
+                    ItemStackUtil.giveItemStack(itemStack, true);
+                } else {
                     ChatUtil.errorChatMessage("An error occurred while trying to get the player data.");
                 }
             }).start();
