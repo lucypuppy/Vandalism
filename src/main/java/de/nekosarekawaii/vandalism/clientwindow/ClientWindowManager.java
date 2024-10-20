@@ -76,7 +76,8 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
                 new PortScannerClientWindow(),
                 new ServerAddressResolverClientWindow(),
                 new PlayerKickerClientWindow(),
-                new NameHistoryClientWindow()
+                new NameHistoryClientWindow(),
+                new FritzBoxClientWindow()
         );
     }
 
