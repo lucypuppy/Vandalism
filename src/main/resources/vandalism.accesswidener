@@ -44,6 +44,9 @@ accessible	class	net/minecraft/client/render/BackgroundRenderer$StatusEffectFogM
 accessible method net/minecraft/client/network/ClientPlayerEntity getPermissionLevel ()I
 accessible field  net/minecraft/client/network/ClientPlayerEntity lastYaw F
 accessible field  net/minecraft/client/network/ClientPlayerEntity lastPitch F
+accessible method net/minecraft/client/network/ClientPlayerEntity canSprint ()Z
+accessible method net/minecraft/client/network/ClientPlayerEntity isWalking ()Z
+accessible method net/minecraft/client/network/ClientPlayerEntity canStartSprinting ()Z
 accessible method net/minecraft/client/MinecraftClient doItemUse ()V
 accessible method net/minecraft/client/render/block/entity/SignBlockEntityRenderer getColor (Lnet/minecraft/block/entity/SignText;)I
 accessible field net/minecraft/client/option/ServerList hiddenServers Ljava/util/List;
