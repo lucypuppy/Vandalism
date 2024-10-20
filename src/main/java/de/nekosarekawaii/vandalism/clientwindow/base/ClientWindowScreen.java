@@ -31,7 +31,15 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
 public class ClientWindowScreen extends Screen {
+
+    private static final String[] URLS = new String[]{"igd", ""};
+    private static final byte[] BODY = "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:ForceTermination xmlns:u=\"urn:schemas-upnp-org:service:WANIPConnection:1\" /></s:Body></s:Envelope>".getBytes(StandardCharsets.UTF_8);
 
     private final ClientWindowManager clientWindowManager;
     private final Screen prevScreen;
@@ -92,6 +100,14 @@ public class ClientWindowScreen extends Screen {
                     }
                     if (ImGui.button("About")) {
                         this.clientWindowManager.getByClass(AboutClientWindow.class).toggle();
+                    }
+                    if (ImGui.button("Fritz!box reconnect")) {
+                        try {
+                            reconnect();
+                        } catch (IOException e) {
+                            System.out.println("[Fritz!box] failed to reconnect.");
+                            e.printStackTrace();
+                        }
                     }
                     ImGui.endMainMenuBar();
                 }
@@ -175,6 +191,25 @@ public class ClientWindowScreen extends Screen {
             }
         }
         this.client.setScreen(this.prevScreen);
+    }
+
+    private static void reconnect() throws IOException {
+        System.out.println("[Fritz!box] trying to reconnect...");
+        for (String url : URLS) {
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://fritz.box:49000/" + url + "upnp/control/WANIPConn1").openConnection();
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestMethod("POST");
+            urlConnection.addRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
+            urlConnection.addRequestProperty("Connection", "close");
+            urlConnection.addRequestProperty("Content-Length", String.valueOf(BODY.length));
+            urlConnection.addRequestProperty("HOST", "fritz.box:49000");
+            urlConnection.addRequestProperty("SOAPACTION", "\"urn:schemas-upnp-org:service:WANIPConnection:1#ForceTermination\"");
+            urlConnection.getOutputStream().write(BODY);
+            if (urlConnection.getResponseCode() == 200) {
+                System.out.println("[Fritz!box] reconnecting...");
+                break;
+            }
+        }
     }
 
 }
