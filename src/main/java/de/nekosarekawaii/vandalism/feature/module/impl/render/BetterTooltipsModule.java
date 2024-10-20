@@ -42,7 +42,6 @@ import net.minecraft.item.tooltip.TooltipData;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
-import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.text.Style;
@@ -175,25 +174,29 @@ public class BetterTooltipsModule extends Module implements TooltipDrawListener,
             }
 
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+            boolean hasData = false;
 
             if (containerData != null) {
                 containerData.copyTo(itemStacks);
+                hasData = true;
             } else {
                 final NbtCompound nbtComponent = blockEntityData.copyNbt();
 
                 if (nbtComponent.contains("Items")) {
-                    Inventories.readNbt(nbtComponent, itemStacks, BuiltinRegistries.createWrapperLookup());
+                    Inventories.readNbt(nbtComponent, itemStacks, mc.world.getRegistryManager());
+                    hasData = true;
                 } else if (nbtComponent.contains("RecordItem")) {
-                    ItemStack.fromNbt(BuiltinRegistries.createWrapperLookup(), nbtComponent.getCompound("RecordItem"))
+                    ItemStack.fromNbt(mc.world.getRegistryManager(), nbtComponent.getCompound("RecordItem"))
                             .ifPresent(stack -> {
                                 if (!stack.isEmpty()) {
                                     itemStacks.set(0, stack);
                                 }
                             });
+                    hasData = true;
                 }
             }
 
-            if (!itemStacks.isEmpty()) {
+            if (hasData) {
                 tooltipData.add(new TextTooltipComponent(
                         Text.literal(
                                 "(Press " + InputType.getName(this.openContainerKey.getValue()) + " to open this inventory)"
