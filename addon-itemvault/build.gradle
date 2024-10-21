@@ -1,0 +1,18 @@
+plugins {
+    id "vandalism.addon-conventions"
+}
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    File file = BinaryExt.includeMod(rootProject, "ItemVault")
+    if (file != null) {
+        modImplementation files(file)
+    }
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/" + maven_name.toLowerCase() + "-itemvault.accesswidener")
+}

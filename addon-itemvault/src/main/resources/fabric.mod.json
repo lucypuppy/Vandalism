@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "vandalism-itemvault",
+  "version": "${version}",
+  "name": "Vandalism-Item-Vault",
+  "description": "Implementation of the Item Vault.",
+  "authors": [
+    "NekosAreKawaii",
+    "Verschlxfene"
+  ],
+  "license": "GPL-v3",
+  "environment": "client",
+  "entrypoints": {
+    "vandalism:onLaunch": [
+      "de.nekosarekawaii.vandalism.addonitemvault.AddonItemVault"
+    ]
+  },
+  "accessWidener": "vandalism-itemvault.accesswidener",
+  "depends": {
+    "vandalism": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "vandalism"
+    }
+  }
+}
