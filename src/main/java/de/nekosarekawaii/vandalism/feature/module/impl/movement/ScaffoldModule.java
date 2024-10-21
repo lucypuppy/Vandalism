@@ -200,7 +200,7 @@ public class ScaffoldModule extends Module implements RotationListener, HandleIn
                 continue;
             }
 
-            final Box box = faceShape.getBoundingBox().shrink(0.0, 0.3, 0.0);
+            final Box box = faceShape.getBoundingBox().offset(0, -0.1, 0); // Todo find a good way to get the best offset.
             final double x = MathHelper.clamp(eyePos.getX(), box.minX, box.maxX);
             final double y = MathHelper.clamp(eyePos.getY(), box.minY, box.maxY);
             final double z = MathHelper.clamp(eyePos.getZ(), box.minZ, box.maxZ);
