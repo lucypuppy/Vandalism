@@ -11,6 +11,7 @@ includeBuild "build-logic"
 
 setupBinaryProject("addon-wurst", "Wurst")
 setupBinaryProject("addon-baritone", "baritone")
+setupBinaryProject("addon-itemvault", "ItemVault")
 
 void setupBinaryProject(String projectName, String fileMarker) {
     File buildOutput = new File(rootProject.projectDir, "binaries")
