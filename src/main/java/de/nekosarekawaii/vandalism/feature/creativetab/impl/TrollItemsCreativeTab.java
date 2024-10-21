@@ -53,10 +53,10 @@ public class TrollItemsCreativeTab extends CreativeTab {
     public void exposeItems(final List<ItemStack> items) {
         final List<Item> potionTypes = Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
         for (final Item item : potionTypes) {
-            items.add(withClientSide(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
+            items.add(withClientSide(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll " + item.getName().getString())));
         }
         for (final Item item : potionTypes) {
-            items.add(withClientSide(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
+            items.add(withClientSide(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill " + item.getName().getString())));
         }
         items.add(withClientSide(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
         items.add(withClientSide(createWhiteHole(), Text.literal(Formatting.WHITE + "White Hole")));
@@ -323,8 +323,8 @@ public class TrollItemsCreativeTab extends CreativeTab {
         blockEntityData.putString("id", "minecraft:command_block");
         blockEntityData.putDouble(UUID.randomUUID().toString(), Double.NaN);
         final StringBuilder hacked = new StringBuilder(), toAdd = new StringBuilder();
-        for (int i = 0; i < (kick ? 5 : 8); i++) toAdd.append(' ').append(toAdd);
-        for (int i = 0; i < (kick ? 900 : 2000); i++) hacked.append(kick ? "§c§l" : "").append(toAdd);
+        for (int i = 0; i < (kick ? 5 : 15); i++) toAdd.append(' ').append(toAdd);
+        for (int i = 0; i < (kick ? 900 : 1000); i++) hacked.append(kick ? "§c§l" : "").append(toAdd);
         blockEntityData.putString("z", hacked.toString());
         item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityData));
         return item;
