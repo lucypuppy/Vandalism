@@ -31,6 +31,14 @@ import java.util.function.Consumer;
 public interface VandalismAddonLauncher {
 
     /**
+     * Launches the addon before Vandalism has been initialized.
+     *
+     * @param vandalism The Vandalism instance.
+     */
+    default void onPreLaunch(final Vandalism vandalism) {
+    }
+
+    /**
      * Launches the addon after Vandalism has been initialized and before the config files are loaded.
      *
      * @param vandalism The Vandalism instance.
@@ -58,7 +66,7 @@ public interface VandalismAddonLauncher {
 
     default Feature.Category createFeatureCategory(final String name) {
         final Feature.Category category = Enums.newInstance(Feature.Category.class, name.toUpperCase(), Feature.Category.values().length,
-                new Class[]{ String.class }, new Object[]{ name });
+                new Class[]{String.class}, new Object[]{name});
         Enums.addEnumInstance(Feature.Category.class, category);
 
         return category;

@@ -68,6 +68,7 @@ public class FabricBootstrap implements ClientModInitializer {
         );
         SoundHooks.register();
         CreativeTabManager.getInstance().init();
+        VandalismAddonLauncher.call(addon -> addon.onPreLaunch(Vandalism.getInstance()));
     }
 
 }
