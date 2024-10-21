@@ -30,14 +30,16 @@ import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 
 public class ScaffoldModule extends Module implements RotationListener, HandleInputListener, Render3DListener {
@@ -180,40 +182,19 @@ public class ScaffoldModule extends Module implements RotationListener, HandleIn
 
     private Vec3d bestVecFromBlock(final BlockPos blockPos) {
         final BlockState state = mc.world.getBlockState(blockPos);
-        final VoxelShape shape = state.getCollisionShape(mc.world, blockPos, ShapeContext.of(mc.player));
+        final VoxelShape shape = state.getCollisionShape(mc.world, blockPos);
 
         if (shape.isEmpty()) {
             return null;
         }
 
         final Vec3d eyePos = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        final Box box = shape.getBoundingBox().offset(blockPos.getX(), blockPos.getY() - 0.1, blockPos.getZ()); // Todo find a good way to get the best offset.
+        final double x = MathHelper.clamp(eyePos.getX(), box.minX, box.maxX);
+        final double y = MathHelper.clamp(eyePos.getY(), box.minY, box.maxY);
+        final double z = MathHelper.clamp(eyePos.getZ(), box.minZ, box.maxZ);
 
-        Vec3d closestPoint = null;
-        double distance = Double.MAX_VALUE;
-        for (final Direction direction : Direction.values()) {
-            if (direction == Direction.DOWN) { // Continue if the direction is down
-                continue;
-            }
-
-            final VoxelShape faceShape = shape.getFace(direction).offset(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            if (faceShape.isEmpty()) {
-                continue;
-            }
-
-            final Box box = faceShape.getBoundingBox().offset(0, -0.1, 0); // Todo find a good way to get the best offset.
-            final double x = MathHelper.clamp(eyePos.getX(), box.minX, box.maxX);
-            final double y = MathHelper.clamp(eyePos.getY(), box.minY, box.maxY);
-            final double z = MathHelper.clamp(eyePos.getZ(), box.minZ, box.maxZ);
-            final Vec3d vec = new Vec3d(x, y, z);
-            final double dist = eyePos.squaredDistanceTo(vec);
-
-            if (dist < distance) {
-                distance = dist;
-                closestPoint = vec;
-            }
-        }
-
-        return closestPoint;
+        return new Vec3d(x, y, z);
     }
 
 }
