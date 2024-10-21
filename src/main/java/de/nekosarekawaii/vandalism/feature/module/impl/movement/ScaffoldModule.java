@@ -23,21 +23,24 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.HandleInputListener;
-import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
+import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.WorldUtil;
-import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Pair;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 
-public class ScaffoldModule extends Module implements PlayerUpdateListener, RotationListener, HandleInputListener {
+public class ScaffoldModule extends Module implements RotationListener, HandleInputListener, Render3DListener {
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -61,25 +64,8 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
             true
     );
 
-    public BooleanValue allowSprint = new BooleanValue(
-            this,
-            "Allow Sprint",
-            "Allows you to sprint while scaffolding.",
-            false
-    );
-
-    private BooleanValue fastBridge = new BooleanValue(
-            this,
-            "Fast Bridge",
-            "Sneaks when placing.",
-            false
-    );
-
-    private BlockPos pos = null;
     private Vec3d posVec = null;
-    private Direction direction = null;
-    private PrioritizedRotation rotation = null;
-    private PrioritizedRotation prevRotation;
+    private BlockPos placeBlock = null;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
@@ -88,115 +74,146 @@ public class ScaffoldModule extends Module implements PlayerUpdateListener, Rota
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID, HandleInputEvent.ID);
-        if (mc.player != null) {
-            this.prevRotation = new PrioritizedRotation(mc.player.prevYaw, mc.player.prevPitch, RotationPriority.NORMAL);
-        }
+        Vandalism.getInstance().getEventSystem().subscribe(this, RotationEvent.ID, HandleInputEvent.ID, Render3DEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID, HandleInputEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, RotationEvent.ID, HandleInputEvent.ID, Render3DEvent.ID);
         Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGHEST);
     }
 
-    @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-    }
 
     @Override
     public void onHandleInputEvent(HandleInputEvent event) {
-        final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock((int) Math.round(mc.player.getBlockInteractionRange()));
+        final BlockPos playerPos = mc.player.getBlockPos();
 
-        if (placeBlock == null) {
+        this.placeBlock = getPlaceBlock(playerPos, (int) Math.round(mc.player.getBlockInteractionRange()));
+        if (this.placeBlock == null) {
             return;
         }
 
-        this.posVec = placeBlock.getLeft();
-        this.pos = placeBlock.getRight();
-
-        if (this.pos == null) {
+        this.posVec = bestVecFromBlock(this.placeBlock);
+        if (this.posVec == null) {
             return;
         }
 
-        this.direction = getDirection(mc.player.getPos(), pos);
-
-        if (this.direction == null || Vandalism.getInstance().getRotationManager().getClientRotation() == null) {
-            return;
-        }
-
-        final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(Vandalism.getInstance().getRotationManager().getClientRotation(), mc.player.getBlockInteractionRange());
-        if (raycastBlocks.getBlockPos().equals(this.pos)) {
-            if (raycastBlocks.getSide() == this.direction || mc.options.jumpKey.isPressed()) {
-                if (fastBridge.getValue()) {
-                    mc.options.sneakKey.setPressed(true);
-                }
-
-                mc.doItemUse();
-
-            } else {
-                if (fastBridge.getValue())
-                    mc.options.sneakKey.setPressed(InputType.isPressed(this.mc.options.sneakKey.boundKey.getCode()));
-            }
-        }
+        mc.doItemUse();
     }
 
     @Override
     public void onRotation(final RotationEvent event) {
         if (this.posVec != null) {
-            this.rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.HIGHEST);
-            prevRotation = rotation;
+            final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.HIGHEST);
 
-            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
+            Vandalism.getInstance().getRotationManager().setRotation(rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
         }
     }
 
-    private Pair<Vec3d, BlockPos> getPlaceBlock(final int scanRange) {
-        double distance = -1;
-        Pair<Vec3d, BlockPos> theChosenOne = null;
+    @Override
+    public void onRender3D(float tickDelta, MatrixStack matrixStack) {
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEffectVertexConsumers();
+        final VertexConsumer vertexConsumer = immediate.getBuffer(RenderLayer.getLines());
+
+        final Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
+        matrixStack.push();
+        matrixStack.translate(vec.x, vec.y, vec.z);
+
+        if (this.placeBlock != null) {
+            WorldRenderer.drawBox(
+                    matrixStack,
+                    vertexConsumer,
+                    this.placeBlock.getX(),
+                    this.placeBlock.getY(),
+                    this.placeBlock.getZ(),
+                    this.placeBlock.getX() + 1,
+                    this.placeBlock.getY() + 1,
+                    this.placeBlock.getZ() + 1,
+                    1.0f, 0.0f, 0.0f, 0.3f
+            );
+        }
+
+        if (this.posVec != null) {
+            WorldRenderer.drawBox(
+                    matrixStack,
+                    vertexConsumer,
+                    this.posVec.getX() - 0.05,
+                    this.posVec.getY() - 0.05,
+                    this.posVec.getZ() - 0.05,
+                    this.posVec.getX() + 0.05,
+                    this.posVec.getY() + 0.05,
+                    this.posVec.getZ() + 0.05,
+                    0.0f, 1.0f, 0.0f, 1.0f
+            );
+        }
+
+        immediate.draw();
+        matrixStack.pop();
+    }
+
+    private BlockPos getPlaceBlock(final BlockPos pos, final int scanRange) {
+        double bestDistance = Double.MAX_VALUE;
+        BlockPos bestBlockPos = null;
 
         for (int x = -scanRange; x <= scanRange; x++) {
-            for (int y = -scanRange; y <= scanRange; y++) {
+            for (int y = -scanRange; y < 0; y++) {
                 for (int z = -scanRange; z <= scanRange; z++) {
-                    final BlockPos pos = mc.player.getBlockPos().add(x, y, z);
-                    final BlockState state = mc.world.getBlockState(pos);
+                    final BlockPos blockPos = pos.add(x, y, z);
+                    final BlockState blockState = mc.world.getBlockState(blockPos);
 
-                    if (!state.isSolidBlock(mc.world, pos)) {
+                    if (!blockState.isSolidBlock(mc.world, blockPos)) {
                         continue;
                     }
 
-                    final VoxelShape shape = state.getCollisionShape(mc.world, pos);
-                    final Box box = shape.getBoundingBox().offset(pos);
-
-                    final double nearestX = MathHelper.clamp(mc.player.getX(), box.minX, box.maxX);
-                    final double nearestY = MathHelper.clamp(mc.player.getY(), box.minY, box.maxY);
-                    final double nearestZ = MathHelper.clamp(mc.player.getZ(), box.minZ, box.maxZ);
-
-                    final Vec3d nearestPoint = new Vec3d(nearestX, nearestY, nearestZ);
-                    final double currentDistance = mc.player.getPos().distanceTo(nearestPoint);
-
-                    if (distance == -1 || currentDistance < distance) {
-                        distance = currentDistance;
-                        theChosenOne = new Pair<>(nearestPoint, pos);
+                    final double distance = pos.getSquaredDistance(blockPos);
+                    if (distance < bestDistance) {
+                        bestDistance = distance;
+                        bestBlockPos = blockPos;
                     }
                 }
             }
         }
 
-        return theChosenOne;
+        return bestBlockPos;
     }
 
-    public static Direction getDirection(final Vec3d playerPos, final BlockPos blockpos) {
-        final double dx = (blockpos.getX() + 0.5) - playerPos.x;
-        final double dz = (blockpos.getZ() + 0.5) - playerPos.z;
-        final double maxAxis = Math.max(Math.abs(dx), Math.abs(dz));
+    private Vec3d bestVecFromBlock(final BlockPos blockPos) {
+        final BlockState state = mc.world.getBlockState(blockPos);
+        final VoxelShape shape = state.getCollisionShape(mc.world, blockPos, ShapeContext.of(mc.player));
 
-        if (maxAxis == Math.abs(dx)) {
-            return dx > 0 ? Direction.WEST : Direction.EAST;
+        if (shape.isEmpty()) {
+            return null;
         }
 
-        return dz > 0 ? Direction.NORTH : Direction.SOUTH;
+        final Vec3d eyePos = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+
+        Vec3d closestPoint = null;
+        double distance = Double.MAX_VALUE;
+        for (final Direction direction : Direction.values()) {
+            if (direction == Direction.DOWN) { // Continue if the direction is down
+                continue;
+            }
+
+            final VoxelShape faceShape = shape.getFace(direction).offset(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            if (faceShape.isEmpty()) {
+                continue;
+            }
+
+            final Box box = faceShape.getBoundingBox().shrink(0.0, 0.3, 0.0);
+            final double x = MathHelper.clamp(eyePos.getX(), box.minX, box.maxX);
+            final double y = MathHelper.clamp(eyePos.getY(), box.minY, box.maxY);
+            final double z = MathHelper.clamp(eyePos.getZ(), box.minZ, box.maxZ);
+            final Vec3d vec = new Vec3d(x, y, z);
+            final double dist = eyePos.squaredDistanceTo(vec);
+
+            if (dist < distance) {
+                distance = dist;
+                closestPoint = vec;
+            }
+        }
+
+        return closestPoint;
     }
 
 }
