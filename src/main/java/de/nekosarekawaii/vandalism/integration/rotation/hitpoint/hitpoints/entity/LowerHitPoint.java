@@ -22,10 +22,10 @@ import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPoint;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
-public class IcarusBHV extends EntityHitPoint {
+public class LowerHitPoint extends EntityHitPoint {
 
-    public IcarusBHV() {
-        super("Best Hit Vector");
+    public LowerHitPoint() {
+        super("Lower");
     }
 
     @Override
@@ -50,7 +50,9 @@ public class IcarusBHV extends EntityHitPoint {
             y = eposY;
         }
 
+        // Aiming a bit lower will be improved
+        y -= entity.getHeight() / 3f;
+
         return new Vec3d(x, y, z);
     }
-
 }
