@@ -25,24 +25,33 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.HandleInputListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
-import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
+import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.util.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Pair;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 
-public class ScaffoldModule extends Module implements RotationListener, HandleInputListener, Render3DListener {
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class ScaffoldModule extends ClickerModule implements RotationListener, HandleInputListener, Render3DListener {
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -68,6 +77,8 @@ public class ScaffoldModule extends Module implements RotationListener, HandleIn
 
     private Vec3d posVec = null;
     private BlockPos placeBlock = null;
+    private int startSneakTicks = 0, stopSneakTicks, randomSneakTicks, randonUnsneakTicks;
+    private MSTimer timer = new MSTimer();
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
@@ -77,36 +88,113 @@ public class ScaffoldModule extends Module implements RotationListener, HandleIn
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, RotationEvent.ID, HandleInputEvent.ID, Render3DEvent.ID);
+        this.randomSneakTicks = RandomUtils.randomInt(4, 9);
+        this.randonUnsneakTicks = RandomUtils.randomInt(1, 4);
+
+        super.onActivate();
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, RotationEvent.ID, HandleInputEvent.ID, Render3DEvent.ID);
         Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGHEST);
-    }
 
+        super.onDeactivate();
+    }
 
     @Override
     public void onHandleInputEvent(HandleInputEvent event) {
-        final BlockPos playerPos = mc.player.getBlockPos();
+        final boolean onGround = mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR < 0.0001;
+        final Box playerBox = mc.player.getBoundingBox();
+        final Vec3d eyePos = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
 
-        this.placeBlock = getPlaceBlock(playerPos, (int) Math.round(mc.player.getBlockInteractionRange()));
+        if (MovementUtil.getSpeed() > 0.01 && onGround) {
+            if (this.stopSneakTicks > 0) {
+                this.stopSneakTicks--;
+
+                if (this.stopSneakTicks == 0) {
+                    this.randomSneakTicks = RandomUtils.randomInt(25, 38);
+                    mc.options.sneakKey.setPressed(false);
+                }
+            } else if (this.randomSneakTicks > 0) {
+                this.randomSneakTicks--;
+
+                if (this.randomSneakTicks == 0) {
+                    this.stopSneakTicks = RandomUtils.randomInt(1, 4);
+                    mc.options.sneakKey.setPressed(true);
+                }
+            }
+        }
+
+        Vec3d playerPos = mc.player.getPos();
+        BlockPos blockPlayerPos = mc.player.getBlockPos();
+
+        final Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPlayer = PredictionSystem.predictState(5, mc.player, null,
+                clientPlayerEntity -> false, clientPlayerEntity -> !clientPlayerEntity.isOnGround());
+
+        if (!predictedPlayer.getRight().isEmpty()) {
+            playerPos = predictedPlayer.getRight().getLast();
+            blockPlayerPos = predictedPlayer.getLeft().getBlockPos();
+        }
+
+        this.placeBlock = getPlaceBlock(playerPos, blockPlayerPos, (int) Math.round(mc.player.getBlockInteractionRange()));
         if (this.placeBlock == null) {
             return;
         }
 
-        this.posVec = bestVecFromBlock(this.placeBlock);
-        if (this.posVec == null) {
+        final BlockState state = mc.world.getBlockState(this.placeBlock);
+        final VoxelShape shape = state.getCollisionShape(mc.world, this.placeBlock);
+        if (shape.isEmpty()) {
             return;
         }
 
+        final Box box = shape.getBoundingBox().offset(this.placeBlock.getX(), this.placeBlock.getY(), this.placeBlock.getZ());
+        this.posVec = bestVecFromBlock(eyePos, box.offset(0, -0.1, 0)); // Todo maybe find a better offset.
+
+        final Rotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
+        if (rotation == null)
+            return;
+
+        final double threshold = 0.1;
+        final Box edgeBox = box.shrink(threshold, 0, threshold);
+        final boolean isOnEdge = !(edgeBox.minX < playerBox.maxX && edgeBox.maxX > playerBox.minX && edgeBox.minZ < playerBox.maxZ && edgeBox.maxZ > playerBox.minZ);
+
+        if (isOnEdge) {
+            mc.doItemUse();
+        }
+    }
+
+    @Override
+    public boolean shouldClick() {
+        return Vandalism.getInstance().getRotationManager().getClientRotation() != null && this.posVec != null && this.placeBlock != null;
+    }
+
+    @Override
+    public void onClick() {
         mc.doItemUse();
+    }
+
+    @Override
+    public void onFailClick() {
+        // Todo IDk maybe only swing.
     }
 
     @Override
     public void onRotation(final RotationEvent event) {
         if (this.posVec != null) {
             final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.HIGHEST);
+            final BlockHitResult rotationRaycast = WorldUtil.raytraceBlocks(rotation, mc.player.getBlockInteractionRange());
+            final Rotation clientRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
+
+            if (clientRotation != null) {
+                if (rotationRaycast != null) {
+                    final BlockHitResult clientRotationRaycast = WorldUtil.raytraceBlocks(clientRotation, mc.player.getBlockInteractionRange());
+
+                    if (clientRotationRaycast != null && rotationRaycast.getSide() == clientRotationRaycast.getSide()) {
+                        rotation.setPitch(clientRotation.getPitch());
+                    }
+                }
+            }
 
             Vandalism.getInstance().getRotationManager().setRotation(rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
@@ -154,42 +242,41 @@ public class ScaffoldModule extends Module implements RotationListener, HandleIn
         matrixStack.pop();
     }
 
-    private BlockPos getPlaceBlock(final BlockPos pos, final int scanRange) {
-        double bestDistance = Double.MAX_VALUE;
-        BlockPos bestBlockPos = null;
+    private BlockPos getPlaceBlock(final Vec3d playerPos, final BlockPos blockPlayerPos, final int scanRange) {
+        final List<BlockPos> possibilities = new ArrayList<>();
 
-        for (int x = -scanRange; x <= scanRange; x++) {
-            for (int y = -scanRange; y < 0; y++) {
-                for (int z = -scanRange; z <= scanRange; z++) {
-                    final BlockPos blockPos = pos.add(x, y, z);
-                    final BlockState blockState = mc.world.getBlockState(blockPos);
+        for (int x = -scanRange; x <= scanRange; ++x) {
+            for (int y = -scanRange; y <= scanRange; ++y) {
+                for (int z = -scanRange; z <= scanRange; ++z) {
+                    final BlockState block = mc.world.getBlockState(blockPlayerPos.add(x, y, z));
 
-                    if (!blockState.isSolidBlock(mc.world, blockPos)) {
-                        continue;
-                    }
+                    if (!block.isAir()) {
+                        for (int x2 = -1; x2 <= 1; x2 += 2)
+                            possibilities.add(blockPlayerPos.add(x + x2, y, z));
 
-                    final double distance = pos.getSquaredDistance(blockPos);
-                    if (distance < bestDistance) {
-                        bestDistance = distance;
-                        bestBlockPos = blockPos;
+                        for (int y2 = -1; y2 <= 1; y2 += 2)
+                            possibilities.add(blockPlayerPos.add(x, y + y2, z));
+
+                        for (int z2 = -1; z2 <= 1; z2 += 2)
+                            possibilities.add(blockPlayerPos.add(x, y, z + z2));
                     }
                 }
             }
         }
 
-        return bestBlockPos;
+        possibilities.removeIf(blockpos ->
+                Math.sqrt(playerPos.squaredDistanceTo(blockpos.getX(), blockpos.getY(), blockpos.getZ())) > 5 ||
+                        mc.world.getBlockState(blockpos).isAir() ||
+                        blockpos.getY() > playerPos.getY());
+
+        if (possibilities.isEmpty())
+            return null;
+
+        possibilities.sort(Comparator.comparingDouble(blockpos -> blockpos.getSquaredDistance(playerPos)));
+        return possibilities.getFirst();
     }
 
-    private Vec3d bestVecFromBlock(final BlockPos blockPos) {
-        final BlockState state = mc.world.getBlockState(blockPos);
-        final VoxelShape shape = state.getCollisionShape(mc.world, blockPos);
-
-        if (shape.isEmpty()) {
-            return null;
-        }
-
-        final Vec3d eyePos = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
-        final Box box = shape.getBoundingBox().offset(blockPos.getX(), blockPos.getY() - 0.1, blockPos.getZ()); // Todo find a good way to get the best offset.
+    private Vec3d bestVecFromBlock(final Vec3d eyePos, final Box box) {
         final double x = MathHelper.clamp(eyePos.getX(), box.minX, box.maxX);
         final double y = MathHelper.clamp(eyePos.getY(), box.minY, box.maxY);
         final double z = MathHelper.clamp(eyePos.getZ(), box.minZ, box.maxZ);
