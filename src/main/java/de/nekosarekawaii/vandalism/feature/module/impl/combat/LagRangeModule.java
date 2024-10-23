@@ -61,7 +61,7 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
 
     @Getter
     private boolean stopAttack, prevStopAttack;
-    private float limit = 0;
+    private int limit = 0;
     private int ticksWaited = 0;
 
     public LagRangeModule() {
@@ -102,7 +102,7 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
         }
 
         if (this.killAuraModule.isActive() && this.killAuraModule.getTarget() instanceof final PlayerEntity target) {
-            this.dynamicShit(target);
+            this.calculateTicks(target);
         }
 
         if (this.canShift) {
@@ -175,21 +175,46 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
         return (int) (this.shifted / ((RenderTickCounter.Dynamic) mc.getRenderTickCounter()).tickTime);
     }
 
-    private void dynamicShit(final PlayerEntity target) {
+//    private void dynamicShit(final PlayerEntity target) {
+//        for (int i = 2; i <= this.tickLimit.getValue(); i++) {
+//            this.limit = (float) (i + (int) (Math.random() * 1.55f));
+//
+//            final Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPair = PredictionSystem.predictState((int) this.limit, target);
+//            final ClientPlayerEntity predictedTarget = predictedPair.getLeft();
+//            final ClientPlayerEntity predictedPlayer = PredictionSystem.predictState((int) this.limit).getLeft();
+//
+//            final Vec3d targetBHV = this.killAuraModule.hitPoint;
+//            final double playerRange = predictedPlayer.getEyePos().distanceTo(targetBHV);
+//
+//            final Vec3d playerBHV = this.getHitPoint(predictedTarget, predictedPlayer);
+//            final double targetRange = predictedTarget.getEyePos().distanceTo(playerBHV);
+//
+//            final double currentTargetRange = PredictionSystem.predictState(this.getCharge(), target).getLeft().getEyePos().distanceTo(playerBHV);
+//
+//            final boolean inRange = playerRange <= 3 && playerRange > 0 && targetRange > 3 && currentTargetRange > 3;
+//
+//            if (inRange && this.ticksWaited >= this.ticksToWait.getValue() && mc.player.hurtTime - this.limit <= 7 && (!this.onlyOnGround.getValue() || mc.player.isOnGround())) {
+//                this.canShift = true;
+//                break;
+//            }
+//        }
+//    }
+
+    private void calculateTicks(final PlayerEntity target) {
+        Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPlayerPair = PredictionSystem.predictState(this.tickLimit.getValue() + 2);
+        Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedTargetPair = PredictionSystem.predictState(this.tickLimit.getValue() + 2, target);
+
         for (int i = 2; i <= this.tickLimit.getValue(); i++) {
-            this.limit = (float) (i + (int) (Math.random() * 1.55f));
+            this.limit = i + (int) (Math.random() * 1.55f);
 
-            final Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPair = PredictionSystem.predictState((int) this.limit, target);
-            final ClientPlayerEntity predictedTarget = predictedPair.getLeft();
-            final ClientPlayerEntity predictedPlayer = PredictionSystem.predictState((int) this.limit).getLeft();
+            final Vec3d playerEyePos = predictedPlayerPair.getRight().get(limit - 1).add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+            final Vec3d targetEyePos = predictedTargetPair.getRight().get(limit - 1).add(0, target.getEyeHeight(target.getPose()), 0);
+            final Vec3d playerHitPoint = this.getHitPoint(playerEyePos, mc.player.getYaw(), mc.player.getPitch(), targetEyePos);
 
-            final Vec3d targetBHV = this.killAuraModule.hitPoint;
-            final double playerRange = predictedPlayer.getEyePos().distanceTo(targetBHV);
+            final Vec3d currentTargetEyePos = PredictionSystem.predictState(this.getCharge(), target).getLeft().getEyePos();
+            final Vec3d currentTargetHitPoint = this.getHitPoint(currentTargetEyePos, target.getYaw(), target.getPitch(), mc.player.getEyePos());
 
-            final Vec3d playerBHV = this.killAuraModule.points.generateHitPoint(predictedPlayer);
-            final double targetRange = predictedTarget.getEyePos().distanceTo(playerBHV);
-
-            final boolean inRange = playerRange <= 3 && playerRange > 0 && targetRange > 3;
+            final boolean inRange = playerEyePos.distanceTo(playerHitPoint) <= 3 && playerEyePos.distanceTo(playerHitPoint) > 0 && currentTargetEyePos.distanceTo(currentTargetHitPoint) > 3;
 
             if (inRange && this.ticksWaited >= this.ticksToWait.getValue() && mc.player.hurtTime - this.limit <= 7 && (!this.onlyOnGround.getValue() || mc.player.isOnGround())) {
                 this.canShift = true;
@@ -218,6 +243,22 @@ public class LagRangeModule extends Module implements TimeTravelListener, Player
             INCOMING,
             OUTGOING
         }
+    }
+
+    private Vec3d getHitPoint(final PlayerEntity origin, final PlayerEntity target) {
+        final Vec3d opponentPosition = origin.getEyePos();
+        final Vec3d yourPosition = target.getEyePos();
+        final Vec3d opponentDirection = Vec3d.fromPolar(origin.getPitch(), origin.getYaw());
+        final double distance = yourPosition.distanceTo(opponentPosition);
+
+        return opponentPosition.add(opponentDirection.multiply(distance));
+    }
+
+    private Vec3d getHitPoint(final Vec3d origin, final float yaw, final float pitch, final Vec3d target) {
+        final Vec3d opponentDirection = Vec3d.fromPolar(pitch, yaw);
+        final double distance = target.distanceTo(origin);
+
+        return origin.add(opponentDirection.multiply(distance));
     }
 
 }
