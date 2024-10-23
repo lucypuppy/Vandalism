@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
@@ -47,6 +48,7 @@ public class RotationUtil implements MinecraftWrapper {
     }
 
     private static long startRotateTime = 0;
+    private static float decelerationProgress = 0.0f;
 
     public static PrioritizedRotation rotateMouse(final PrioritizedRotation desiredRotation, final Rotation prevRotation, final double rotationSpeed, final double deltaTime, final boolean didRotate) {
         final float desiredYaw = desiredRotation.getYaw();
@@ -70,10 +72,14 @@ public class RotationUtil implements MinecraftWrapper {
             startRotateTime = System.currentTimeMillis();
         }
 
+        if (Vandalism.getInstance().getRotationManager().getClientRotation() == null) {
+            decelerationProgress = 0.0f;
+        }
+
         if (System.currentTimeMillis() - startRotateTime < 300 * Math.random()) {
             float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
             float accelerationFactor = Math.min((float) (System.currentTimeMillis() - startRotateTime) / 1000 / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
-            System.out.println(accelerationFactor);
+//            System.out.println(accelerationFactor);
             speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
         }
 
@@ -85,7 +91,8 @@ public class RotationUtil implements MinecraftWrapper {
         // Apply deceleration if within the threshold
         float decelerationThreshold = (float) (5.0f + Math.random()); // Threshold angle to start decelerating
         if (Math.abs(yawDiff) < decelerationThreshold) {
-            float decelerationFactor = 0.08f; // Adjust this factor to change the deceleration rate
+            float decelerationFactor = 0.04f * Math.max(Math.abs(yawDiff), 2); // Adjust this factor to change the deceleration rate
+//            System.out.println(decelerationFactor);
             speed *= decelerationFactor;
         }
 
