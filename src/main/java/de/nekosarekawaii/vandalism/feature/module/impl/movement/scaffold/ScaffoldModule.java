@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.movement;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.scaffold;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
@@ -25,12 +25,15 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.HandleInputListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.scaffold.sneak.LegitSneakModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.PredictionSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -40,7 +43,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Pair;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -52,6 +54,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ScaffoldModule extends ClickerModule implements RotationListener, HandleInputListener, Render3DListener {
+
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -75,10 +78,23 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
             true
     );
 
-    private Vec3d posVec = null;
+    private final ValueGroup bypassingGroup = new ValueGroup(
+            this,
+            "Bypassing",
+            "Settings for the bypassing."
+    );
+
+    private final ModuleModeValue<ScaffoldModule> sneakMode = new ModuleModeValue<>(
+            this,
+            this.bypassingGroup,
+            "Sneak Mode",
+            "How the player sneaks. idk",
+            new LegitSneakModuleMode()
+    );
+
+    private Vec3d posVec = null, predictedPosVec = null;
     private BlockPos placeBlock = null;
-    private int startSneakTicks = 0, stopSneakTicks, randomSneakTicks, randonUnsneakTicks;
-    private MSTimer timer = new MSTimer();
+    private Box box;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
@@ -88,9 +104,6 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, RotationEvent.ID, HandleInputEvent.ID, Render3DEvent.ID);
-        this.randomSneakTicks = RandomUtils.randomInt(4, 9);
-        this.randonUnsneakTicks = RandomUtils.randomInt(1, 4);
-
         super.onActivate();
     }
 
@@ -104,52 +117,38 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
 
     @Override
     public void onHandleInputEvent(HandleInputEvent event) {
-        final boolean onGround = mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR < 0.0001;
         final Box playerBox = mc.player.getBoundingBox();
-        final Vec3d eyePos = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        final Vec3d playerPos = mc.player.getPos();
+        final BlockPos blockPlayerPos = mc.player.getBlockPos();
+        final Vec3d eyePos = playerPos.add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        final boolean onGround = playerPos.y % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR < 0.0001;
 
-        if (MovementUtil.getSpeed() > 0.01 && onGround) {
-            if (this.stopSneakTicks > 0) {
-                this.stopSneakTicks--;
-
-                if (this.stopSneakTicks == 0) {
-                    this.randomSneakTicks = RandomUtils.randomInt(25, 38);
-                    mc.options.sneakKey.setPressed(false);
-                }
-            } else if (this.randomSneakTicks > 0) {
-                this.randomSneakTicks--;
-
-                if (this.randomSneakTicks == 0) {
-                    this.stopSneakTicks = RandomUtils.randomInt(1, 4);
-                    mc.options.sneakKey.setPressed(true);
-                }
-            }
-        }
-
-        Vec3d playerPos = mc.player.getPos();
-        BlockPos blockPlayerPos = mc.player.getBlockPos();
-
-        final Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPlayer = PredictionSystem.predictState(5, mc.player, null,
-                clientPlayerEntity -> false, clientPlayerEntity -> !clientPlayerEntity.isOnGround());
-
-        if (!predictedPlayer.getRight().isEmpty()) {
-            playerPos = predictedPlayer.getRight().getLast();
-            blockPlayerPos = predictedPlayer.getLeft().getBlockPos();
-        }
+        final Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPlayer = PredictionSystem.predictState(9, mc.player, null,
+                clientPlayerEntity -> false, clientPlayerEntity -> mc.player.getVelocity().y < -0.08);
 
         this.placeBlock = getPlaceBlock(playerPos, blockPlayerPos, (int) Math.round(mc.player.getBlockInteractionRange()));
         if (this.placeBlock == null) {
+            this.box = null;
             return;
         }
 
         final BlockState state = mc.world.getBlockState(this.placeBlock);
         final VoxelShape shape = state.getCollisionShape(mc.world, this.placeBlock);
         if (shape.isEmpty()) {
+            this.box = null;
             return;
         }
 
-        final Box box = shape.getBoundingBox().offset(this.placeBlock.getX(), this.placeBlock.getY(), this.placeBlock.getZ());
+        this.box = shape.getBoundingBox().offset(this.placeBlock.getX(), this.placeBlock.getY(), this.placeBlock.getZ());
         this.posVec = bestVecFromBlock(eyePos, box.offset(0, -0.1, 0)); // Todo maybe find a better offset.
+
+        //Prediction Stufffs
+        if (!predictedPlayer.getRight().isEmpty()) {
+            final Vec3d predictedEyes = predictedPlayer.getRight().getLast().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+            this.predictedPosVec = bestVecFromBlock(predictedEyes, box.offset(0, -0.1, 0)); // Todo maybe find a better offset.
+        } else {
+            this.predictedPosVec = null;
+        }
 
         final Rotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
         if (rotation == null)
@@ -183,19 +182,13 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
     public void onRotation(final RotationEvent event) {
         if (this.posVec != null) {
             final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.HIGHEST);
-            final BlockHitResult rotationRaycast = WorldUtil.raytraceBlocks(rotation, mc.player.getBlockInteractionRange());
             final Rotation clientRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
 
-            if (clientRotation != null) {
-                if (rotationRaycast != null) {
-                    final BlockHitResult clientRotationRaycast = WorldUtil.raytraceBlocks(clientRotation, mc.player.getBlockInteractionRange());
-
-                    if (clientRotationRaycast != null && rotationRaycast.getSide() == clientRotationRaycast.getSide()) {
-                        rotation.setPitch(clientRotation.getPitch());
-                    }
-                }
+            // Prediction stuffs
+            if (this.predictedPosVec != null && clientRotation != null) {
+                final PrioritizedRotation predictedRotation = RotationUtil.rotationToVec(this.predictedPosVec, RotationPriority.HIGHEST);
             }
-
+            
             Vandalism.getInstance().getRotationManager().setRotation(rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
         }
@@ -235,6 +228,20 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
                     this.posVec.getY() + 0.05,
                     this.posVec.getZ() + 0.05,
                     0.0f, 1.0f, 0.0f, 1.0f
+            );
+        }
+
+        if (this.predictedPosVec != null) {
+            WorldRenderer.drawBox(
+                    matrixStack,
+                    vertexConsumer,
+                    this.predictedPosVec.getX() - 0.05,
+                    this.predictedPosVec.getY() - 0.05,
+                    this.predictedPosVec.getZ() - 0.05,
+                    this.predictedPosVec.getX() + 0.05,
+                    this.predictedPosVec.getY() + 0.05,
+                    this.predictedPosVec.getZ() + 0.05,
+                    0.0f, 0.0f, 1.0f, 1.0f
             );
         }
 
