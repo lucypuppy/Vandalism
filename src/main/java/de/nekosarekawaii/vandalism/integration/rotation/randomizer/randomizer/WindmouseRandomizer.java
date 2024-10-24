@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer;
 
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.Randomizer;
 import lombok.Setter;
 import net.minecraft.util.math.Vec3d;
@@ -35,8 +36,10 @@ public class WindmouseRandomizer extends Randomizer {
     private final DoubleValue oscillationFrequencyValue = new DoubleValue(this, "Oscillation Frequency", "The oscillation frequency applied to the vector.", 0.1, 0.1, 20.0);
     private final DoubleValue elasticityValue = new DoubleValue(this, "Elasticity", "The elasticity applied to the vector.", 0.9, 0.1, 1.0);
     private final DoubleValue updateFrequencyValue = new DoubleValue(this, "Update Frequency", "The update frequency applied to the vector.", 0.1, 0.1, 1.0);
+    private final LongValue randomizeDelay = new LongValue(this, "Randomize Delay", "The delay in milliseconds before the vector is randomized.", 0L, 0L, 1000L);
 
     private Vec3d currentPoint;
+    private long lastRandomizeTime;
 
     public WindmouseRandomizer() {
         super("Windmouse");
@@ -44,7 +47,7 @@ public class WindmouseRandomizer extends Randomizer {
 
     @Override
     public Vec3d randomiseRotationVec3d(final Vec3d vec3d) {
-        if (this.currentPoint != null && updateFrequencyValue.getValue() < 1.0 && ThreadLocalRandom.current().nextDouble() > updateFrequencyValue.getValue()) {
+        if (this.currentPoint != null && updateFrequencyValue.getValue() < 1.0 && ThreadLocalRandom.current().nextDouble() > updateFrequencyValue.getValue() || System.currentTimeMillis() - lastRandomizeTime < randomizeDelay.getValue()) {
             return this.currentPoint;
         }
 
@@ -94,6 +97,7 @@ public class WindmouseRandomizer extends Randomizer {
         z += (targetZ - z) * smoothingFactor;
 
         this.currentPoint = new Vec3d(x, y, z);
+        lastRandomizeTime = System.currentTimeMillis();
         return this.currentPoint;
     }
 
