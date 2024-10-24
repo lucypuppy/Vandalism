@@ -34,19 +34,16 @@ import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.PredictionSystem;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Pair;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 
 import java.util.ArrayList;
@@ -92,9 +89,12 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
             new LegitSneakModuleMode()
     );
 
-    private Vec3d posVec = null, predictedPosVec = null;
+    private Vec3d posVec = null;
     private BlockPos placeBlock = null;
     private Box box;
+
+    private final ArrayList<Vec3d> predictedPositionVecs = new ArrayList<>();
+    private float bestPitch = Float.NaN;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
@@ -123,8 +123,9 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
         final Vec3d eyePos = playerPos.add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
         final boolean onGround = playerPos.y % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR < 0.0001;
 
-        final Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPlayer = PredictionSystem.predictState(9, mc.player, null,
-                clientPlayerEntity -> false, clientPlayerEntity -> mc.player.getVelocity().y < -0.08);
+        // Prediction stuffs
+        final ArrayList<Vec3d> predictedPositions = PredictionSystem.predictState(3, mc.player, null,
+                clientPlayerEntity -> false, clientPlayerEntity -> mc.player.getVelocity().y < -0.08).getRight();
 
         this.placeBlock = getPlaceBlock(playerPos, blockPlayerPos, (int) Math.round(mc.player.getBlockInteractionRange()));
         if (this.placeBlock == null) {
@@ -142,12 +143,10 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
         this.box = shape.getBoundingBox().offset(this.placeBlock.getX(), this.placeBlock.getY(), this.placeBlock.getZ());
         this.posVec = bestVecFromBlock(eyePos, box.offset(0, -0.1, 0)); // Todo maybe find a better offset.
 
-        //Prediction Stufffs
-        if (!predictedPlayer.getRight().isEmpty()) {
-            final Vec3d predictedEyes = predictedPlayer.getRight().getLast().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
-            this.predictedPosVec = bestVecFromBlock(predictedEyes, box.offset(0, -0.1, 0)); // Todo maybe find a better offset.
-        } else {
-            this.predictedPosVec = null;
+        this.predictedPositionVecs.clear();
+        for (final Vec3d position : predictedPositions) {
+            final Vec3d predictedEyes = position.add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+            this.predictedPositionVecs.add(bestVecFromBlock(predictedEyes, box.offset(0, -0.1, 0))); // Todo maybe find a better offset.
         }
 
         final Rotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
@@ -182,13 +181,28 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
     public void onRotation(final RotationEvent event) {
         if (this.posVec != null) {
             final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.HIGHEST);
-            final Rotation clientRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
+
 
             // Prediction stuffs
-            if (this.predictedPosVec != null && clientRotation != null) {
-                final PrioritizedRotation predictedRotation = RotationUtil.rotationToVec(this.predictedPosVec, RotationPriority.HIGHEST);
+            double diff = Double.MAX_VALUE;
+            for (final Vec3d predictedVec : this.predictedPositionVecs) {
+                final PrioritizedRotation predictedRotation = RotationUtil.rotationToVec(predictedVec, RotationPriority.HIGHEST);
+                final BlockHitResult predictedRaytrace = WorldUtil.raytraceBlocks(predictedRotation, 6);
+
+                if (predictedRaytrace.getSide() != Direction.UP) {
+                    final double rofl = Math.abs(rotation.getPitch() - predictedRotation.getPitch());
+
+                    if (rofl < diff) {
+                        diff = rofl;
+                        bestPitch = predictedRotation.getPitch();
+                    }
+                }
             }
-            
+
+            if (!Float.isNaN(bestPitch)) {
+                rotation.setPitch(bestPitch);
+            }
+
             Vandalism.getInstance().getRotationManager().setRotation(rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
         }
@@ -231,16 +245,16 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
             );
         }
 
-        if (this.predictedPosVec != null) {
+        for (final Vec3d predictedPosVec : this.predictedPositionVecs) {
             WorldRenderer.drawBox(
                     matrixStack,
                     vertexConsumer,
-                    this.predictedPosVec.getX() - 0.05,
-                    this.predictedPosVec.getY() - 0.05,
-                    this.predictedPosVec.getZ() - 0.05,
-                    this.predictedPosVec.getX() + 0.05,
-                    this.predictedPosVec.getY() + 0.05,
-                    this.predictedPosVec.getZ() + 0.05,
+                    predictedPosVec.getX() - 0.05,
+                    predictedPosVec.getY() - 0.05,
+                    predictedPosVec.getZ() - 0.05,
+                    predictedPosVec.getX() + 0.05,
+                    predictedPosVec.getY() + 0.05,
+                    predictedPosVec.getZ() + 0.05,
                     0.0f, 0.0f, 1.0f, 1.0f
             );
         }
