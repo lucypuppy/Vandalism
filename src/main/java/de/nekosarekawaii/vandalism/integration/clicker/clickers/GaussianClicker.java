@@ -25,7 +25,9 @@ import de.nekosarekawaii.vandalism.feature.module.impl.combat.LagRangeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.AutoSoupModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
+import de.nekosarekawaii.vandalism.util.Arithmetics;
 import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.PerlinNoise;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,16 +39,15 @@ public class GaussianClicker extends Clicker implements HandleInputListener {
     private final IntegerValue maxCPS = new IntegerValue(this, "Max CPS", "The maximum clicks per second limit", 15, 1, 20);
     private final IntegerValue updateChance = new IntegerValue(this, "Update Chance", "The chance to update the cps.", 80, 0, 100);
     private final IntegerValue failClickChance = new IntegerValue(this, "Fail Click Chance", "The chance to fail a click.", 0, 0, 100);
-    private final IntegerValue fatigueThreshold = new IntegerValue(this, "Fatigue Threshold", "The number of clicks before fatigue sets in.", 30, 10, 100);
     private final IntegerValue burstChance = new IntegerValue(this, "Burst Chance", "Chance to burst-click faster for a short period.", 10, 0, 30);
 
     private final MSTimer clickTimer = new MSTimer();
     private long delay;
     private float partialDelays;
     private int clickCount = 0;
-    private float fatigueFactor = 1.0f;
     private boolean isBursting = false;
     private int burstLength = 0;
+    private final PerlinNoise perlinNoise = new PerlinNoise();
 
     public GaussianClicker(final ClickerModule clickerModule) {
         super(clickerModule, "Gaussian");
@@ -101,7 +102,7 @@ public class GaussianClicker extends Clicker implements HandleInputListener {
             return;
         }
 
-        if (ThreadLocalRandom.current().nextDouble() < this.failClickChance.getValue() * 0.01 + (this.fatigueFactor * 0.02)) {
+        if (ThreadLocalRandom.current().nextDouble() < this.failClickChance.getValue() * 0.01) {
             this.clickerModule.onFailClick();
             return;
         }
@@ -120,11 +121,11 @@ public class GaussianClicker extends Clicker implements HandleInputListener {
             }
 
             // Simulate fatigue by slowing down CPS after a threshold
-            if (this.clickCount >= (this.fatigueThreshold.getValue() * (0.9 + Math.random() * 0.2))) {
-                this.fatigueFactor *= (float) (0.90f + (Math.random() * 0.15f));  // More varied fatigue
-                this.delay += (int) (Math.random() * 75);  // Slightly larger delay for fatigue
-                this.clickCount = 0;
-            }
+//            if (this.clickCount >= (this.fatigueThreshold.getValue() * (0.9 + Math.random() * 0.2))) {
+//                this.fatigueFactor *= (float) (0.90f + (Math.random() * 0.15f));  // More varied fatigue
+//                this.delay += (int) (Math.random() * 75);  // Slightly larger delay for fatigue
+//                this.clickCount = 0;
+//            }
 
             // Random chance to recalculate CPS to introduce more variability
             if (ThreadLocalRandom.current().nextDouble() < this.updateChance.getValue() * 0.01) {
@@ -134,7 +135,9 @@ public class GaussianClicker extends Clicker implements HandleInputListener {
     }
 
     private void calculateCPS() {
-        int cps = (int) (ThreadLocalRandom.current().nextGaussian(this.mean.getValue(), this.deviation.getValue()) * this.fatigueFactor);
+        int cps = (int) (ThreadLocalRandom.current().nextGaussian(this.mean.getValue(), this.deviation.getValue()));
+        double noise = Math.abs(perlinNoise.noise(System.currentTimeMillis() / 20.0));
+        cps = (int) Arithmetics.interpolate(cps - 1, cps + 1, noise);
         cps = Math.clamp(cps, this.minCPS.getValue(), this.maxCPS.getValue());
 
         final float delay = 1000.0F / cps;

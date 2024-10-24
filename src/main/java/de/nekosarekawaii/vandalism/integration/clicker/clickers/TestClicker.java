@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.misc.AutoSoupModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
 import de.nekosarekawaii.vandalism.util.Arithmetics;
+import de.nekosarekawaii.vandalism.util.PerlinNoise;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -38,6 +39,7 @@ public class TestClicker extends Clicker implements PlayerUpdateListener {
 
     private long delay;
     private long lastClickTime;
+    private final PerlinNoise perlinNoise = new PerlinNoise();
 
     public TestClicker(final ClickerModule clickerModule) {
         super(clickerModule, "Test");
@@ -104,7 +106,9 @@ public class TestClicker extends Clicker implements PlayerUpdateListener {
     }
 
     private void calculateCPS() {
-        final int cps = (int) Arithmetics.interpolate(this.minCPS.getValue() - 1, this.maxCPS.getValue() + 1, ThreadLocalRandom.current().nextDouble());
+        int cps = (int) Arithmetics.interpolate(this.minCPS.getValue() - 1, this.maxCPS.getValue() + 1, ThreadLocalRandom.current().nextDouble());
+        double noise = Math.abs(perlinNoise.noise(System.currentTimeMillis() / 20.0));
+        cps = (int) Arithmetics.interpolate(cps - 1, cps + 1, noise);
         this.delay = 1000 / cps;
     }
 
