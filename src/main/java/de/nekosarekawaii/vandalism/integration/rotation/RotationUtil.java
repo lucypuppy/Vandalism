@@ -80,12 +80,12 @@ public class RotationUtil implements MinecraftWrapper {
         if (Math.abs(yawDiff) < decelerationThreshold) {
             float decelerationFactor = 0.03f * Math.max(Math.abs(yawDiff), 2); // Adjust this factor to change the deceleration rate
             speed *= decelerationFactor;
-            System.out.println("Decelerating" + decelerationFactor);
+//            System.out.println("Decelerating" + decelerationFactor);
         } else if (System.currentTimeMillis() - startRotateTime < 300 * Math.random()) {
             float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
             float accelerationFactor = Math.min((float) (System.currentTimeMillis() - startRotateTime) / 1000 / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
             speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
-            System.out.println("Accelerating" + accelerationFactor);
+//            System.out.println("Accelerating" + accelerationFactor);
         }
 
         // Apply deceleration if within the threshold
