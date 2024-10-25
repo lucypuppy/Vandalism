@@ -76,14 +76,10 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new CopyServerBrandCommand(),
                 new CopyServerVersionCommand(),
                 new CopyPositionCommand(),
-                new TeleportEntitySpawnEggCommand(),
-                new SoundEntitySpawnEggCommand(),
-                new SoundHeadCommand(),
                 new ClipCommand(),
                 new VClipCommand(),
                 new HClipCommand(),
                 new SkriptDupeCommand(),
-                new NavigateXCommand(),
                 new ArmorCarryCommand(),
                 new InventoryClearCommand(),
                 new CopyInvisibleCharCommand(),
@@ -97,11 +93,8 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new MultiverseCoreOptimizerCommand(),
                 new SkillSpamCommand(),
                 new SpamCommand(),
-                new CreateEntitySpawnEggCommand(),
-                new CrashSkullCommand(),
                 new KaboomKickCommand(),
-                new PlaceholdersCommand(),
-                new SkullCommand()
+                new PlaceholdersCommand()
         );
 
         // This should always be the last command
