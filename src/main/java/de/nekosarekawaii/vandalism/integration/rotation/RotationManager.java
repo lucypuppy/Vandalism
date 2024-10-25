@@ -102,7 +102,11 @@ public class RotationManager implements MinecraftWrapper, StrafeListener, Rotati
             if (this.smoothingFunc == null) {
                 this.clientRotation = this.targetRotation;
             } else {
-                this.clientRotation = this.smoothingFunc.apply(this.targetRotation, this.serverRotation, deltaTime, clientRotation != null);
+                final float yawDiff = Math.abs(MathHelper.wrapDegrees(this.targetRotation.getYaw()) - MathHelper.wrapDegrees(this.serverRotation.getYaw()));
+                final float pitchDiff = Math.abs(this.targetRotation.getPitch() - this.serverRotation.getPitch());
+                final boolean didRotate = clientRotation != null && yawDiff <= 0.5 && pitchDiff <= 0.5;
+//                ChatUtil.chatMessage("YawDiff: " + yawDiff + " PitchDiff: " + pitchDiff);
+                this.clientRotation = this.smoothingFunc.apply(this.targetRotation, this.serverRotation, deltaTime, didRotate);
             }
             return;
         }

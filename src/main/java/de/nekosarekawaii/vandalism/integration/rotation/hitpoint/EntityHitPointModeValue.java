@@ -20,30 +20,20 @@ package de.nekosarekawaii.vandalism.integration.rotation.hitpoint;
 
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import lombok.RequiredArgsConstructor;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ClassModeValue;
+import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
+import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.LowerHitPoint;
 
-import java.util.ArrayList;
-import java.util.List;
+public class EntityHitPointModeValue extends ClassModeValue<EntityHitPoint> {
 
-@RequiredArgsConstructor
-public abstract class EntityHitPoint implements MinecraftWrapper, ValueParent {
+    public EntityHitPointModeValue(ValueParent parent, String name, String description) {
+        super(parent, name, description, new IcarusBHV(), new LowerHitPoint());
 
-    private final List<Value<?>> values = new ArrayList<>();
-    private final String hitPointName;
-
-    public abstract Vec3d generateHitPoint(Entity entity);
-
-    @Override
-    public List<Value<?>> getValues() {
-        return this.values;
+        for (final EntityHitPoint hitPoint : getOptions()) {
+            for (final Value<?> value : hitPoint.getValues()) {
+                value.visibleCondition(() -> this.getValue() == hitPoint);
+                parent.getValues().add(value);
+            }
+        }
     }
-
-    @Override
-    public String getName() {
-        return this.hitPointName;
-    }
-
 }

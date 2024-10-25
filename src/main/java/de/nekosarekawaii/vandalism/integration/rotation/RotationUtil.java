@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
@@ -46,6 +47,9 @@ public class RotationUtil implements MinecraftWrapper {
         return new PrioritizedRotation(yaw, pitch, priority);
     }
 
+    private static long startRotateTime = 0;
+    private static float decelerationProgress = 0.0f;
+
     public static PrioritizedRotation rotateMouse(final PrioritizedRotation desiredRotation, final Rotation prevRotation, final double rotationSpeed, final double deltaTime, final boolean didRotate) {
         final float desiredYaw = desiredRotation.getYaw();
         final float desiredPitch = desiredRotation.getPitch();
@@ -64,17 +68,32 @@ public class RotationUtil implements MinecraftWrapper {
         final double distance = Math.sqrt(yawDiff * yawDiff + pitchDiff * pitchDiff);
         speed *= 1.0f + (float) distance / 45.0f; // Increase speed based on the largest difference
 
-        float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
-        float accelerationFactor = Math.min(timeFactor / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
-        //System.out.println(accelerationFactor);
-        speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
+        if (!didRotate) {
+            startRotateTime = System.currentTimeMillis();
+        }
+
+        if (Vandalism.getInstance().getRotationManager().getClientRotation() == null) {
+            decelerationProgress = 0.0f;
+        }
+
+        float decelerationThreshold = (float) (5.0f + Math.random()); // Threshold angle to start decelerating
+        if (Math.abs(yawDiff) < decelerationThreshold) {
+            float decelerationFactor = 0.03f * Math.max(Math.abs(yawDiff), 2); // Adjust this factor to change the deceleration rate
+            speed *= decelerationFactor;
+//            System.out.println("Decelerating" + decelerationFactor);
+        } else if (System.currentTimeMillis() - startRotateTime < 300 * Math.random()) {
+            float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
+            float accelerationFactor = Math.min((float) (System.currentTimeMillis() - startRotateTime) / 1000 / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
+            speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
+//            System.out.println("Accelerating" + accelerationFactor);
+        }
 
         // Apply deceleration if within the threshold
-        float decelerationThreshold = 5.0f; // Threshold angle to start decelerating
-        if (Math.abs(yawDiff) < decelerationThreshold) {
-            float decelerationFactor = 0.08f; // Adjust this factor to change the deceleration rate
-            speed *= decelerationFactor;
-        }
+//        float decelerationThreshold = (float) (5.0f + Math.random()); // Threshold angle to start decelerating
+//        if (Math.abs(yawDiff) < decelerationThreshold) {
+//            float decelerationFactor = 0.04f * Math.max(Math.abs(yawDiff), 2); // Adjust this factor to change the deceleration rate
+//            speed *= decelerationFactor;
+//        }
 
         // slowdown rotation in frame to keep rotating until all frames are finished until next tick, so the pitch reaches its destination in the same time as the yaw
         // Adjust speed multipliers to synchronize yaw and pitch changes

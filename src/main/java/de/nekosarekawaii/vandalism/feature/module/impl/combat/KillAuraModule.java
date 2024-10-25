@@ -33,16 +33,13 @@ import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPoint;
-import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
+import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPointModeValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.RandomizerModeValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.NoneRandomizer;
-import de.nekosarekawaii.vandalism.util.IName;
-import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.StringUtils;
-import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.*;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
@@ -53,6 +50,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardEntry;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Pair;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
@@ -88,6 +86,13 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             this.clickerGroup,
             "Wait For Hurt Time",
             "Only hit when the target hurt time is 0.",
+            false
+    );
+
+    private final BooleanValue clickInScreen = new BooleanValue(
+            this.clickerGroup,
+            "Click In Screen",
+            "Whether the player should click while in screens (like inventory).",
             false
     );
 
@@ -186,6 +191,12 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             90.0f, 1.0f, 180.0f
     ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.NORMAL);
 
+    private final EntityHitPointModeValue points = new EntityHitPointModeValue(
+            this.rotationGroup,
+            "Hit Point",
+            "The mode of the hit point."
+    );
+
     private final ValueGroup randomisation = new ValueGroup(
             this.rotationGroup,
             "Randomisation",
@@ -246,7 +257,6 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
     private int targetIndex = 0;
 
     // Rotation
-    public final EntityHitPoint points = new IcarusBHV();
     public Vec3d hitPoint;
     public final MSTimer rotationTimer = new MSTimer();
     private int currentDirection = 0;
@@ -272,12 +282,14 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         super.onDeactivate();
     }
 
+    private Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPair = null;
+
     @Override
     public void onRotation(final RotationEvent event) {
         if (mc.player == null || mc.world == null) return;
         this.updateTarget();
 
-        if (this.target == null) {
+        if (this.target == null || isInScreen()) {
             Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGH);
             this.hitPoint = null;
             return;
@@ -286,8 +298,17 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
 //        Vec3d actualVelocity = new Vec3d(mc.player.prevX - mc.player.getX(), mc.player.prevY - mc.player.getY(), mc.player.prevZ - mc.player.getZ()).multiply(-1);
 //        Vec3d diff = actualVelocity.subtract(target.prevX - target.getX(), target.prevY - target.getY(), target.prevZ - target.getZ());
 
+        final Vec3d newPoint;
+        if (this.target instanceof final PlayerEntity playerEntity) {
+            predictedPair = PredictionSystem.predictState(RandomUtils.randomInt(1, 3), playerEntity);
+            newPoint = this.points.getValue().generateHitPoint(predictedPair.getLeft());
+        } else {
+            newPoint = this.points.getValue().generateHitPoint(this.target);
+        }
+
         // This code generates a hitpoint on a target entity hitbox
-        final Vec3d newPoint = this.points.generateHitPoint(this.target);
+//        final Vec3d newPoint = this.points.generateHitPoint(this.target);
+
         if (this.hitPoint == null || !this.reuseOldPoint.getValue()) {
             this.hitPoint = newPoint;
         }
@@ -448,8 +469,8 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         final Vec3d eyePos = this.mc.player.getEyePos();
         switch (this.selectionMode.getValue()) {
             case RANGE -> entities.sort((entity1, entity2) -> {
-                final double distance1 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity1));
-                final double distance2 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity2));
+                final double distance1 = eyePos.distanceTo(points.getValue().generateHitPoint(entity1));
+                final double distance2 = eyePos.distanceTo(points.getValue().generateHitPoint(entity2));
                 return Double.compare(distance1, distance2);
             });
 
@@ -475,8 +496,8 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
                 double health1 = getHealthFromScoreboard(entity1);
                 double health2 = getHealthFromScoreboard(entity2);
                 if (health1 == 9999 && health2 == 9999) {
-                    final double distance1 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity1));
-                    final double distance2 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity2));
+                    final double distance1 = eyePos.distanceTo(points.getValue().generateHitPoint(entity1));
+                    final double distance2 = eyePos.distanceTo(points.getValue().generateHitPoint(entity2));
                     return Double.compare(distance1, distance2);
                 }
                 if (health1 > 0 && health2 <= 0)
@@ -546,7 +567,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
 
     @Override
     public void onClick() {
-        if (mc.player == null || mc.world == null || this.hitPoint == null) {
+        if (mc.player == null || mc.world == null || this.hitPoint == null || isInScreen()) {
             return;
         }
 
@@ -584,7 +605,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
 
     @Override
     public void onFailClick() {
-        if (mc.player == null || mc.world == null || this.hitPoint == null) {
+        if (mc.player == null || mc.world == null || this.hitPoint == null || isInScreen()) {
             return;
         }
 
@@ -605,6 +626,10 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         }
 
         mc.player.swingHand(Hand.MAIN_HAND);
+    }
+
+    private boolean isInScreen() {
+        return mc.currentScreen != null && !clickInScreen.getValue();
     }
 
     private enum SelectionMode implements IName {
