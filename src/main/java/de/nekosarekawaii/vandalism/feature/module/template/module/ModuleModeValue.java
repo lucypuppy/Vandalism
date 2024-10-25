@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.template.module;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
+import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.template.ValueModeGeneric;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import imgui.ImGui;
@@ -28,8 +29,8 @@ import imgui.flag.ImGuiMouseButton;
 public class ModuleModeValue<T extends Module> extends ValueModeGeneric<ModuleMulti<T>> {
 
     @SafeVarargs
-    public ModuleModeValue(final Module parent, final String name, final String description, final ModuleMulti<T>... options) {
-        super(parent, name, description, ModuleMulti::getName, mn -> {
+    public ModuleModeValue(final Module parentModule, final ValueParent valueParent, final String name, final String description, final ModuleMulti<T>... options) {
+        super(valueParent, name, description, ModuleMulti::getName, mn -> {
             for (final ModuleMulti<T> module : options) {
                 if (module.getName().equals(mn)) {
                     return module;
@@ -38,11 +39,16 @@ public class ModuleModeValue<T extends Module> extends ValueModeGeneric<ModuleMu
             return null;
         }, options);
         this.onValueChange((oldValue, newValue) -> {
-            if (parent.isActive()) {
+            if (parentModule.isActive()) {
                 oldValue.onDeactivate();
                 newValue.onActivate();
             }
         });
+    }
+
+    @SafeVarargs
+    public ModuleModeValue(final Module parent, final String name, final String description, final ModuleMulti<T>... options) {
+        this(parent, parent, name, description, options);
     }
 
     @Override

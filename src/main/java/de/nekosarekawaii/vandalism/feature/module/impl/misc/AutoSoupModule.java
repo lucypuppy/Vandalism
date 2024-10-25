@@ -20,16 +20,24 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.RandomUtils;
 import lombok.Getter;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.slot.SlotActionType;
 
 public class AutoSoupModule extends Module implements PlayerUpdateListener {
 
     private int lastSlot;
+    private int refillTicks, refillDelay;
+    private int openInvTicks, openInvDelay;
     @Getter
     private State state = State.WAITING;
 
@@ -37,7 +45,22 @@ public class AutoSoupModule extends Module implements PlayerUpdateListener {
         super("Auto Soup", "Automatically heals you by drinking soups in your hotbar.", Category.MISC);
     }
 
-    private final IntegerValue health = new IntegerValue(this, "Health", "The amount of health at which you want to start souping.", 8, 1, 20);
+    /*
+     * Soup Settings
+     */
+    private final IntegerValue minHealth = new IntegerValue(this, "Min Health", "The minimum amount of health at which you want to start souping.", 8, 1, 20);
+    private final IntegerValue maxHealth = new IntegerValue(this, "Max Health", "The maximum amount of health at which you want to start souping.", 10, 1, 20);
+
+    /*
+     * Refill Settings
+     */
+    private final BooleanValue autoRefill = new BooleanValue(this, "Auto Refill", "Automatically refills the soup slots.", true);
+    private final ValueGroup refillGroup = new ValueGroup(this, "Refill Settings", "Settings for the auto refill feature.").visibleCondition(autoRefill::getValue);
+    private final IntegerValue minRefillTicks = new IntegerValue(refillGroup, "Min Refill Ticks", "The minimum delay between refilling slots.", 1, 0, 10);
+    private final IntegerValue maxRefillTicks = new IntegerValue(refillGroup, "Max Refill Ticks", "The maximum delay between refilling slots.", 2, 0, 10);
+    private final IntegerValue minOpenInvTicks = new IntegerValue(refillGroup, "Min Open Inventory Ticks", "The minimum delay between opening the inventory and souping.", 1, 1, 10);
+    private final IntegerValue maxOpenInvTicks = new IntegerValue(refillGroup, "Max Open Inventory Ticks", "The maximum delay between opening the inventory and souping.", 2, 1, 10);
+    private final MultiModeValue refillSlots = new MultiModeValue(refillGroup, "Refill Slots", "The slots you want to refill.", "1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     @Override
     protected void onActivate() {
@@ -52,10 +75,20 @@ public class AutoSoupModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+        updateDelay();
+        if (mc.currentScreen instanceof InventoryScreen && autoRefill.getValue()) {
+            moveStews();
+            openInvTicks++;
+            refillTicks++;
+            return;
+        } else {
+            openInvTicks = 0;
+            refillTicks = 0;
+        }
         final int soupSlot = getStewSlot();
         switch (state) {
             case WAITING:
-                if (mc.player.getHealth() > health.getValue() || soupSlot == -1 || mc.currentScreen != null) {
+                if (mc.player.getHealth() > RandomUtils.randomInt(minHealth.getValue(), maxHealth.getValue()) || soupSlot == -1 || mc.currentScreen != null) {
                     break;
                 }
                 state = State.SWAP_SOUP;
@@ -79,12 +112,50 @@ public class AutoSoupModule extends Module implements PlayerUpdateListener {
 
     private int getStewSlot() {
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.getInventory().getStack(i);
+            final ItemStack stack = mc.player.getInventory().getStack(i);
             if (stack != null && stack.getItem() == Items.MUSHROOM_STEW) {
                 return i;
             }
         }
         return -1;
+    }
+
+    private void moveStews() {
+        final int[] refillSlots = getRefillSlots();
+        for (int slot : refillSlots) {
+            updateDelay();
+            slot -= 1;
+            final int invSlot = getInvStewSlot();
+            if (invSlot == -1 || openInvTicks < openInvDelay) {
+                return;
+            }
+            if (mc.player.getInventory().getStack(slot).getItem() != Items.AIR && mc.player.getInventory().getStack(slot).getItem() != Items.BOWL) {
+                continue;
+            }
+            if (refillTicks >= refillDelay) {
+                refillTicks = 0;
+                mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, invSlot, 0, SlotActionType.QUICK_MOVE, mc.player);
+            }
+        }
+    }
+
+    private int[] getRefillSlots() {
+        return refillSlots.getValue().stream().mapToInt(Integer::parseInt).toArray();
+    }
+
+    private int getInvStewSlot() {
+        for (int i = 9; i < 36; i++) {
+            final ItemStack stack = mc.player.getInventory().getStack(i);
+            if (stack != null && stack.getItem() == Items.MUSHROOM_STEW) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void updateDelay() {
+        this.refillDelay = RandomUtils.randomInt(minRefillTicks.getValue(), maxRefillTicks.getValue());
+        this.openInvDelay = RandomUtils.randomInt(minOpenInvTicks.getValue(), maxOpenInvTicks.getValue());
     }
 
     public enum State {

@@ -64,7 +64,7 @@ public class PredictionSystem implements MinecraftWrapper {
      * @return A pair of the predicted player and a list of all positions
      */
     public static Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictState(final int ticks, final PlayerEntity baseEntity, final Input input) {
-        return predictState(ticks, baseEntity, input, clientPlayerEntity -> false);
+        return predictState(ticks, baseEntity, input, clientPlayerEntity -> false, clientPlayerEntity -> false);
     }
 
     /**
@@ -76,7 +76,7 @@ public class PredictionSystem implements MinecraftWrapper {
      * @param abortWhen  A function that returns true if the prediction should be aborted
      * @return A pair of the predicted player and a list of all positions
      */
-    public static Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictState(final int ticks, final PlayerEntity baseEntity, Input input, final Function<ClientPlayerEntity, Boolean> abortWhen) {
+    public static Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictState(final int ticks, final PlayerEntity baseEntity, Input input, final Function<ClientPlayerEntity, Boolean> abortWhen, final Function<ClientPlayerEntity, Boolean> abortBefore) {
         // We need to store both velocities as they are changed by the prediction
         final Vec3d selfVelocity = MathUtil.copy(baseEntity.getVelocity());
         final Vec3d localVelocity = MathUtil.copy(mc.player.getVelocity());
@@ -169,6 +169,9 @@ public class PredictionSystem implements MinecraftWrapper {
         // - Tick the player
         // - Store the position in the list
         for (int i = 0; i < ticks; i++) {
+            if (abortBefore.apply(fakePlayer)) { // This can be useful too lol
+                break;
+            }
             fakePlayer.resetPosition();
             fakePlayer.age++;
             fakePlayer.tick();

@@ -71,7 +71,7 @@ public class IntaveModuleMode extends ModuleMulti<VelocityModule> implements Pla
         if (event.packet instanceof final EntityVelocityUpdateS2CPacket packet && mc.player != null && packet.getEntityId() == mc.player.getId()) {
             if (mc.player.hurtTime == 10 && mc.crosshairTarget != null && (packet.getVelocityX() != 0 || packet.getVelocityZ() != 0)) {
                 final Random random = ThreadLocalRandom.current();
-                if (random.nextInt(100) < this.chance.getValue() && mc.player.fallDistance <= 3.5) {
+                if (mc.player.fallDistance <= 3.5) {
                     this.ticksToWait = this.minTicks.getValue();
                     if (this.randomTicks.getValue() > 0) {
                         this.ticksToWait += random.nextInt(0, this.randomTicks.getValue());
@@ -100,7 +100,7 @@ public class IntaveModuleMode extends ModuleMulti<VelocityModule> implements Pla
 
     @Override
     public void onMoveInput(final MoveInputEvent event) {
-        if (this.jump.getValue() && this.shouldVelocity && mc.player.hurtTime == 9 && mc.player.isOnGround() && mc.player.isSprinting() && this.ticks >= this.ticksToWait) {
+        if (this.jump.getValue() && this.shouldVelocity && mc.player.hurtTime == 9 && mc.player.isOnGround() && mc.player.isSprinting() && this.ticks >= this.ticksToWait && ThreadLocalRandom.current().nextInt(100) < this.chance.getValue()) {
             event.jumping = true;
         }
     }
