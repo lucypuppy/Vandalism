@@ -36,8 +36,8 @@ public class GiveCommand extends Command {
         builder.then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS)).executes(context -> {
             ItemStackUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
             return SINGLE_SUCCESS;
-        }).then(argument("number", IntegerArgumentType.integer()).executes(context -> {
-            ItemStackUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "number"), false));
+        }).then(argument("count", IntegerArgumentType.integer(1)).executes(context -> {
+            ItemStackUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "count"), true));
             return SINGLE_SUCCESS;
         })));
     }
