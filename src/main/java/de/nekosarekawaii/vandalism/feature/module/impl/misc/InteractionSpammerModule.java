@@ -124,16 +124,16 @@ public class InteractionSpammerModule extends Module implements PlayerUpdateList
         } else {
             for (final BlockHitResult blockHitResult : this.blockHitResults) {
                 if (this.interactionTimer.hasReached(this.interactionDelay.getValue(), true)) {
-                    this.mc.interactionManager.interactBlock(this.mc.player, Hand.MAIN_HAND, blockHitResult);
+                    mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHitResult);
                     this.blockHitResults.remove(blockHitResult);
                 }
             }
         }
-        final HitResult hitResult = this.mc.getCameraEntity().raycast(mc.player.isCreative() ? 5.0F : 4.5F, 0, false);
+        final HitResult hitResult = mc.getCameraEntity().raycast(mc.player.isCreative() ? 5.0F : 4.5F, 0, false);
         if (!(hitResult instanceof final BlockHitResult blockHitResult)) return;
-        final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
+        final Block block = mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (!(block instanceof AirBlock || block instanceof FluidBlock)) {
-            if (this.mc.options.useKey.isPressed()) {
+            if (mc.options.useKey.isPressed()) {
                 this.interactionListsTimer.reset();
                 this.interactionTimer.reset();
                 final CopyOnWriteArrayList<BlockHitResult> blockHitResults = new CopyOnWriteArrayList<>();

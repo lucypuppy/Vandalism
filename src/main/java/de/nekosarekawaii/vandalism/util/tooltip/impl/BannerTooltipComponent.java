@@ -45,7 +45,7 @@ public class BannerTooltipComponent implements TooltipComponent, ConvertibleTool
     public BannerTooltipComponent(DyeColor color, BannerPatternsComponent patterns) {
         this.color = color;
         this.patterns = patterns;
-        this.bannerField = this.mc.getEntityModelLoader().getModelPart(EntityModelLayers.BANNER).getChild("flag");
+        this.bannerField = mc.getEntityModelLoader().getModelPart(EntityModelLayers.BANNER).getChild("flag");
     }
 
     public BannerTooltipComponent(final BannerItem banner) {
@@ -76,7 +76,7 @@ public class BannerTooltipComponent implements TooltipComponent, ConvertibleTool
         matrices.push();
         matrices.translate(2.5, 8.5, 0);
         matrices.scale(5, 5, 5);
-        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
         this.bannerField.pitch = 0f;
         this.bannerField.pivotY = -32f;
         BannerBlockEntityRenderer.renderCanvas(

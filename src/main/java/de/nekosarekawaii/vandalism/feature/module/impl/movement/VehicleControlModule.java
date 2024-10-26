@@ -99,7 +99,7 @@ public class VehicleControlModule extends Module implements PlayerUpdateListener
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final Entity vehicle = this.mc.player.getVehicle();
+        final Entity vehicle = mc.player.getVehicle();
         if (vehicle == null) {
             return;
         }

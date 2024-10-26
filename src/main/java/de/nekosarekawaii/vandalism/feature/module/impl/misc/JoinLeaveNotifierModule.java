@@ -89,9 +89,9 @@ public class JoinLeaveNotifierModule extends Module implements IncomingPacketLis
                 }
             }
         } else if (packet instanceof final PlayerRemoveS2CPacket playerRemoveS2CPacket) {
-            if (this.mc.getNetworkHandler() != null) {
+            if (mc.getNetworkHandler() != null) {
                 for (final UUID profileId : playerRemoveS2CPacket.profileIds()) {
-                    final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(profileId);
+                    final PlayerListEntry playerListEntry = mc.getNetworkHandler().getPlayerListEntry(profileId);
                     if (playerListEntry != null) {
                         ChatUtil.infoChatMessage(
                                 Formatting.DARK_GRAY +

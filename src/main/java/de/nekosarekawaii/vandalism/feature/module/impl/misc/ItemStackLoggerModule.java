@@ -67,8 +67,8 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        for (final Entity entity : this.mc.world.getEntities()) {
-            if (entity == this.mc.player) continue;
+        for (final Entity entity : mc.world.getEntities()) {
+            if (entity == mc.player) continue;
             if (entity instanceof final ItemEntity itemEntity) {
                 this.logStack(entity, itemEntity.getStack());
             } else {
@@ -112,7 +112,7 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
             LOGGED_ITEMS_DIR.mkdirs();
             if (!LOGGED_ITEMS_DIR.exists()) return;
 
-            final File serverDir = new File(LOGGED_ITEMS_DIR, ServerConnectionUtil.lastServerExists() && !this.mc.isInSingleplayer() && !this.mc.isIntegratedServerRunning() ? ServerConnectionUtil.getLastServerInfo().address : "single player");
+            final File serverDir = new File(LOGGED_ITEMS_DIR, ServerConnectionUtil.lastServerExists() && !mc.isInSingleplayer() && !mc.isIntegratedServerRunning() ? ServerConnectionUtil.getLastServerInfo().address : "single player");
             serverDir.mkdirs();
             if (!serverDir.exists()) return;
 

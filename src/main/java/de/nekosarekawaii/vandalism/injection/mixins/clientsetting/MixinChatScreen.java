@@ -23,8 +23,8 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
 import de.nekosarekawaii.vandalism.injection.access.IChatHud;
-import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
 import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
@@ -103,12 +103,12 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
         this.vandalism$layout.add(
                 ButtonWidget.builder(Text.of("Copy String"), (button) ->
-                        this.mc.keyboard.setClipboard(lastHovered.content().getString())).size(50, 10).build()
+                        mc.keyboard.setClipboard(lastHovered.content().getString())).size(50, 10).build()
         );
 
         this.vandalism$layout.add(
                 ButtonWidget.builder(Text.of("Copy Context"), (button) ->
-                        this.mc.keyboard.setClipboard(lastHovered.content().toString())).size(50, 10).build()
+                        mc.keyboard.setClipboard(lastHovered.content().toString())).size(50, 10).build()
         );
 
         this.vandalism$layout.add(
@@ -167,15 +167,15 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
             final int currentLength = this.chatField.getText().length();
             final MutableText text = Text.literal(String.valueOf(currentLength) + Formatting.DARK_GRAY + " / ");
             text.append(Text.literal(String.valueOf(this.vandalism$realMaxLength)).setStyle(vandalism$RED_COLORED_STYLE));
-            final int x = this.width - 2 - this.mc.textRenderer.getWidth(text) - 2;
-            final int y = this.chatField.getY() - this.mc.textRenderer.fontHeight - 2;
+            final int x = this.width - 2 - mc.textRenderer.getWidth(text) - 2;
+            final int y = this.chatField.getY() - mc.textRenderer.fontHeight - 2;
             final Color color = RenderUtil.interpolateColor(
                     Color.GREEN,
                     Color.YELLOW,
                     Color.RED,
                     Math.min((float) currentLength / this.vandalism$realMaxLength, 1.0f)
             );
-            context.drawText(this.mc.textRenderer, text, x, y, color.getRGB(), true);
+            context.drawText(mc.textRenderer, text, x, y, color.getRGB(), true);
         }
         if (chatSettings.displayAccountHead.getValue()) {
             final Account currentAccount = Vandalism.getInstance().getAccountManager().getCurrentAccount();

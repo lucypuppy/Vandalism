@@ -49,7 +49,7 @@ public class GreedyPlayerArgumentType implements ArgumentType<String>, Minecraft
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Objects.requireNonNull(this.mc.getNetworkHandler()).getPlayerList().stream().map(playerListEntry -> playerListEntry.getProfile().getName()), builder);
+        return CommandSource.suggestMatching(Objects.requireNonNull(mc.getNetworkHandler()).getPlayerList().stream().map(playerListEntry -> playerListEntry.getProfile().getName()), builder);
     }
 
 }

@@ -98,16 +98,16 @@ public class FriendsClientWindow extends ClientWindow {
             }
             if (this.hoveredFriend != null) {
                 if (ImUtils.subButton("Copy Name")) {
-                    this.mc.keyboard.setClipboard(this.hoveredFriend.getName());
+                    mc.keyboard.setClipboard(this.hoveredFriend.getName());
                 }
                 final UUID uuid = this.hoveredFriend.getUuid();
                 if (uuid != null) {
                     if (ImUtils.subButton("Copy UUID")) {
-                        this.mc.keyboard.setClipboard(uuid.toString());
+                        mc.keyboard.setClipboard(uuid.toString());
                     }
                 }
                 if (ImUtils.subButton("Copy Alias")) {
-                    this.mc.keyboard.setClipboard(this.hoveredFriend.getAlias());
+                    mc.keyboard.setClipboard(this.hoveredFriend.getAlias());
                 }
             }
             ImGui.endPopup();
@@ -145,7 +145,7 @@ public class FriendsClientWindow extends ClientWindow {
             }
         }
         final String playerName = friend.getName();
-        final GameProfile gameProfile = this.mc.getGameProfile();
+        final GameProfile gameProfile = mc.getGameProfile();
         final boolean isCurrentPlayer = gameProfile.getName().equals(playerName) && gameProfile.getId().equals(playerUuid);
         if (isCurrentPlayer) {
             final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};

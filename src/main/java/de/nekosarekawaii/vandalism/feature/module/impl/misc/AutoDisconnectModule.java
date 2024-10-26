@@ -34,14 +34,14 @@ public class AutoDisconnectModule extends Module implements PlayerUpdateListener
             this,
             "Lava condition",
             "The settings for the lava condition.",
-            () -> this.mc.player.isInLava()
+            () -> mc.player.isInLava()
     );
 
     private final DisconnectValue healthDisconnectValue = new DisconnectValue(
             this,
             "Health condition",
             "The settings for the health condition.",
-            () -> this.mc.player.getHealth() <= this.disconnectHealth.getValue()
+            () -> mc.player.getHealth() <= this.disconnectHealth.getValue()
     );
 
     private final IntegerValue disconnectHealth = new IntegerValue(
@@ -59,9 +59,9 @@ public class AutoDisconnectModule extends Module implements PlayerUpdateListener
             "The settings for the entity condition.",
             () -> {
                 boolean disconnect = false;
-                for (Entity entity : this.mc.world.getEntities()) {
+                for (Entity entity : mc.world.getEntities()) {
                     if (this.entities.isTarget(entity)) {
-                        final double distance = this.mc.player.getPos().distanceTo(entity.getPos());
+                        final double distance = mc.player.getPos().distanceTo(entity.getPos());
                         if (distance <= this.entityDistance.getValue()) {
                             disconnect = true;
                             break;

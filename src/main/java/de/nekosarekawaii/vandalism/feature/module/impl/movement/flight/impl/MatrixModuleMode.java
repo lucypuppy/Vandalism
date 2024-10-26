@@ -45,9 +45,9 @@ public class MatrixModuleMode extends ModuleMulti<FlightModule> implements Playe
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.age % 5 == 0) {
-            final Vec3d velocity = this.mc.player.getVelocity();
-            this.mc.player.setVelocity(velocity.x, 0, velocity.z);
+        if (mc.player.age % 5 == 0) {
+            final Vec3d velocity = mc.player.getVelocity();
+            mc.player.setVelocity(velocity.x, 0, velocity.z);
         }
     }
 

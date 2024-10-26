@@ -61,7 +61,7 @@ public class EnchantCommand extends Command {
     }
 
     private void enchantItem(final RegistryKey<Enchantment> enchantment, final int level) {
-        final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+        final ItemStack stack = mc.player.getInventory().getMainHandStack();
         if (stack != null && !stack.isEmpty()) {
             if (ItemStackUtil.giveItemStack(ItemStackUtil.appendEnchantmentToItemStack(stack, enchantment, level), false)) {
                 ChatUtil.infoChatMessage("Enchanted the item in your main hand.");

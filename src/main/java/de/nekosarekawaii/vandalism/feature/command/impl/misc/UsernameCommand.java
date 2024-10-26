@@ -22,7 +22,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.Command;
-import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
+import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
@@ -42,11 +45,11 @@ public class UsernameCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            ChatUtil.infoChatMessage("Your name is: " + Formatting.DARK_AQUA + this.mc.session.getUsername());
+            ChatUtil.infoChatMessage("Your name is: " + Formatting.DARK_AQUA + mc.session.getUsername());
             return SINGLE_SUCCESS;
         });
         builder.then(literal("copy").executes(context -> {
-            this.mc.keyboard.setClipboard(this.mc.session.getUsername());
+            mc.keyboard.setClipboard(mc.session.getUsername());
             ChatUtil.infoChatMessage("Name copied into the clipboard.");
             return SINGLE_SUCCESS;
         }));

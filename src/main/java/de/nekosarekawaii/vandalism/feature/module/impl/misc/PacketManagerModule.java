@@ -139,7 +139,7 @@ public class PacketManagerModule extends Module implements IncomingPacketListene
 
     private void log(final StringBuilder builder, final boolean error) {
         final String text = builder.toString();
-        if (this.mc.inGameHud != null) {
+        if (mc.inGameHud != null) {
             if (error) ChatUtil.errorChatMessage(text);
             else ChatUtil.infoChatMessage(text);
         } else {

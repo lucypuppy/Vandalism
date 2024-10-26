@@ -82,16 +82,16 @@ public class AmbienceModule extends Module implements IncomingPacketListener, Pl
         if (this.overwriteWorldTime.getValue()) {
             switch (this.worldTime.getValue()) {
                 case "Day" -> {
-                    this.mc.world.setTimeOfDay(-1000);
+                    mc.world.setTimeOfDay(-1000);
                 }
                 case "Noon" -> {
-                    this.mc.world.setTimeOfDay(-6000);
+                    mc.world.setTimeOfDay(-6000);
                 }
                 case "Night" -> {
-                    this.mc.world.setTimeOfDay(-13000);
+                    mc.world.setTimeOfDay(-13000);
                 }
                 case "Midnight" -> {
-                    this.mc.world.setTimeOfDay(-18000);
+                    mc.world.setTimeOfDay(-18000);
                 }
                 default -> {
                 }
@@ -100,16 +100,16 @@ public class AmbienceModule extends Module implements IncomingPacketListener, Pl
         if (this.overwriteWeather.getValue()) {
             switch (this.weather.getValue()) {
                 case "Clear" -> {
-                    this.mc.world.setRainGradient(0.0F);
-                    this.mc.world.setThunderGradient(0.0F);
+                    mc.world.setRainGradient(0.0F);
+                    mc.world.setThunderGradient(0.0F);
                 }
                 case "Rain" -> {
-                    this.mc.world.setRainGradient(1.0F);
-                    this.mc.world.setThunderGradient(0.0F);
+                    mc.world.setRainGradient(1.0F);
+                    mc.world.setThunderGradient(0.0F);
                 }
                 case "Thunder" -> {
-                    this.mc.world.setRainGradient(1.0F);
-                    this.mc.world.setThunderGradient(1.0F);
+                    mc.world.setRainGradient(1.0F);
+                    mc.world.setThunderGradient(1.0F);
                 }
                 default -> {
                 }

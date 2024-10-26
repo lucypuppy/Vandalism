@@ -24,8 +24,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
@@ -43,7 +43,7 @@ public class VisualSettings extends ValueGroup {
         if (oldValue.floatValue() == newValue.floatValue()) {
             return;
         }
-        GLFW.glfwSetWindowOpacity(this.mc.getWindow().getHandle(), MathHelper.clamp(newValue, 0.1f, 1f));
+        GLFW.glfwSetWindowOpacity(mc.getWindow().getHandle(), MathHelper.clamp(newValue, 0.1f, 1f));
     });
 
     public final BooleanValue unfocusedFPS = new BooleanValue(

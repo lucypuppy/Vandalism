@@ -158,7 +158,7 @@ public class TranslatorModule extends Module implements ChatSendListener, ChatRe
                             Text.literal(translated)
                     )))
             );
-            this.mc.inGameHud.getChatHud().addMessage(mutableText);
+            mc.inGameHud.getChatHud().addMessage(mutableText);
         });
     }
 
@@ -178,7 +178,7 @@ public class TranslatorModule extends Module implements ChatSendListener, ChatRe
     private void translateOutgoing(final String message) {
         this.executorService.execute(() -> {
             final String translated = GoogleTranslate.translate(message, this.outgoingFromLanguage.getValue(), this.outgoingToLanguage.getValue()).orElse(message);
-            ((IClientPlayNetworkHandler) this.mc.getNetworkHandler()).vandalism$sendChatMessage(translated);
+            ((IClientPlayNetworkHandler) mc.getNetworkHandler()).vandalism$sendChatMessage(translated);
         });
     }
 

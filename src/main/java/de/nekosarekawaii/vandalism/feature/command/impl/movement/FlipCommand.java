@@ -36,7 +36,7 @@ public class FlipCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            this.mc.player.setYaw(this.mc.player.getYaw() + 180);
+            mc.player.setYaw(mc.player.getYaw() + 180);
             return SINGLE_SUCCESS;
         });
     }

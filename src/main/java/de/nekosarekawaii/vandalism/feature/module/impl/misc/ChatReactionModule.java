@@ -173,13 +173,13 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
         if (networkHandler != null) {
             for (final Map.Entry<String, Long> entry : this.queuedMessages.entrySet()) {
                 if (System.currentTimeMillis() - entry.getValue() >= RandomUtils.randomLong(this.minDelay.getValue(), this.maxDelay.getValue())) {
                     final String message = entry.getKey();
                     this.queuedMessages.remove(message);
-                    final String self = this.mc.getGameProfile().getName();
+                    final String self = mc.getGameProfile().getName();
                     final String targetPlaceholder = "%target%";
                     String target = targetPlaceholder;
                     final PlayerListEntry playerListEntry = WorldUtil.getPlayerFromTab(message);
@@ -221,7 +221,7 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
                 message = gameMessageS2CPacket.content().getString();
             }
         } else if (packet instanceof final ChatMessageS2CPacket chatMessageS2CPacket) {
-            final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(chatMessageS2CPacket.sender());
+            final PlayerListEntry playerListEntry = mc.getNetworkHandler().getPlayerListEntry(chatMessageS2CPacket.sender());
             if (playerListEntry != null) {
                 message = "<" + playerListEntry.getProfile().getName() + "> " + chatMessageS2CPacket.body().content();
             }

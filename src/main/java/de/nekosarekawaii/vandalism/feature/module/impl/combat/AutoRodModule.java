@@ -200,10 +200,10 @@ public class AutoRodModule extends Module implements PlayerUpdateListener, Rotat
         final Vec3d center = box.getCenter();
         final double scale = 1.5;
 
-        final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
+        final Vec3d camPos = mc.gameRenderer.getCamera().getPos();
         matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
-        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
 
         matrixStack.push();
         final double minX = (box.minX - center.x) * scale + center.x;
@@ -265,13 +265,13 @@ public class AutoRodModule extends Module implements PlayerUpdateListener, Rotat
     private void updateTarget() {
         final List<Entity> entities = new ArrayList<>();
 
-        for (final Entity entity : this.mc.world.getEntities()) {
-            if (entity == this.mc.player || entity == this.mc.player.getVehicle()) {
+        for (final Entity entity : mc.world.getEntities()) {
+            if (entity == mc.player || entity == mc.player.getVehicle()) {
                 continue;
             }
             if (
                     this.entityGroup.isTarget(entity) &&
-                            this.mc.player.distanceTo(entity) <= range.getValue() + 1.0 &&
+                            mc.player.distanceTo(entity) <= range.getValue() + 1.0 &&
                             entity.getWidth() > 0.0 && entity.getHeight() > 0.0
             ) {
                 PlayerListEntry playerListEntry = null;
@@ -291,7 +291,7 @@ public class AutoRodModule extends Module implements PlayerUpdateListener, Rotat
             return;
         }
 
-        final Vec3d eyePos = this.mc.player.getEyePos();
+        final Vec3d eyePos = mc.player.getEyePos();
 //        entities.sort((entity1, entity2) -> {
 //            final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
 //            final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));

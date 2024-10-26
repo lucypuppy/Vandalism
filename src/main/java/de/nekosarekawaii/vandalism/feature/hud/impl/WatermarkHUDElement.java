@@ -103,7 +103,7 @@ public class WatermarkHUDElement extends HUDElement {
     @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Identifier identifier = this.logoSelection.getValue().getIdentifier();
-        this.mc.getTextureManager().getTexture(identifier).setFilter(true, true);
+        mc.getTextureManager().getTexture(identifier).setFilter(true, true);
         GLStateTracker.BLEND.save(true);
         final Color selectedColor = this.color.getValue().getColor();
         context.setShaderColor(
@@ -143,7 +143,7 @@ public class WatermarkHUDElement extends HUDElement {
             this.name = file.getName();
             this.identifier = Identifier.of(FabricBootstrap.MOD_ID, "logo_" + this.name.replace(" ", "_"));
             try (final FileInputStream fileInputStream = new FileInputStream(file)) {
-                this.mc.getTextureManager().registerTexture(
+                mc.getTextureManager().registerTexture(
                         this.identifier,
                         new NativeImageBackedTexture(NativeImage.read(fileInputStream))
                 );

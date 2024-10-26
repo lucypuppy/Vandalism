@@ -78,7 +78,7 @@ public class FreeCamModule extends Module implements
 
     @Override
     protected void onActivate() {
-        if (this.mc.player == null) {
+        if (mc.player == null) {
             this.deactivate();
             return;
         }
@@ -88,16 +88,16 @@ public class FreeCamModule extends Module implements
                 PlayerUpdateEvent.ID, CameraOverrideEvent.ID,
                 MouseDeltaEvent.ID, MoveInputEvent.ID
         );
-        this.x = this.mc.player.getX();
-        this.y = this.mc.player.getY() + (this.mc.player.getHeight() * 2);
-        this.z = this.mc.player.getZ();
-        this.yaw = this.mc.player.getYaw();
-        this.pitch = this.mc.player.getPitch();
-        this.mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
-        final GameOptions options = this.mc.options;
+        this.x = mc.player.getX();
+        this.y = mc.player.getY() + (mc.player.getHeight() * 2);
+        this.z = mc.player.getZ();
+        this.yaw = mc.player.getYaw();
+        this.pitch = mc.player.getPitch();
+        mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
+        final GameOptions options = mc.options;
         final KeyBinding[] bindings = {options.forwardKey, options.backKey, options.leftKey, options.rightKey, options.jumpKey, options.sneakKey};
         for (final KeyBinding keyBinding : bindings) {
-            keyBinding.setPressed(InputUtil.isKeyPressed(this.mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
+            keyBinding.setPressed(InputUtil.isKeyPressed(mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
         }
     }
 
@@ -114,8 +114,8 @@ public class FreeCamModule extends Module implements
         this.z = 0;
         this.yaw = 0;
         this.pitch = 0;
-        if (this.mc.player != null) {
-            this.mc.options.setPerspective(Perspective.FIRST_PERSON);
+        if (mc.player != null) {
+            mc.options.setPerspective(Perspective.FIRST_PERSON);
         }
     }
 
@@ -124,7 +124,7 @@ public class FreeCamModule extends Module implements
         double motionX = 0, motionZ = 0;
         final double motionY = event.jumping ? this.motionYOffset.getValue() : event.sneaking ? -this.motionYOffset.getValue() : 0;
         if (event.movementForward != 0 || event.movementSideways != 0) {
-            float rotationYaw = this.mc.gameRenderer.getCamera().getYaw();
+            float rotationYaw = mc.gameRenderer.getCamera().getYaw();
             final float moveForward = event.movementForward;
             final float moveStrafing = event.movementSideways;
             if (moveForward < 0F) rotationYaw += 180F;
@@ -173,7 +173,7 @@ public class FreeCamModule extends Module implements
                 this.yaw = positionLookPacket.getYaw();
                 this.pitch = positionLookPacket.getPitch();
             }
-        } else if (packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getEntityId() == this.mc.player.getId()) {
+        } else if (packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getEntityId() == mc.player.getId()) {
             if (this.deactivateOnPositionUpdate.getValue()) {
                 this.deactivate();
             }
@@ -182,8 +182,8 @@ public class FreeCamModule extends Module implements
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.mc.options.togglePerspectiveKey.setPressed(false);
-        this.mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
+        mc.options.togglePerspectiveKey.setPressed(false);
+        mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
     }
 
     @Override

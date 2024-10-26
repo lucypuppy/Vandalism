@@ -156,14 +156,14 @@ public class MinigamesClientWindow extends ClientWindow {
         final float startY = ImGui.getCursorScreenPosY() + contentRegionHeight / 2f - height / 2f;
         final float endX = ImGui.getCursorScreenPosX() + contentRegionWidth / 2f + width / 2f;
         final float endY = ImGui.getCursorScreenPosY() + contentRegionHeight / 2f + height / 2f;
-        final int guiScale = this.mc.options.getGuiScale().getValue();
+        final int guiScale = mc.options.getGuiScale().getValue();
         currentMinigame.onRender(context, mouseX * guiScale, mouseY * guiScale, startX, startY, endX, endY, width, height);
         RenderSystem.setProjectionMatrix(oldProjection, oldVertexSorter);
         RenderSystem.modelViewMatrix = oldModelViewMatrix;
-        this.mc.getFramebuffer().beginWrite(true);
+        mc.getFramebuffer().beginWrite(true);
         final ImDrawList drawList = ImGui.getWindowDrawList();
         drawList.addImage(this.gameWindowFrameBuffer.getColorAttachment(), startX, startY, endX, endY);
-        this.mc.getFramebuffer().beginWrite(true);
+        mc.getFramebuffer().beginWrite(true);
         ImGui.endChild();
         if (ImUtils.subButton("Close " + currentMinigame.getName() + id + "closeMinigame")) {
             this.minigamesManager.setCurrentMinigame(null);

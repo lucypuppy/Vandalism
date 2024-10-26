@@ -28,7 +28,10 @@ import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.Country;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.request.impl.ServersRequest;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.impl.ServersResponse;
-import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
+import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import imgui.ImGui;
@@ -383,10 +386,10 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
                 serverList.saveFile();
             }
             if (ImGui.button("Copy Address" + id + "copyAddress", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard(address);
+                mc.keyboard.setClipboard(address);
             }
             if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard(listDataEntry.getData());
+                mc.keyboard.setClipboard(listDataEntry.getData());
             }
         }
     }

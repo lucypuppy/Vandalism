@@ -38,7 +38,7 @@ public class OldAACModuleMode extends ModuleMulti<FlightModule> implements Playe
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
 
-        this.startY = this.mc.player.getY();
+        this.startY = mc.player.getY();
     }
 
     @Override
@@ -48,8 +48,8 @@ public class OldAACModuleMode extends ModuleMulti<FlightModule> implements Playe
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.fallDistance > 3.0f) {
-            this.mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+        if (mc.player.fallDistance > 3.0f) {
+            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
 
             if (mc.player.input.jumping) {
                 this.startY += 1;
@@ -57,12 +57,12 @@ public class OldAACModuleMode extends ModuleMulti<FlightModule> implements Playe
                 this.startY -= 1;
             }
 
-            this.mc.player.fallDistance = 0.0f;
+            mc.player.fallDistance = 0.0f;
         }
 
         if (mc.player.hurtTime > 0 && mc.player.getPos().getY() < this.startY - 2.0) {
-            final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : this.mc.player.getVelocity();
-            this.mc.player.setVelocity(velocity.x, 0.6, velocity.z);
+            final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : mc.player.getVelocity();
+            mc.player.setVelocity(velocity.x, 0.6, velocity.z);
         }
     }
 

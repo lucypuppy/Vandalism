@@ -51,16 +51,16 @@ public class MiddleClickFriendsModule extends Module implements MouseInputListen
 
     @Override
     public void onMouse(final MouseEvent event) {
-        if (this.mc.currentScreen != null) {
+        if (mc.currentScreen != null) {
             return;
         }
         if (event.type == MouseInputListener.Type.BUTTON) {
             if (event.button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && event.action == GLFW.GLFW_PRESS) {
-                final HitResult hitResult = this.mc.crosshairTarget;
+                final HitResult hitResult = mc.crosshairTarget;
                 if (hitResult instanceof final EntityHitResult entityHitResult) {
                     final Entity entity = entityHitResult.getEntity();
                     if (entity != null) {
-                        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+                        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
                         if (networkHandler != null) {
                             final PlayerListEntry playerListEntry = networkHandler.getPlayerListEntry(entity.getUuid());
                             if (playerListEntry != null) {

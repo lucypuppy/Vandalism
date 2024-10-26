@@ -37,15 +37,15 @@ public class VulcanModuleMode extends ModuleMulti<SpeedModule> implements Player
         if (!MovementUtil.isMoving()) {
             this.airTicks = 0;
         }
-        if (!this.mc.player.isOnGround() && MovementUtil.isMoving()) {
+        if (!mc.player.isOnGround() && MovementUtil.isMoving()) {
             this.airTicks++;
         }
-        if (this.airTicks > 3 && this.mc.player.getVelocity().getY() > 0) {
-            this.mc.player.setVelocity(this.mc.player.getVelocity().getX(), -0.12f, this.mc.player.getVelocity().getZ());
+        if (this.airTicks > 3 && mc.player.getVelocity().getY() > 0) {
+            mc.player.setVelocity(mc.player.getVelocity().getX(), -0.12f, mc.player.getVelocity().getZ());
         }
-        if (this.mc.player.isOnGround() && MovementUtil.isMoving()) {
+        if (mc.player.isOnGround() && MovementUtil.isMoving()) {
             this.airTicks = 0;
-            this.mc.player.jump();
+            mc.player.jump();
             MovementUtil.setSpeed(0.48f);
         }
     }

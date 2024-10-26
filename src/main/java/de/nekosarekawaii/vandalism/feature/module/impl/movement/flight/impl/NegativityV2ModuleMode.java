@@ -25,7 +25,6 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightMod
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.player.MovementUtil;
-import de.nekosarekawaii.vandalism.util.WorldUtil;
 import de.nekosarekawaii.vandalism.util.player.PlayerUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.shape.VoxelShapes;
@@ -50,18 +49,18 @@ public class NegativityV2ModuleMode extends ModuleMulti<FlightModule> implements
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.mc.options.jumpKey.setPressed(false);
+        mc.options.jumpKey.setPressed(false);
         if (MovementUtil.isMoving() && !PlayerUtil.isOnGround(0.1)) {
             MovementUtil.setSpeed(0.65);
         }
-        this.startPos = (int) this.mc.player.getY();
+        this.startPos = (int) mc.player.getY();
     }
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
         if (event.block == Blocks.AIR && event.pos.getY() < this.startPos) {
             final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxY = 1, maxZ = 1;
-            if (this.mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR <= 0.2 && this.mc.player.age % 7 == 0) {
+            if (mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR <= 0.2 && mc.player.age % 7 == 0) {
                 return;
             }
             event.shape = VoxelShapes.cuboid(

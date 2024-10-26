@@ -177,7 +177,7 @@ public abstract class Module extends Feature implements ValueParent {
                     this.onDeactivate();
                 }
                 final ClientSettings clientSettings = Vandalism.getInstance().getClientSettings();
-                if (this.mc.player != null) {
+                if (mc.player != null) {
                     if (clientSettings.getChatSettings().moduleStateLogging.getValue() && this.moduleStateLogging.getValue()) {
                         final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
                         final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");

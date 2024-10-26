@@ -27,10 +27,10 @@ import de.nekosarekawaii.vandalism.integration.minigames.Minigame;
 import de.nekosarekawaii.vandalism.integration.minigames.impl.mittebekommttritte.shoe.Shoe;
 import de.nekosarekawaii.vandalism.integration.minigames.impl.mittebekommttritte.shoe.impl.DefaultShoe;
 import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.math.Percentage;
-import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import de.nekosarekawaii.vandalism.util.SoundHooks;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.math.Percentage;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
 import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
@@ -236,7 +236,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
         if (this.clicked && isMouseInside) {
             this.count++;
             this.currentColor = Color.RED;
-            this.mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_PLAYER_HURT, 1f));
+            mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_PLAYER_HURT, 1f));
             if (this.count > 0 && this.count % 10 == 0) {
                 this.levelUp = true;
             }
@@ -251,12 +251,12 @@ public class MitteBekommtTritteMinigame extends Minigame {
         }
         if (this.levelUp && this.levelUpTimer.hasReached(10, true)) {
             this.levelUp = false;
-            this.mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_PLAYER_LEVELUP, this.count % 1000 == 0 ? 0.7f : this.count % 100 == 0 ? 0.8f : 1f));
+            mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_PLAYER_LEVELUP, this.count % 1000 == 0 ? 0.7f : this.count % 100 == 0 ? 0.8f : 1f));
         }
         final int maxScore = 5000;
         final float percentage = this.blood.get() ? Percentage.percentage(Math.min(maxScore, this.count), maxScore) : 0;
         final Identifier background = Identifier.of(FabricBootstrap.MOD_ID, this.backgroundPath + (int) (percentage / 100 * this.maxBackgrounds) + ".png");
-        this.mc.getTextureManager().getTexture(background).setFilter(
+        mc.getTextureManager().getTexture(background).setFilter(
                 true,
                 true
         );
@@ -282,9 +282,9 @@ public class MitteBekommtTritteMinigame extends Minigame {
         }
         final String kps = Formatting.WHITE.toString() + Vandalism.getInstance().getCpsTracker().getLeftClicks() + " « Tritte pro Sekunde";
         context.drawText(
-                this.mc.textRenderer,
+                mc.textRenderer,
                 kps,
-                width - this.mc.textRenderer.getWidth(kps) - 2,
+                width - mc.textRenderer.getWidth(kps) - 2,
                 height - 12,
                 -1,
                 false
@@ -311,7 +311,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
             RenderSystem.modelViewMatrix.rotate((float) Math.toRadians(-20), 0, 0, 1);
         }
         final Identifier currentShoe = Identifier.of(FabricBootstrap.MOD_ID, this.shoePath + this.currentShoe + ".png");
-        this.mc.getTextureManager().getTexture(currentShoe).setFilter(
+        mc.getTextureManager().getTexture(currentShoe).setFilter(
                 true,
                 true
         );
@@ -321,7 +321,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
         RenderSystem.modelViewMatrix = oldMatrix;
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         context.drawText(
-                this.mc.textRenderer,
+                mc.textRenderer,
                 Formatting.WHITE + "Tritte in die Mitte » " + this.count,
                 2,
                 height - 12,
@@ -334,7 +334,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
             for (int i = 0; i < this.shoes.size(); i++) {
                 final Shoe shoe = this.shoes.get(i);
                 final Identifier shoeId = Identifier.of(FabricBootstrap.MOD_ID, this.shoePath + i + ".png");
-                this.mc.getTextureManager().getTexture(shoeId).setFilter(
+                mc.getTextureManager().getTexture(shoeId).setFilter(
                         true,
                         true
                 );
@@ -346,16 +346,16 @@ public class MitteBekommtTritteMinigame extends Minigame {
                     if (isHovered && this.clicked) {
                         if (shoe.isUnlocked()) {
                             this.currentShoe = i;
-                            this.mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1f));
+                            mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1f));
                         } else {
                             final int price = shoe.getPrice();
                             if (this.count >= price) {
                                 this.count -= price;
                                 shoe.setUnlocked(true);
                                 this.currentShoe = i;
-                                this.mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_USE, 1f));
+                                mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_USE, 1f));
                             } else {
-                                this.mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_DESTROY, 1f));
+                                mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_DESTROY, 1f));
                             }
                         }
                     }
@@ -367,9 +367,9 @@ public class MitteBekommtTritteMinigame extends Minigame {
                 RenderUtil.fillOutlined(context, x + 2, y, width / 4 + x, height / 5 + y, 2, inColor.getRGB(), outColor.getRGB());
                 final String name = Formatting.WHITE + Formatting.BOLD.toString() + shoe.getName() + (this.currentShoe == i ? " (Selected)" : "");
                 context.drawText(
-                        this.mc.textRenderer,
+                        mc.textRenderer,
                         name,
-                        (x + width / 8) - this.mc.textRenderer.getWidth(name) / 2,
+                        (x + width / 8) - mc.textRenderer.getWidth(name) / 2,
                         height / 5 + y - 80,
                         -1,
                         false
@@ -377,9 +377,9 @@ public class MitteBekommtTritteMinigame extends Minigame {
                 if (this.currentShoe != i) {
                     final String text = shoe.isUnlocked() ? Formatting.GREEN + "Select" : Formatting.RED + "Unlock for " + shoe.getPrice();
                     context.drawText(
-                            this.mc.textRenderer,
+                            mc.textRenderer,
                             text,
-                            (x + width / 8) - this.mc.textRenderer.getWidth(text) / 2,
+                            (x + width / 8) - mc.textRenderer.getWidth(text) / 2,
                             height / 5 + y + 2,
                             -1,
                             false
@@ -397,7 +397,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
 
     @Override
     public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
-        if (release || button != this.mc.options.attackKey.boundKey.getCode()) {
+        if (release || button != mc.options.attackKey.boundKey.getCode()) {
             return;
         }
         this.clicked = true;
@@ -405,7 +405,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
 
     @Override
     public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
-        if (!release && key == this.mc.options.attackKey.boundKey.getCode()) {
+        if (!release && key == mc.options.attackKey.boundKey.getCode()) {
             this.clicked = true;
         }
         return super.keyPressed(key, scanCode, modifiers, release);

@@ -60,8 +60,8 @@ public class StrafeModule extends Module implements PlayerUpdateListener {
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (!MovementUtil.isMoving()) return;
-        if (this.onlyOnGround.getValue() && !this.mc.player.isOnGround()) return;
-        if (this.autoJump.getValue() && this.mc.player.isOnGround()) this.mc.player.jump();
+        if (this.onlyOnGround.getValue() && !mc.player.isOnGround()) return;
+        if (this.autoJump.getValue() && mc.player.isOnGround()) mc.player.jump();
         MovementUtil.setSpeed(MovementUtil.getSpeed());
     }
 }

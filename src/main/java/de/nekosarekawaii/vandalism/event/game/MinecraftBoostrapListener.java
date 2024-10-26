@@ -32,12 +32,12 @@ public interface MinecraftBoostrapListener {
         private final MinecraftClient mc;
 
         public MinecraftBootstrapEvent(final MinecraftClient mc) {
-            this.mc = mc;
+            mc = mc;
         }
 
         @Override
         public void call(final MinecraftBoostrapListener listener) {
-            listener.onBootstrapGame(this.mc);
+            listener.onBootstrapGame(mc);
         }
 
     }

@@ -53,15 +53,15 @@ public class StaticModuleMode extends ModuleMulti<JesusModule> implements BlockC
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
-        if (this.disableOnSneak.getValue() && this.mc.player.input.sneaking || (this.mc.player != null && this.mc.player.hasVehicle())) {
+        if (this.disableOnSneak.getValue() && mc.player.input.sneaking || (mc.player != null && mc.player.hasVehicle())) {
             return;
         }
         final BlockState state = event.state;
         final FluidState fluidState = state.getFluidState();
-        if (event.pos.getY() < this.mc.player.getY() && !fluidState.isEmpty()) {
+        if (event.pos.getY() < mc.player.getY() && !fluidState.isEmpty()) {
             final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxZ = 1;
             double maxY = 1;
-            if (fluidState.getFluid() instanceof WaterFluid && (this.mc.player.isOnFire() || this.mc.player.fallDistance >= 2)) {
+            if (fluidState.getFluid() instanceof WaterFluid && (mc.player.isOnFire() || mc.player.fallDistance >= 2)) {
                 maxY = 0.59;
             }
             event.shape = VoxelShapes.cuboid(

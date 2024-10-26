@@ -95,15 +95,15 @@ public class IllegalInteractionModule extends Module implements PlayerUpdateList
     }
 
     private BlockHitResult getBlockHitResult() {
-        final Entity cameraEntity = this.mc.getCameraEntity();
+        final Entity cameraEntity = mc.getCameraEntity();
         final HitResult hitResult = cameraEntity.raycast(this.reach.getValue(), 0, false);
-        final ItemStack mainHandStack = this.mc.player.getMainHandStack();
+        final ItemStack mainHandStack = mc.player.getMainHandStack();
         final Item item = mainHandStack.getItem();
         final boolean invalidItem = mainHandStack.isEmpty() || !(item instanceof BlockItem || item instanceof SpawnEggItem);
         if (!(hitResult instanceof final BlockHitResult blockHitResult) || invalidItem) {
             return null;
         }
-        final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
+        final Block block = mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
         if ((block instanceof AirBlock || block instanceof FluidBlock)) {
             return blockHitResult;
         }
@@ -112,10 +112,10 @@ public class IllegalInteractionModule extends Module implements PlayerUpdateList
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.options.useKey.isPressed()) return;
+        if (!mc.options.useKey.isPressed()) return;
         final BlockHitResult blockHitResult = this.getBlockHitResult();
         if (blockHitResult == null) return;
-        this.mc.interactionManager.interactBlock(this.mc.player, Hand.MAIN_HAND, blockHitResult);
+        mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHitResult);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class IllegalInteractionModule extends Module implements PlayerUpdateList
     public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         final BlockHitResult blockHitResult = this.getBlockHitResult();
         if (blockHitResult == null) return;
-        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
         matrixStack.push();
         final BlockPos pos = blockHitResult.getBlockPos();
         float[] color = new float[]{1f, 0f, 0f};

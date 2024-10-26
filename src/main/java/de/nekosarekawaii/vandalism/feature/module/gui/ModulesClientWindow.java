@@ -264,11 +264,11 @@ public class ModulesClientWindow extends ClientWindow {
                 final JsonObject valuesJsonObject = new JsonObject();
                 ConfigWithValues.saveValues(valuesJsonObject, values);
                 jsonObject.add("values", valuesJsonObject);
-                this.mc.keyboard.setClipboard(jsonObject.toString());
+                mc.keyboard.setClipboard(jsonObject.toString());
             }
             ImGui.sameLine();
             if (ImGui.button("Paste Config" + moduleId + "pasteconfigbutton", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                final String clipboard = this.mc.keyboard.getClipboard();
+                final String clipboard = mc.keyboard.getClipboard();
                 if (clipboard != null && !clipboard.isBlank()) {
                     final List<Value<?>> values = new ArrayList<>();
                     for (final Value<?> value : module.getValues()) {

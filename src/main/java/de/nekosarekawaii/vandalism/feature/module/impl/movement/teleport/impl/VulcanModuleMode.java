@@ -61,29 +61,29 @@ public class VulcanModuleMode extends ModuleMulti<TeleportModule> implements Pla
 //        }
         final Vec3d target = this.parent.getSelectedPos();
         if (target == null) return;
-        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
         if (networkHandler == null) return;
         if (this.flagged && this.damaged) {
             final Vec3d finalPos = new Vec3d(target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5);
-            final double dis = this.mc.player.getPos().distanceTo(target);
+            final double dis = mc.player.getPos().distanceTo(target);
             for (double d = 0.0D; d < dis; d += 9.0D) {
-                final double x = this.mc.player.getX() + (finalPos.x - (double) this.mc.player.getHorizontalFacing().getOffsetX() - this.mc.player.getX()) * d / dis;
-                final double y = this.mc.player.getY() + (finalPos.y - this.mc.player.getY()) * d / dis;
-                final double z = this.mc.player.getZ() + (finalPos.z - (double) this.mc.player.getHorizontalFacing().getOffsetZ() - this.mc.player.getZ()) * d / dis;
+                final double x = mc.player.getX() + (finalPos.x - (double) mc.player.getHorizontalFacing().getOffsetX() - mc.player.getX()) * d / dis;
+                final double y = mc.player.getY() + (finalPos.y - mc.player.getY()) * d / dis;
+                final double z = mc.player.getZ() + (finalPos.z - (double) mc.player.getHorizontalFacing().getOffsetZ() - mc.player.getZ()) * d / dis;
                 networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
             }
             final double x = finalPos.x;
             final double y = finalPos.y;
             final double z = finalPos.z;
             networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
-            this.mc.player.setPosition(x, y, z);
+            mc.player.setPosition(x, y, z);
             this.flagged = this.damaged = this.executed = false;
         }
-        if (!this.damaged && this.mc.player.isOnGround() && !this.executed) {
+        if (!this.damaged && mc.player.isOnGround() && !this.executed) {
             PlayerDamageUtil.damagePlayerVulcan();
             this.executed = true;
         }
-        if (this.mc.player.hurtTime > 0) {
+        if (mc.player.hurtTime > 0) {
             this.damaged = true;
         }
     }

@@ -57,49 +57,49 @@ public class BukkitModuleMode extends ModuleMulti<FlightModule> implements Playe
         final double vSpeed = 0.0625D;
 
         final Vec3d forward = new Vec3d(0, 0, hSpeed).rotateY(
-                -(float) Math.toRadians(Math.round(this.mc.player.getYaw() / 90) * 90)
+                -(float) Math.toRadians(Math.round(mc.player.getYaw() / 90) * 90)
         );
 
         Vec3d moveVec = Vec3d.ZERO;
 
-        if (this.mc.player.input.movementForward > 0) {
+        if (mc.player.input.movementForward > 0) {
             moveVec = moveVec.add(forward);
-            this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.player.input.movementForward < 0) {
+            mc.player.setVelocity(0, 0, 0);
+        } else if (mc.player.input.movementForward < 0) {
             moveVec = moveVec.add(forward.negate());
-            this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.player.input.movementSideways > 0) {
+            mc.player.setVelocity(0, 0, 0);
+        } else if (mc.player.input.movementSideways > 0) {
             moveVec = moveVec.add(forward.rotateY((float) Math.toRadians(90)));
-            this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.player.input.movementSideways < 0) {
+            mc.player.setVelocity(0, 0, 0);
+        } else if (mc.player.input.movementSideways < 0) {
             moveVec = moveVec.add(forward.rotateY((float) -Math.toRadians(90)));
-            this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.player.input.jumping) {
+            mc.player.setVelocity(0, 0, 0);
+        } else if (mc.player.input.jumping) {
             moveVec = moveVec.add(0, vSpeed, 0);
-            this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.player.input.sneaking) {
+            mc.player.setVelocity(0, 0, 0);
+        } else if (mc.player.input.sneaking) {
             moveVec = moveVec.add(0, -vSpeed, 0);
-            this.mc.player.setVelocity(0, 0, 0);
+            mc.player.setVelocity(0, 0, 0);
         }
 
-        this.mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
-                this.mc.player.getX() + moveVec.x,
-                this.mc.player.getY() + moveVec.y,
-                this.mc.player.getZ() + moveVec.z,
+        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
+                mc.player.getX() + moveVec.x,
+                mc.player.getY() + moveVec.y,
+                mc.player.getZ() + moveVec.z,
                 false
         ));
 
-        this.mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
-                this.mc.player.getX() + moveVec.x,
-                this.mc.player.getY() - 100,
-                this.mc.player.getZ() + moveVec.z, true
+        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
+                mc.player.getX() + moveVec.x,
+                mc.player.getY() - 100,
+                mc.player.getZ() + moveVec.z, true
         ));
     }
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final PlayerPositionLookS2CPacket packet) {
-            if (this.mc.player == null) return;
+            if (mc.player == null) return;
             packet.pitch = mc.player.getPitch();
             packet.yaw = mc.player.getYaw();
         }

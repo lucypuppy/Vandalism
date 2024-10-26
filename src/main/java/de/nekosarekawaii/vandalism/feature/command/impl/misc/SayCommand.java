@@ -40,9 +40,9 @@ public class SayCommand extends Command {
         builder.then(argument("message", StringArgumentType.greedyString()).executes(context -> {
             final String message = Placeholders.applyReplacements(StringArgumentType.getString(context, "message"));
             if (message.startsWith("/") && message.length() > 1) {
-                this.mc.getNetworkHandler().sendChatCommand(message.substring(1));
+                mc.getNetworkHandler().sendChatCommand(message.substring(1));
             } else {
-                ((IClientPlayNetworkHandler) this.mc.getNetworkHandler()).vandalism$sendChatMessage(message);
+                ((IClientPlayNetworkHandler) mc.getNetworkHandler()).vandalism$sendChatMessage(message);
             }
             return SINGLE_SUCCESS;
         }));

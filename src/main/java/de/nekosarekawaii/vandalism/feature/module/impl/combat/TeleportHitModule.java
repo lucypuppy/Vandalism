@@ -61,7 +61,7 @@ public class TeleportHitModule extends Module implements PlayerUpdateListener {
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (!mc.options.attackKey.isPressed()) return;
-        final PrioritizedRotation playerRotation = new PrioritizedRotation(this.mc.player.getYaw(), this.mc.player.getPitch(), RotationPriority.NORMAL);
+        final PrioritizedRotation playerRotation = new PrioritizedRotation(mc.player.getYaw(), mc.player.getPitch(), RotationPriority.NORMAL);
         final HitResult result = WorldUtil.raytrace(playerRotation, maxDistance.getValue());
 
         if (result.getType() == HitResult.Type.ENTITY) {
@@ -78,7 +78,7 @@ public class TeleportHitModule extends Module implements PlayerUpdateListener {
                     finalPos.getZ() + 0.5
             );
 
-            this.mc.getNetworkHandler().getConnection().channel.writeAndFlush(PlayerInteractEntityC2SPacket.attack(target, mc.player.isSneaking()));
+            mc.getNetworkHandler().getConnection().channel.writeAndFlush(PlayerInteractEntityC2SPacket.attack(target, mc.player.isSneaking()));
 
             MovementUtil.bypassClip(
                     mc.player.getPos().getX(),

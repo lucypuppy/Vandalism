@@ -41,13 +41,13 @@ public class PlayerSkinRenderer implements MinecraftWrapper {
         this.glId = -1;
         this.skin = null;
         CompletableFuture.supplyAsync(() -> {
-            final ProfileResult result = this.mc.getSessionService().fetchProfile(uuid, false);
+            final ProfileResult result = mc.getSessionService().fetchProfile(uuid, false);
             if (result == null) return null;
             return result.profile();
         }, SKIN_LOADER).thenComposeAsync(profile -> {
             if (profile == null) return CompletableFuture.completedFuture(DefaultSkinHelper.getSkinTextures(uuid));
-            return this.mc.getSkinProvider().fetchSkinTextures(profile);
-        }, this.mc).thenAcceptAsync(skin -> this.glId = RenderUtil.getGlId(this.skin = skin.texture()), this.mc);
+            return mc.getSkinProvider().fetchSkinTextures(profile);
+        }, mc).thenAcceptAsync(skin -> this.glId = RenderUtil.getGlId(this.skin = skin.texture()), mc);
     }
 
 }

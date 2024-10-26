@@ -56,15 +56,15 @@ public class CollisionModuleMode extends ModuleMulti<FlightModule> implements Bl
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.autoJump.getValue()) {
-            if (mc.player.input.jumping && this.mc.player.getY() < this.startPos + 1) {
-                this.startPos = (int) this.mc.player.getY();
+            if (mc.player.input.jumping && mc.player.getY() < this.startPos + 1) {
+                this.startPos = (int) mc.player.getY();
             }
 
-            if (this.mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR == 0 && this.mc.player.age % 6 == 0) {
-                this.mc.player.jump();
+            if (mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR == 0 && mc.player.age % 6 == 0) {
+                mc.player.jump();
             }
         } else {
-            this.startPos = (int) this.mc.player.getY();
+            this.startPos = (int) mc.player.getY();
         }
     }
 
