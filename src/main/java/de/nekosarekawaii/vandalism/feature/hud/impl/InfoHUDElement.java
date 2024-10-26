@@ -56,6 +56,8 @@ import net.minecraft.registry.VersionedIdentifier;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.joml.Vector2f;
@@ -183,6 +185,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             this,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
+            true
+    );
+
+    private final BooleanValue lookingAtBlockPosition = new BooleanValue(
+            this,
+            "Looking At Block Position",
+            "Shows the position of the block you are currently looking at.",
             true
     );
 
@@ -526,6 +535,14 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         correctedZ
                 ));
             }
+        }
+
+        if (this.lookingAtBlockPosition.getValue() && this.mc.player != null && this.mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
+            final BlockPos lookingAt = blockHitResult.getBlockPos();
+            infoMap.put(
+                    "Looking At",
+                    String.format("%s, %s, %s", lookingAt.getX(), lookingAt.getY(), lookingAt.getZ())
+            );
         }
 
         if (this.entities.getValue() && this.mc.world != null) {
