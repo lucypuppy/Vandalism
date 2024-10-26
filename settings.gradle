@@ -14,9 +14,10 @@ setupBinaryProject("addon-baritone", "baritone")
 setupBinaryProject("addon-itemvault", "ItemVault")
 
 void setupBinaryProject(String projectName, String fileMarker) {
-    File buildOutput = new File(rootProject.projectDir, "binaries")
-    for (final def file in buildOutput.listFiles()) {
-        if (file.name.contains(fileMarker) && !file.name.contains("sources")) {
+    File modsDir = new File(rootProject.projectDir, "run/mods")
+
+    for (final def file in modsDir.listFiles()) {
+        if (file.name.contains(fileMarker) && !file.name.contains("sources") && !file.name.contains("addon")) {
             include projectName
         }
     }

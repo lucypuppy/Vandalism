@@ -8,10 +8,10 @@ dependencies {
 
 class BinaryExt {
     static File includeMod(Project project, String fileMarker) {
-        File buildOutput = new File(project.projectDir, "binaries")
+        File modsDir = new File(project.projectDir, "run/mods")
 
-        for (final def file in buildOutput.listFiles()) {
-            if (file.name.contains(fileMarker) && !file.name.contains("sources")) {
+        for (final def file in modsDir.listFiles()) {
+            if (file.name.contains(fileMarker) && !file.name.contains("sources") && !file.name.contains("addon")) {
                 return file
             }
         }
