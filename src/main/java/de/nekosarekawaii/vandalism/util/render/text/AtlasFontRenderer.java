@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.render.text;
 
-import de.nekosarekawaii.vandalism.util.RandomUtils;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumer;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.util.render.gl.render.passes.Passes;

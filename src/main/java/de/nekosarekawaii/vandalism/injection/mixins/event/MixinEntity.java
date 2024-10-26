@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.event.player.FluidPushListener;
 import de.nekosarekawaii.vandalism.event.player.StepListener;
 import de.nekosarekawaii.vandalism.event.player.StepSuccessListener;
 import de.nekosarekawaii.vandalism.event.player.StrafeListener;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;

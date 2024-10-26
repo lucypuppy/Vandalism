@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.event.player.StepSuccessListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.StepModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 

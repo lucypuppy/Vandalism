@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.storage;
 
-import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.Account;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
 import de.nekosarekawaii.vandalism.injection.access.IChatHud;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
 import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;

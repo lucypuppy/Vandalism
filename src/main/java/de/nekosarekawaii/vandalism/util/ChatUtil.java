@@ -21,6 +21,8 @@ package de.nekosarekawaii.vandalism.util;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import lombok.Getter;
 import net.minecraft.text.*;

@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.base.value;
 
 import com.google.gson.JsonObject;
-import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import lombok.Getter;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

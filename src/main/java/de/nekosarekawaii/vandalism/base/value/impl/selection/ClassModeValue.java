@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.base.value.impl.selection;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import imgui.ImGui;
 import lombok.Getter;
 

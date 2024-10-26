@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightMod
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.MinecraftConstants;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.shape.VoxelShapes;
 

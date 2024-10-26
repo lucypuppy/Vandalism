@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.template.widgets.field;
 
-import de.nekosarekawaii.vandalism.util.MathUtil;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import imgui.ImGui;
 import imgui.type.ImInt;
 

@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util;
 
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
@@ -119,14 +120,6 @@ public class WorldUtil implements MinecraftWrapper {
                 RaycastContext.FluidHandling.NONE,
                 mc.player
         ));
-    }
-
-    public static boolean isOnGround(final double offset) {
-        if (mc.world == null || mc.player == null) {
-            return false;
-        }
-
-        return mc.world.getBlockCollisions(mc.player, mc.player.getBoundingBox().offset(0.0D, -offset, 0.0D)).iterator().hasNext();
     }
 
     public static GameMode getGameMode(final UUID uuid) {

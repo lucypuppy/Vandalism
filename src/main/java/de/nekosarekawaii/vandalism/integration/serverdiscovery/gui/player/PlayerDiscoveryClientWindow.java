@@ -28,6 +28,7 @@ import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.Resp
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.impl.WhereIsResponse;
 import de.nekosarekawaii.vandalism.util.*;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

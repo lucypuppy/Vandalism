@@ -25,9 +25,9 @@ import de.nekosarekawaii.vandalism.feature.module.impl.combat.LagRangeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.AutoSoupModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
-import de.nekosarekawaii.vandalism.util.Arithmetics;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.PerlinNoise;
+import de.nekosarekawaii.vandalism.util.math.Arithmetics;
 
 import java.util.concurrent.ThreadLocalRandom;
 

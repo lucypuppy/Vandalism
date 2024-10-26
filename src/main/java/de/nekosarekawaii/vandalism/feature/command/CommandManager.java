@@ -35,7 +35,7 @@ import de.nekosarekawaii.vandalism.feature.command.impl.movement.clip.ClipComman
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.clip.HClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.clip.VClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.render.ClientsideInventoryClearCommand;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.storage.Storage;
 import lombok.Getter;
 import net.minecraft.command.CommandSource;

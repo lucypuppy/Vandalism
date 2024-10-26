@@ -33,6 +33,8 @@ import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.*;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import imgui.ImGui;
 import imgui.type.ImString;
 import lombok.Getter;

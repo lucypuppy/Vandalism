@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.util;
 
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 

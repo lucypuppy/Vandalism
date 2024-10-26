@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.util;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 
 import java.net.URI;
 import java.net.http.HttpClient;
