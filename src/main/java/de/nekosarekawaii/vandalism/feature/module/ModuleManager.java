@@ -59,6 +59,7 @@ import de.nekosarekawaii.vandalism.util.storage.NamedStorage;
 import lombok.Getter;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -222,6 +223,10 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new AutoDisconnectModule(),
                 new TeamsModule()
         );
+        if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
+            this.add(new AntiCaptureModule());
+        }
+
         this.configManager.add(new ModuleConfig(this));
     }
 
