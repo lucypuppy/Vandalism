@@ -73,7 +73,7 @@ public class MotionModuleMode extends ModuleMulti<ElytraFlightModule> implements
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (!this.mc.player.isFallFlying()) {
-            if (this.mc.options.jumpKey.isPressed()) {
+            if (this.mc.player.input.jumping) {
                 this.mc.getNetworkHandler().sendPacket(new ClientCommandC2SPacket(this.mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
             }
         }
@@ -81,7 +81,7 @@ public class MotionModuleMode extends ModuleMulti<ElytraFlightModule> implements
             final Vec3d velocity = MovementUtil.setSpeed(MovementUtil.isMoving() ? this.speed.getValue() : 0);
             this.mc.player.setVelocity(
                     velocity.x,
-                    this.mc.options.jumpKey.isPressed() ? this.upwardsSpeed.getValue() : this.mc.options.sneakKey.isPressed() ? -this.downwardsSpeed.getValue() : 0,
+                    this.mc.player.input.jumping ? this.upwardsSpeed.getValue() : this.mc.player.input.sneaking ? -this.downwardsSpeed.getValue() : 0,
                     velocity.z
             );
         }

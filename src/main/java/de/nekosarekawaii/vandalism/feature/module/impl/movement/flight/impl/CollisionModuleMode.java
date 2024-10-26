@@ -56,7 +56,7 @@ public class CollisionModuleMode extends ModuleMulti<FlightModule> implements Bl
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.autoJump.getValue()) {
-            if (mc.options.jumpKey.isPressed() && this.mc.player.getY() < this.startPos + 1) {
+            if (mc.player.input.jumping && this.mc.player.getY() < this.startPos + 1) {
                 this.startPos = (int) this.mc.player.getY();
             }
 

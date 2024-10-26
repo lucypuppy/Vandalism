@@ -52,7 +52,7 @@ public class BlocksMCModuleMode extends ModuleMulti<SpeedModule> implements Play
             return;
         }
 
-        this.lastJumpPressed = this.mc.options.jumpKey.isPressed();
+        this.lastJumpPressed = this.mc.player.input.jumping;
         this.mc.options.jumpKey.setPressed(false);
 
         if (this.mc.player.isOnGround()) {

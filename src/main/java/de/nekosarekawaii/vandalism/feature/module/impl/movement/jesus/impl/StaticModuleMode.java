@@ -53,7 +53,7 @@ public class StaticModuleMode extends ModuleMulti<JesusModule> implements BlockC
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
-        if (this.disableOnSneak.getValue() && this.mc.options.sneakKey.isPressed() || (this.mc.player != null && this.mc.player.hasVehicle())) {
+        if (this.disableOnSneak.getValue() && this.mc.player.input.sneaking || (this.mc.player != null && this.mc.player.hasVehicle())) {
             return;
         }
         final BlockState state = event.state;

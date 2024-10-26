@@ -51,9 +51,9 @@ public class OldAACModuleMode extends ModuleMulti<FlightModule> implements Playe
         if (this.mc.player.fallDistance > 3.0f) {
             this.mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
 
-            if (mc.options.jumpKey.isPressed()) {
+            if (mc.player.input.jumping) {
                 this.startY += 1;
-            } else if (mc.options.sneakKey.isPressed()) {
+            } else if (mc.player.input.sneaking) {
                 this.startY -= 1;
             }
 
