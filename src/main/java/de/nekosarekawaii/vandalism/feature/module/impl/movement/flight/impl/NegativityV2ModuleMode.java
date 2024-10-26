@@ -24,8 +24,9 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.MinecraftConstants;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.player.PlayerUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.shape.VoxelShapes;
 
@@ -50,7 +51,7 @@ public class NegativityV2ModuleMode extends ModuleMulti<FlightModule> implements
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         this.mc.options.jumpKey.setPressed(false);
-        if (MovementUtil.isMoving() && !WorldUtil.isOnGround(0.1)) {
+        if (MovementUtil.isMoving() && !PlayerUtil.isOnGround(0.1)) {
             MovementUtil.setSpeed(0.65);
         }
         this.startPos = (int) this.mc.player.getY();

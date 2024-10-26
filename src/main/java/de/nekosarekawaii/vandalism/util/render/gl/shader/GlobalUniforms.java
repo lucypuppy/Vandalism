@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.util.render.gl.shader;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.gl.utils.TemporaryValues;
 import org.joml.Matrix4fc;
 import org.lwjgl.glfw.GLFW;

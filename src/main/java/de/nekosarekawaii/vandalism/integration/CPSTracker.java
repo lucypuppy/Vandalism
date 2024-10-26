@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.integration;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 

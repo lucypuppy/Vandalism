@@ -23,7 +23,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.NoChatReportsModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.ShowClickEventsModule;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;

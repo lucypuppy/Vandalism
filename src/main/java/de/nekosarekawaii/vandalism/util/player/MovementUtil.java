@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.player;
 
 import de.nekosarekawaii.vandalism.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -291,15 +293,6 @@ public class MovementUtil implements MinecraftWrapper {
         }
 
         return -1.0;
-    }
-
-    /**
-     * Get the speed related to the yaw.
-     * @param posY The position y to use.
-     * @return The speed related to the yaw.
-     */
-    public static double roundToGround(final double posY) {
-        return Math.round(posY / MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR) * MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR;
     }
 
     /**

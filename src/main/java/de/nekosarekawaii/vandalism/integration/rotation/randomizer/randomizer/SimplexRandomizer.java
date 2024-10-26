@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer;
 
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.Randomizer;
-import de.nekosarekawaii.vandalism.util.SimplexNoise;
+import de.nekosarekawaii.vandalism.util.math.SimplexNoise;
 import lombok.Setter;
 import net.minecraft.util.math.Vec3d;
 

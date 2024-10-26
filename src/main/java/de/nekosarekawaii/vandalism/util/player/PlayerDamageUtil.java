@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.player;
 
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.PacketHelper;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 

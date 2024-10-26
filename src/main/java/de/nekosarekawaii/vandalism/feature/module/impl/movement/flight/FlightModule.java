@@ -25,8 +25,8 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
-import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.PlayerUtil;
 import lombok.Getter;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Vec3d;
@@ -112,7 +112,7 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
             return;
         }
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
-            if (!WorldUtil.isOnGround(0.1)) {
+            if (!PlayerUtil.isOnGround(0.1)) {
                 this.mc.player.ticksSinceLastPositionPacketSent = 20;
             }
         }
@@ -125,7 +125,7 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
         }
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
-                if (!WorldUtil.isOnGround(0.1) && this.mc.player.age % 2 == 0) {
+                if (!PlayerUtil.isOnGround(0.1) && this.mc.player.age % 2 == 0) {
                     playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
                 }
             }

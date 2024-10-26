@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import net.minecraft.entity.LivingEntity;
 import org.lwjgl.glfw.GLFW;
 
