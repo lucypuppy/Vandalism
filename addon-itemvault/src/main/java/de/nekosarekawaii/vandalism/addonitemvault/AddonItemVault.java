@@ -19,28 +19,55 @@
 package de.nekosarekawaii.vandalism.addonitemvault;
 
 import com.itemvault.fabric_platform_api.ItemVaultFabricBase;
+import com.itemvault.fabric_platform_api.Messages;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.addonitemvault.command.ItemVaultCommand;
 import de.nekosarekawaii.vandalism.addonitemvault.creativetab.ItemVaultCreativeTab;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import lombok.Getter;
 
 import java.io.File;
+import java.util.logging.Logger;
 
+@Getter
 public class AddonItemVault implements VandalismAddonLauncher {
 
-    public static final File TEMP_DIR = new File("C:\\Users\\UwU\\IdeaProjects\\ItemVault\\data");
-
-    ItemVaultFabricBase vaultHolder;
+    private ItemVaultFabricBase vaultHolder;
+    private ItemVaultCreativeTab itemVaultCreativeTab;
 
     @Override
-    public void onPreLaunch(Vandalism vandalism) {
-        vaultHolder = new ItemVaultFabricBase(TEMP_DIR);
-        vaultHolder.loadFiles();
+    public void onPreLaunch(final Vandalism vandalism) {
+        this.vaultHolder = new ItemVaultFabricBase(Logger.getLogger("Vandalism-ItemVault"), new MessagesImpl(), new File(FabricBootstrap.MOD_ID, "data"));
+        this.vaultHolder.init();
 
-        CreativeTabManager.getInstance().add(new ItemVaultCreativeTab(vaultHolder));
+        this.itemVaultCreativeTab = new ItemVaultCreativeTab(this.vaultHolder);
+        this.itemVaultCreativeTab.publish();
     }
 
     @Override
-    public void onLaunch(Vandalism vandalism) {
+    public void onLaunch(final Vandalism vandalism) {
+        vandalism.getCommandManager().add(new ItemVaultCommand(this.vaultHolder));
     }
+
+    private static class MessagesImpl implements Messages {
+
+        @Override
+        public void success(final String s) {
+            ChatUtil.infoChatMessage(s);
+        }
+
+        @Override
+        public void warning(final String s) {
+            ChatUtil.warningChatMessage(s);
+        }
+
+        @Override
+        public void error(final String s) {
+            ChatUtil.errorChatMessage(s);
+        }
+
+    }
+
 }
