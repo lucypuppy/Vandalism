@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.integration.minigames;
 
 import com.google.gson.JsonObject;
-import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Pair;
 

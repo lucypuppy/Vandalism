@@ -54,7 +54,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.StepModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.teleport.TeleportModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.storage.NamedStorage;
 import lombok.Getter;
 import net.minecraft.network.ClientConnection;

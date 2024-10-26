@@ -16,12 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.interfaces;
 
-import net.minecraft.client.MinecraftClient;
+/**
+ * Interface for a nameable object.
+ */
+@FunctionalInterface
+public interface IName {
 
-public interface MinecraftWrapper {
-
-    MinecraftClient mc = MinecraftClient.getInstance();
+    /**
+     * @return The name of the object.
+     */
+    String getName();
 
 }

@@ -28,6 +28,8 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFieldWidget;
 import de.nekosarekawaii.vandalism.util.*;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.math.Percentage;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiComboFlags;
 import imgui.type.ImBoolean;

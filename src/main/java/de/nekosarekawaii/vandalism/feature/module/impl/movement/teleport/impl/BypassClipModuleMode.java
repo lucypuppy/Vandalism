@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.teleport.TeleportModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
 public class BypassClipModuleMode extends ModuleMulti<TeleportModule> implements PlayerUpdateListener {

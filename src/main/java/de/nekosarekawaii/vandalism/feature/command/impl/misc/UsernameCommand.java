@@ -23,6 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 

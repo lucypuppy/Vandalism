@@ -22,7 +22,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastBreakModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.NoSlowModule;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;

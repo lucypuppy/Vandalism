@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util;
 
 import com.mojang.authlib.GameProfile;
 import de.florianmichael.asmfabricloader.api.AsmUtil;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.resource.featuretoggle.FeatureSet;

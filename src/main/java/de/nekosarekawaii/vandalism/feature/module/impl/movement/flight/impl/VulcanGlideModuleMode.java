@@ -26,9 +26,10 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
-import de.nekosarekawaii.vandalism.util.PlayerDamageUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.PlayerDamageUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.player.PlayerUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.util.math.Vec3d;
@@ -100,7 +101,7 @@ public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof PlayerMoveC2SPacket packet) {
-            if (!WorldUtil.isOnGround(2)) {
+            if (!PlayerUtil.isOnGround(2)) {
                 if (mc.player.age % 10 == 0) {
                     packet.onGround = true;
                 }

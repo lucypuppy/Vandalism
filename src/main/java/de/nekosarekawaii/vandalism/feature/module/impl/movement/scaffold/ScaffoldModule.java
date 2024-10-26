@@ -28,6 +28,7 @@ import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.scaffold.sneak.LegitSneakModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
@@ -43,7 +44,10 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 
 import java.util.ArrayList;
@@ -86,6 +90,8 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
             this.bypassingGroup,
             "Sneak Mode",
             "How the player sneaks. idk",
+            new ModuleMulti<>("None") {
+            },
             new LegitSneakModuleMode()
     );
 
@@ -181,27 +187,9 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
     public void onRotation(final RotationEvent event) {
         if (this.posVec != null) {
             final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.posVec, RotationPriority.HIGHEST);
+            final BlockHitResult hitResult = WorldUtil.raytraceBlocks(rotation, 6);
 
-
-            // Prediction stuffs
-            double diff = Double.MAX_VALUE;
-            for (final Vec3d predictedVec : this.predictedPositionVecs) {
-                final PrioritizedRotation predictedRotation = RotationUtil.rotationToVec(predictedVec, RotationPriority.HIGHEST);
-                final BlockHitResult predictedRaytrace = WorldUtil.raytraceBlocks(predictedRotation, 6);
-
-                if (predictedRaytrace.getSide() != Direction.UP) {
-                    final double rofl = Math.abs(rotation.getPitch() - predictedRotation.getPitch());
-
-                    if (rofl < diff) {
-                        diff = rofl;
-                        bestPitch = predictedRotation.getPitch();
-                    }
-                }
-            }
-
-            if (!Float.isNaN(bestPitch)) {
-                rotation.setPitch(bestPitch);
-            }
+            final Rotation oldRotation = Vandalism.getInstance().getRotationManager().getServerRotation();
 
             Vandalism.getInstance().getRotationManager().setRotation(rotation, movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
@@ -264,23 +252,19 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
     }
 
     private BlockPos getPlaceBlock(final Vec3d playerPos, final BlockPos blockPlayerPos, final int scanRange) {
+        final BlockPos blockBelow = blockPlayerPos.down();
+
+        if (!mc.world.getBlockState(blockBelow).isAir())
+            return blockBelow;
+
         final List<BlockPos> possibilities = new ArrayList<>();
-
         for (int x = -scanRange; x <= scanRange; ++x) {
-            for (int y = -scanRange; y <= scanRange; ++y) {
+            for (int y = -scanRange; y <= 0; ++y) {
                 for (int z = -scanRange; z <= scanRange; ++z) {
-                    final BlockState block = mc.world.getBlockState(blockPlayerPos.add(x, y, z));
+                    final BlockPos blockpos = blockPlayerPos.add(x, y, z);
 
-                    if (!block.isAir()) {
-                        for (int x2 = -1; x2 <= 1; x2 += 2)
-                            possibilities.add(blockPlayerPos.add(x + x2, y, z));
-
-                        for (int y2 = -1; y2 <= 1; y2 += 2)
-                            possibilities.add(blockPlayerPos.add(x, y + y2, z));
-
-                        for (int z2 = -1; z2 <= 1; z2 += 2)
-                            possibilities.add(blockPlayerPos.add(x, y, z + z2));
-                    }
+                    if (!mc.world.getBlockState(blockpos).isAir())
+                        possibilities.add(blockpos);
                 }
             }
         }
@@ -301,7 +285,6 @@ public class ScaffoldModule extends ClickerModule implements RotationListener, H
         final double x = MathHelper.clamp(eyePos.getX(), box.minX, box.maxX);
         final double y = MathHelper.clamp(eyePos.getY(), box.minY, box.maxY);
         final double z = MathHelper.clamp(eyePos.getZ(), box.minZ, box.maxZ);
-
         return new Vec3d(x, y, z);
     }
 
