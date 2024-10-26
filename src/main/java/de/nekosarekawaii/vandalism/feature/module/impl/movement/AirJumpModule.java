@@ -62,7 +62,7 @@ public class AirJumpModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (this.mc.options.jumpKey.isPressed()) {
+        if (this.mc.player.input.jumping) {
             switch (this.mode.getValue()) {
                 case "On ground": {
                     this.mc.player.setOnGround(true);

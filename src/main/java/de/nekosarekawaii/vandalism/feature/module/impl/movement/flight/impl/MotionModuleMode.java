@@ -64,7 +64,7 @@ public class MotionModuleMode extends ModuleMulti<FlightModule> implements Playe
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         double motionX = 0;
         double motionZ = 0;
-        final double motionY = this.mc.options.jumpKey.isPressed() ? this.motionYOffset.getValue() : this.mc.options.sneakKey.isPressed() ? -this.motionYOffset.getValue() : 0;
+        final double motionY = this.mc.player.input.jumping ? this.motionYOffset.getValue() : this.mc.player.input.sneaking ? -this.motionYOffset.getValue() : 0;
         if (MovementUtil.isMoving()) {
             final Vec3d speedVelocity = MovementUtil.setSpeed(this.speed.getValue());
             motionX = speedVelocity.x;

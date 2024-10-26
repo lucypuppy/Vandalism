@@ -62,22 +62,22 @@ public class BukkitModuleMode extends ModuleMulti<FlightModule> implements Playe
 
         Vec3d moveVec = Vec3d.ZERO;
 
-        if (this.mc.options.forwardKey.isPressed()) {
+        if (this.mc.player.input.movementForward > 0) {
             moveVec = moveVec.add(forward);
             this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.options.backKey.isPressed()) {
+        } else if (this.mc.player.input.movementForward < 0) {
             moveVec = moveVec.add(forward.negate());
             this.mc.player.setVelocity(0, 0, 0);
-        } else if (mc.options.leftKey.isPressed()) {
+        } else if (this.mc.player.input.movementSideways > 0) {
             moveVec = moveVec.add(forward.rotateY((float) Math.toRadians(90)));
             this.mc.player.setVelocity(0, 0, 0);
-        } else if (mc.options.rightKey.isPressed()) {
+        } else if (this.mc.player.input.movementSideways < 0) {
             moveVec = moveVec.add(forward.rotateY((float) -Math.toRadians(90)));
             this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.options.jumpKey.isPressed()) {
+        } else if (this.mc.player.input.jumping) {
             moveVec = moveVec.add(0, vSpeed, 0);
             this.mc.player.setVelocity(0, 0, 0);
-        } else if (this.mc.options.sneakKey.isPressed()) {
+        } else if (this.mc.player.input.sneaking) {
             moveVec = moveVec.add(0, -vSpeed, 0);
             this.mc.player.setVelocity(0, 0, 0);
         }

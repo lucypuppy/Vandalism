@@ -79,9 +79,9 @@ public class SpartanFlagModuleMode extends ModuleMulti<FlightModule> implements 
         double motionX = 0, motionY = 0, motionZ = 0;
 
         if (mc.player.age % 11 == 0) {
-            if (this.mc.options.jumpKey.isPressed()) {
+            if (this.mc.player.input.jumping) {
                 motionY = this.motionYOffset.getValue() + random;
-            } else if (this.mc.options.sneakKey.isPressed()) {
+            } else if (this.mc.player.input.sneaking) {
                 motionY = -(this.motionYOffset.getValue() + random);
             }
         }

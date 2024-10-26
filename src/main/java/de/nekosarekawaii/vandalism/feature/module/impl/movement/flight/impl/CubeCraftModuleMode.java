@@ -92,13 +92,13 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Pl
                     this.mc.player.fallDistance = 0;
                     this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
                     this.mc.player.setPos(this.mc.player.getX(), this.lastPosY, this.mc.player.getZ());
-                    if (this.mc.options.jumpKey.isPressed()) {
+                    if (this.mc.player.input.jumping) {
                         this.mc.player.setPos(
                                 this.mc.player.getX(),
                                 this.mc.player.getY() + 0.8 + Math.random() * 0.04,
                                 this.mc.player.getZ()
                         );
-                    } else if (this.mc.options.sneakKey.isPressed()) {
+                    } else if (this.mc.player.input.sneaking) {
                         this.mc.player.setPos(
                                 this.mc.player.getX(),
                                 this.mc.player.getY() - 0.8 + Math.random() * 0.04,
@@ -108,7 +108,7 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Pl
                     this.lastPosY = this.mc.player.getY();
                     return;
                 }
-                if (this.mc.options.jumpKey.isPressed() || this.mc.options.sneakKey.isPressed()) {
+                if (this.mc.player.input.jumping || this.mc.player.input.sneaking) {
                     MovementUtil.setSpeed(0);
                     return;
                 }

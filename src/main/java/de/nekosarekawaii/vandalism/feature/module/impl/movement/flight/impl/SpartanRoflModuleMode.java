@@ -48,9 +48,9 @@ public class SpartanRoflModuleMode extends ModuleMulti<FlightModule> implements 
         final double speed = 0.33;
         double motionX = 0, motionY = 0, motionZ = 0;
 
-        if (this.mc.options.jumpKey.isPressed()) {
+        if (this.mc.player.input.jumping) {
             motionY = 0.42;
-        } else if (this.mc.options.sneakKey.isPressed()) {
+        } else if (this.mc.player.input.sneaking) {
             motionY = -0.42;
         }
 

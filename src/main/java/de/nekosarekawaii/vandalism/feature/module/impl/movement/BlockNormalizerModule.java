@@ -82,7 +82,7 @@ public class BlockNormalizerModule extends Module implements BlockCollisionShape
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
-        if (this.disableOnSneak.getValue() && this.mc.options.sneakKey.isPressed()) {
+        if (this.disableOnSneak.getValue() && this.mc.player.input.sneaking) {
             return;
         }
         final BlockState state = event.state;
