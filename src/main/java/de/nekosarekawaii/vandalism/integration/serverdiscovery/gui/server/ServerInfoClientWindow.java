@@ -137,7 +137,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
             }
             ImGui.sameLine();
             if (ImGui.button("Copy Data" + id + "copyData", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
-                this.mc.keyboard.setClipboard(data);
+                mc.keyboard.setClipboard(data);
             }
             if (this.serverInfo.players != null && !this.serverInfo.players.isEmpty()) {
                 if (!this.lastIP.isBlank() && !this.waitingForResponse) {
@@ -272,13 +272,13 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
                 SessionUtil.setSessionAsync(playerName, playerUUID);
             }
             if (ImGui.button("Copy Name" + id + "player" + playerName + "copyName", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard(playerName);
+                mc.keyboard.setClipboard(playerName);
             }
             if (ImGui.button("Copy UUID" + id + "player" + playerName + "copyUuid", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard(playerUUID);
+                mc.keyboard.setClipboard(playerUUID);
             }
             if (ImGui.button("Copy Data" + id + "player" + playerName + "copyData", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard("Name: " + playerName + "\nUUID: " + playerUUID + "\nLast Seen: " + lastSeen);
+                mc.keyboard.setClipboard("Name: " + playerName + "\nUUID: " + playerUUID + "\nLast Seen: " + lastSeen);
             }
         }
     }

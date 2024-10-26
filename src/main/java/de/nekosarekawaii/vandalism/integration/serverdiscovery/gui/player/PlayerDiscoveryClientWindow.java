@@ -26,7 +26,10 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.request.impl.WhereIsRequest;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.impl.WhereIsResponse;
-import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.ServerUtil;
+import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import imgui.ImGui;
@@ -194,10 +197,10 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow implements Da
                 serverList.saveFile();
             }
             if (ImGui.button("Copy Address" + id + "copyAddress", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard(address);
+                mc.keyboard.setClipboard(address);
             }
             if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard(listDataEntry.getData());
+                mc.keyboard.setClipboard(listDataEntry.getData());
             }
         }
     }

@@ -40,12 +40,12 @@ public class ClientsideInventoryClearCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            if (this.mc.player.isCreative()) {
+            if (mc.player.isCreative()) {
                 ChatUtil.errorChatMessage(Formatting.RED + "You can't clear your clientside inventory in creative mode.");
                 return SINGLE_SUCCESS;
             }
 
-            this.mc.player.getInventory().clear();
+            mc.player.getInventory().clear();
             ChatUtil.infoChatMessage(Formatting.GREEN + "Your clientside inventory has been cleared.");
             return SINGLE_SUCCESS;
         });

@@ -49,12 +49,12 @@ public class SpamCommand extends Command {
             new Thread(() -> {
                 IS_RUNNING = true;
                 for (int i = 0; i < times; i++) {
-                    final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+                    final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
                     if (networkHandler == null) break;
                     if (message.startsWith("/") && message.length() > 1) {
-                        this.mc.getNetworkHandler().sendChatCommand(Placeholders.applyReplacements(message.substring(1)));
+                        mc.getNetworkHandler().sendChatCommand(Placeholders.applyReplacements(message.substring(1)));
                     } else {
-                        ((IClientPlayNetworkHandler) this.mc.getNetworkHandler()).vandalism$sendChatMessage(Placeholders.applyReplacements(message));
+                        ((IClientPlayNetworkHandler) mc.getNetworkHandler()).vandalism$sendChatMessage(Placeholders.applyReplacements(message));
                     }
                     try {
                         Thread.sleep(delay);

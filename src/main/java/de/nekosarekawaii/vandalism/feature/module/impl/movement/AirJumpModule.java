@@ -62,10 +62,10 @@ public class AirJumpModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (this.mc.player.input.jumping) {
+        if (mc.player.input.jumping) {
             switch (this.mode.getValue()) {
                 case "On ground": {
-                    this.mc.player.setOnGround(true);
+                    mc.player.setOnGround(true);
                     break;
                 }
                 case "Jump": {
@@ -77,14 +77,14 @@ public class AirJumpModule extends Module implements PlayerUpdateListener {
     }
 
     private void jump(boolean sprintBoost) {
-        Vec3d vec3d = this.mc.player.getVelocity();
-        this.mc.player.setVelocity(vec3d.x, (double) this.mc.player.getJumpVelocity(), vec3d.z);
-        if (this.mc.player.isSprinting() && sprintBoost) {
-            float f = this.mc.player.getYaw() * (float) (Math.PI / 180.0);
-            this.mc.player.setVelocity(this.mc.player.getVelocity().add((double) (-MathHelper.sin(f) * 0.2F), 0.0, (double) (MathHelper.cos(f) * 0.2F)));
+        Vec3d vec3d = mc.player.getVelocity();
+        mc.player.setVelocity(vec3d.x, (double) mc.player.getJumpVelocity(), vec3d.z);
+        if (mc.player.isSprinting() && sprintBoost) {
+            float f = mc.player.getYaw() * (float) (Math.PI / 180.0);
+            mc.player.setVelocity(mc.player.getVelocity().add((double) (-MathHelper.sin(f) * 0.2F), 0.0, (double) (MathHelper.cos(f) * 0.2F)));
         }
 
-        this.mc.player.velocityDirty = true;
+        mc.player.velocityDirty = true;
     }
 
 }

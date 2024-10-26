@@ -44,9 +44,9 @@ public class FakeGameModeModule extends Module implements PlayerUpdateListener, 
     }
 
     private void reset() {
-        final GameMode gameMode = WorldUtil.getGameMode(this.mc.getGameProfile().getId());
+        final GameMode gameMode = WorldUtil.getGameMode(mc.getGameProfile().getId());
         if (gameMode != null) {
-            this.mc.interactionManager.setGameMode(gameMode);
+            mc.interactionManager.setGameMode(gameMode);
         }
     }
 
@@ -66,7 +66,7 @@ public class FakeGameModeModule extends Module implements PlayerUpdateListener, 
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         for (final GameMode gameMode : GameMode.values()) {
             if (this.mode.getValue().startsWith(gameMode.getName())) {
-                this.mc.interactionManager.setGameMode(gameMode);
+                mc.interactionManager.setGameMode(gameMode);
                 break;
             }
         }
@@ -75,9 +75,9 @@ public class FakeGameModeModule extends Module implements PlayerUpdateListener, 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof CreativeInventoryActionC2SPacket) {
-            final GameMode serverSideGameMode = WorldUtil.getGameMode(this.mc.getGameProfile().getId());
+            final GameMode serverSideGameMode = WorldUtil.getGameMode(mc.getGameProfile().getId());
             if (serverSideGameMode != null) {
-                final GameMode clientSideGameMode = this.mc.interactionManager.getCurrentGameMode();
+                final GameMode clientSideGameMode = mc.interactionManager.getCurrentGameMode();
                 if (clientSideGameMode == GameMode.CREATIVE && serverSideGameMode != clientSideGameMode) {
                     event.cancel();
                     ChatUtil.errorChatMessage("You are not allowed to use creative mode in survival.");

@@ -45,26 +45,26 @@ public class AutoSprintModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final boolean sneaking = this.mc.player.input.sneaking;
-        final boolean walking = this.mc.player.isWalking();
-        final boolean canStartSprinting = this.mc.player.canStartSprinting();
-        final boolean onGround = this.mc.player.hasVehicle() ? this.mc.player.getVehicle().isOnGround() : this.mc.player.isOnGround();
+        final boolean sneaking = mc.player.input.sneaking;
+        final boolean walking = mc.player.isWalking();
+        final boolean canStartSprinting = mc.player.canStartSprinting();
+        final boolean onGround = mc.player.hasVehicle() ? mc.player.getVehicle().isOnGround() : mc.player.isOnGround();
         final boolean noSneakingAndNoWalking = !sneaking && !walking;
-        if ((onGround || this.mc.player.isSubmergedInWater()) && noSneakingAndNoWalking && canStartSprinting) {
-            this.mc.player.setSprinting(true);
+        if ((onGround || mc.player.isSubmergedInWater()) && noSneakingAndNoWalking && canStartSprinting) {
+            mc.player.setSprinting(true);
         }
-        if ((!this.mc.player.isTouchingWater() || this.mc.player.isSubmergedInWater()) && canStartSprinting) {
-            this.mc.player.setSprinting(true);
+        if ((!mc.player.isTouchingWater() || mc.player.isSubmergedInWater()) && canStartSprinting) {
+            mc.player.setSprinting(true);
         }
-        if (this.mc.player.isSprinting()) {
-            final boolean noForwardMovementOrNoSprint = !this.mc.player.input.hasForwardMovement() || !this.mc.player.canSprint();
-            final boolean isColliding = noForwardMovementOrNoSprint || this.mc.player.horizontalCollision && !this.mc.player.collidedSoftly || this.mc.player.isTouchingWater() && !this.mc.player.isSubmergedInWater();
-            if (this.mc.player.isSwimming()) {
-                if (!this.mc.player.isOnGround() && !this.mc.player.input.sneaking && noForwardMovementOrNoSprint || !this.mc.player.isTouchingWater()) {
-                    this.mc.player.setSprinting(false);
+        if (mc.player.isSprinting()) {
+            final boolean noForwardMovementOrNoSprint = !mc.player.input.hasForwardMovement() || !mc.player.canSprint();
+            final boolean isColliding = noForwardMovementOrNoSprint || mc.player.horizontalCollision && !mc.player.collidedSoftly || mc.player.isTouchingWater() && !mc.player.isSubmergedInWater();
+            if (mc.player.isSwimming()) {
+                if (!mc.player.isOnGround() && !mc.player.input.sneaking && noForwardMovementOrNoSprint || !mc.player.isTouchingWater()) {
+                    mc.player.setSprinting(false);
                 }
             } else if (isColliding) {
-                this.mc.player.setSprinting(false);
+                mc.player.setSprinting(false);
             }
         }
     }

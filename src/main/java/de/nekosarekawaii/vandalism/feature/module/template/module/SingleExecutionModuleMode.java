@@ -41,7 +41,7 @@ public abstract class SingleExecutionModuleMode<M extends Module> extends Module
     @Override
     public void onActivate() {
         for (int i = 0; i < this.times.getValue(); i++) {
-            if (this.mc.player == null) {
+            if (mc.player == null) {
                 continue;
             }
             this.onExecute();

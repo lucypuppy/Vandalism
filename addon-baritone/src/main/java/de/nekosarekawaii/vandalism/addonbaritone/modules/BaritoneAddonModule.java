@@ -127,7 +127,7 @@ public class BaritoneAddonModule extends Module implements PlayerUpdateListener,
             final IBaritoneProcess process = pathingControlManager.mostRecentInControl().orElse(null);
             if (process == null) return;
             final IPathingBehavior pathingBehavior = this.baritone.getPathingBehavior();
-            final double tps = ((IRenderTickCounter) this.mc.getRenderTickCounter()).vandalism$getTPS();
+            final double tps = ((IRenderTickCounter) mc.getRenderTickCounter()).vandalism$getTPS();
             final double ticksRemainingInSegment = pathingBehavior.ticksRemainingInSegment().orElse(0.0);
             final double ticksRemainingInGoal = pathingBehavior.estimatedTicksToGoal().orElse(0.0);
             final double remainingTimeInSegment = ticksRemainingInSegment / tps;

@@ -119,8 +119,8 @@ public class DerpModule extends Module implements PlayerUpdateListener {
         } else {
             final int spinDelay = this.spinDelay.getValue();
             final float spinValue = this.spinValue.getValue();
-            yaw = this.mc.player.age % spinDelay == 0 ? yaw + (this.spinModeDirection.getValue() == SpinDirection.LEFT ? -spinValue : spinValue) : yaw;
-            pitch = (float) (Math.sin((double) this.mc.player.age / spinDelay) * 90.0f + pitch);
+            yaw = mc.player.age % spinDelay == 0 ? yaw + (this.spinModeDirection.getValue() == SpinDirection.LEFT ? -spinValue : spinValue) : yaw;
+            pitch = (float) (Math.sin((double) mc.player.age / spinDelay) * 90.0f + pitch);
         }
         Vandalism.getInstance().getRotationManager().setRotation(
                 new PrioritizedRotation(yaw, pitch, RotationPriority.NORMAL),

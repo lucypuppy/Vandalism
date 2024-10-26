@@ -31,7 +31,7 @@ public abstract class MixinPlayerEntity implements MinecraftWrapper {
 
     @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getYaw()F"))
     private float modifyRotationYaw(final PlayerEntity instance) {
-        if (this.mc.player == (Object) this) {
+        if (mc.player == (Object) this) {
             final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
             if (rotation != null) return rotation.getYaw();
         }

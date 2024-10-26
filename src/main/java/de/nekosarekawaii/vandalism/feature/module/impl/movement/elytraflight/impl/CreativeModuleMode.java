@@ -38,21 +38,21 @@ public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implemen
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        if (this.mc.player == null) return;
-        this.mc.player.getAbilities().flying = false;
-        this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
+        if (mc.player == null) return;
+        mc.player.getAbilities().flying = false;
+        mc.player.getAbilities().allowFlying = mc.player.getAbilities().creativeMode;
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.player.isFallFlying()) {
-            this.mc.getNetworkHandler().sendPacket(
-                    new ClientCommandC2SPacket(this.mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING)
+        if (!mc.player.isFallFlying()) {
+            mc.getNetworkHandler().sendPacket(
+                    new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING)
             );
             return;
         }
-        this.mc.player.getAbilities().flying = true;
-        this.mc.player.getAbilities().allowFlying = true;
+        mc.player.getAbilities().flying = true;
+        mc.player.getAbilities().allowFlying = true;
     }
 
 }

@@ -64,14 +64,14 @@ public class FullBrightModule extends Module implements PlayerUpdateListener {
     @Override
     protected void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID);
-        if (this.mc.player != null) {
-            this.mc.player.removeStatusEffect(StatusEffects.NIGHT_VISION);
+        if (mc.player != null) {
+            mc.player.removeStatusEffect(StatusEffects.NIGHT_VISION);
         }
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final ClientPlayerEntity player = this.mc.player;
+        final ClientPlayerEntity player = mc.player;
         if (player == null) {
             return;
         }

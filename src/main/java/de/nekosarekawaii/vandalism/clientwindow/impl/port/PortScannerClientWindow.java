@@ -205,7 +205,7 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
             ImGui.textWrapped(portsContainer);
             ImGui.endChild();
             if (ImGui.button("Copy All Ports" + id + "copyAllPorts", ImGui.getColumnWidth() / (!this.portResults.isEmpty() ? 3 : 2), ImGui.getTextLineHeightWithSpacing())) {
-                this.mc.keyboard.setClipboard(portsContainer);
+                mc.keyboard.setClipboard(portsContainer);
             }
             if (this.currentPortResult < 0) {
                 ImGui.sameLine();

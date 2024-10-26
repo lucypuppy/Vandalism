@@ -51,7 +51,7 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
-        if (event.pos.getY() < this.mc.player.getY() && !event.state.getFluidState().isEmpty()) {
+        if (event.pos.getY() < mc.player.getY() && !event.state.getFluidState().isEmpty()) {
             event.shape = VoxelShapes.cuboid(0, 0, 0, 1, 0.5, 1);
         }
     }
@@ -63,20 +63,20 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
 
         if (!this.overLiquid && lastOverLiquid) {
             final Vec3d velocity = MovementUtil.setSpeed(0.2);
-            this.mc.player.setVelocity(velocity.x, -0.42, velocity.z);
+            mc.player.setVelocity(velocity.x, -0.42, velocity.z);
             return;
         }
 
         if (!this.overLiquid)
             return;
 
-        if (this.mc.player.isOnGround()) {
+        if (mc.player.isOnGround()) {
             this.offGroundTicks = 0;
-            this.mc.player.setVelocity(this.mc.player.getVelocity().x, 0.6, this.mc.player.getVelocity().z);
-            this.mc.player.fallDistance = 0;
+            mc.player.setVelocity(mc.player.getVelocity().x, 0.6, mc.player.getVelocity().z);
+            mc.player.fallDistance = 0;
             return;
-        } else if (this.mc.player.fallDistance > 0) {
-            this.mc.player.setVelocity(this.mc.player.getVelocity().x, -0.1, this.mc.player.getVelocity().z);
+        } else if (mc.player.fallDistance > 0) {
+            mc.player.setVelocity(mc.player.getVelocity().x, -0.1, mc.player.getVelocity().z);
         }
 
         this.offGroundTicks++;
@@ -93,7 +93,7 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
             if (!overLiquid)
                 return;
 
-            if (this.mc.player.fallDistance > 0 && this.mc.player.age % 19 == 0) { // Fix fall damage
+            if (mc.player.fallDistance > 0 && mc.player.age % 19 == 0) { // Fix fall damage
                 packet.onGround = true;
                 return;
             }
@@ -106,7 +106,7 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
 
     public boolean overLiquid() {
         for (int i = 0; i < 5; i++) {
-            final BlockState blockState = this.mc.world.getBlockState(this.mc.player.getBlockPos().add(0, -i, 0));
+            final BlockState blockState = mc.world.getBlockState(mc.player.getBlockPos().add(0, -i, 0));
 
             if (blockState.getFluidState().isEmpty()) {
                 if (!blockState.isAir()) {

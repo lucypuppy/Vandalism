@@ -31,7 +31,9 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
-import de.nekosarekawaii.vandalism.util.*;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import de.nekosarekawaii.vandalism.util.math.RandomUtils;
@@ -177,7 +179,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
             return;
         }
         final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
-        final ClientPlayerEntity player = this.mc.player;
+        final ClientPlayerEntity player = mc.player;
         if (networkHandler == null || player == null) {
             deactivate();
             return;
@@ -195,7 +197,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
                 final float pitch = Math.min(2.0F, MinecraftDefinitions.mcKeyToMcPitch(MinecraftDefinitions.nbsKeyToMcKey(note.getKey())));
                 if (this.state == State.PLAYING) {
                     switch (mode.getValue()) {
-                        case PREVIEW -> this.mc.execute(() -> player.playSound(sound, 100F, pitch));
+                        case PREVIEW -> mc.execute(() -> player.playSound(sound, 100F, pitch));
                         case COMMAND -> {
                             final String[] styles = new String[]{"progress", "notched_6", "notched_10", "notched_12", "notched_20"};
                             String currentStyle = "progress";
@@ -230,12 +232,12 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
                         case BLOCKS -> {
                             final int key = MinecraftDefinitions.nbsKeyToMcKey(note.getKey());
                             final BlockPos pos = getNoteBlock(note.getInstrument(), key);
-                            if (pos == null || this.mc.interactionManager == null) return;
+                            if (pos == null || mc.interactionManager == null) return;
                             this.lastPlayedNotes.add(pos);
                             if (this.lastPlayedNotes.size() > this.player.getSongView().getNotesAtTick(this.player.getTick()).size()) {
                                 this.lastPlayedNotes.removeFirst();
                             }
-                            this.mc.interactionManager.attackBlock(pos, Direction.UP);
+                            mc.interactionManager.attackBlock(pos, Direction.UP);
                         }
                         default -> {
                         }
@@ -276,7 +278,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
         if (songFormat == null) return;
         final String identifier = dir.getName() + "-" + file.getName() + "noteblocksong";
         if (this.song == null || !this.song.getFile().getAbsolutePath().equals(file.getAbsolutePath())) {
-            if (this.mc.player != null) {
+            if (mc.player != null) {
                 if (ImUtils.subButton("Play " + file.getName() + "##" + identifier + "play")) {
                     this.playSong(file, true);
                 }
@@ -436,7 +438,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
     @Override
     public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         if (!this.mode.getValue().equals(Mode.BLOCKS) || this.tunableBlocks.isEmpty()) return;
-        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
         matrixStack.push();
         for (final Map.Entry<BlockPos, Note> entry : this.tunableBlocks.entrySet()) {
             final BlockPos pos = entry.getKey();
@@ -494,8 +496,8 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
     private void tuneBlock(final BlockPos pos) {
         final Note note = this.tunableBlocks.get(pos);
         switch (this.tuneMode.getValue()) {
-            case SINGLE -> this.mc.interactionManager.interactBlock(
-                    this.mc.player,
+            case SINGLE -> mc.interactionManager.interactBlock(
+                    mc.player,
                     Hand.MAIN_HAND,
                     new BlockHitResult(
                             Vec3d.ofCenter(pos, 1.0f),
@@ -508,8 +510,8 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
                 final int neededNote = note.key() < this.getNote(pos) ? note.key() + 25 : note.key();
                 final int tuningBatch = Math.min(22, neededNote - this.getNote(pos));
                 for (int i = 0; i < tuningBatch; i++) {
-                    this.mc.interactionManager.interactBlock(
-                            this.mc.player,
+                    mc.interactionManager.interactBlock(
+                            mc.player,
                             Hand.MAIN_HAND,
                             new BlockHitResult(
                                     Vec3d.ofCenter(pos, 1),
@@ -525,7 +527,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mode.getValue().equals(Mode.BLOCKS) && this.mc.interactionManager.getCurrentGameMode().isCreative()) {
+        if (this.mode.getValue().equals(Mode.BLOCKS) && mc.interactionManager.getCurrentGameMode().isCreative()) {
             ChatUtil.errorChatMessage("You can't play note block songs in creative mode.");
             this.deactivate();
             return;
@@ -542,7 +544,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
                         this.deactivate();
                         return;
                     }
-                    this.tunableBlocks.keySet().forEach(p -> this.mc.interactionManager.attackBlock(p, Direction.UP));
+                    this.tunableBlocks.keySet().forEach(p -> mc.interactionManager.attackBlock(p, Direction.UP));
                     this.state = State.TUNING;
                 } else {
                     this.state = State.PLAYING;
@@ -632,7 +634,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
                 ChatUtil.infoChatMessage("%d tunable blocks found".formatted(this.tunableBlocks.size()));
                 ChatUtil.infoChatMessage("%d total blocks found".formatted(noteBlocks.size()));
             } else if (this.mode.getValue() == Mode.COMMAND) {
-                final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+                final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
                 if (networkHandler != null) {
                     networkHandler.sendChatCommand("bossbar add " + BOSS_BAR_NAME + " \"Note Bot\"");
                 }
@@ -750,7 +752,7 @@ public class NoteBotModule extends Module implements PlayerUpdateListener, Incom
      */
     private List<BlockPos> scanNoteBlocks() {
         final List<BlockPos> scannedBlocks = new ArrayList<>();
-        if (this.mc.interactionManager == null || this.mc.world == null || this.mc.player == null) {
+        if (mc.interactionManager == null || mc.world == null || mc.player == null) {
             return scannedBlocks;
         }
         final int range = this.scanRange.getValue();

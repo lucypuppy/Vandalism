@@ -77,7 +77,7 @@ public class VulcanModuleMode extends ModuleMulti<NoFallModule> implements Outgo
                 this.airTicks = 0;
             }
 
-            if (this.mc.player.fallDistance > 3.0f) {
+            if (mc.player.fallDistance > 3.0f) {
                 if (isAirStop()) {
                     mc.player.setVelocity(0, -0.1, 0);
                     this.stopMove = true;

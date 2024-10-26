@@ -65,7 +65,7 @@ public class SpartanFlagModuleMode extends ModuleMulti<FlightModule> implements 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (mc.player.isInFluid()) {
-            this.mc.player.setVelocity(mc.player.getVelocity().x, 0, mc.player.getVelocity().z);
+            mc.player.setVelocity(mc.player.getVelocity().x, 0, mc.player.getVelocity().z);
             return;
         }
 
@@ -79,9 +79,9 @@ public class SpartanFlagModuleMode extends ModuleMulti<FlightModule> implements 
         double motionX = 0, motionY = 0, motionZ = 0;
 
         if (mc.player.age % 11 == 0) {
-            if (this.mc.player.input.jumping) {
+            if (mc.player.input.jumping) {
                 motionY = this.motionYOffset.getValue() + random;
-            } else if (this.mc.player.input.sneaking) {
+            } else if (mc.player.input.sneaking) {
                 motionY = -(this.motionYOffset.getValue() + random);
             }
         }
@@ -92,7 +92,7 @@ public class SpartanFlagModuleMode extends ModuleMulti<FlightModule> implements 
             motionZ = speedVelocity.z;
         }
 
-        this.mc.player.setVelocity(motionX, motionY, motionZ);
+        mc.player.setVelocity(motionX, motionY, motionZ);
     }
 
 }

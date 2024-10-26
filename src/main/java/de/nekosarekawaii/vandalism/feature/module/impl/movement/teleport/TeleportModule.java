@@ -97,9 +97,9 @@ public class TeleportModule extends Module implements Render3DListener, Keyboard
     }
 
     private BlockPos getBlockHitResult() {
-        final HitResult result = this.mc.player.raycast(this.maxDistance.getValue(), this.mc.getRenderTickCounter().getTickDelta(false), false);
+        final HitResult result = mc.player.raycast(this.maxDistance.getValue(), mc.getRenderTickCounter().getTickDelta(false), false);
         if (result instanceof BlockHitResult blockHitResult) {
-            final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
+            final Block block = mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
             if (!this.blackList.contains(block)) {
                 return blockHitResult.getBlockPos();
             }
@@ -113,8 +113,8 @@ public class TeleportModule extends Module implements Render3DListener, Keyboard
     }
 
     public boolean isPositionValid(final BlockPos blockPos) {
-        final Block block = this.mc.world.getBlockState(new BlockPos(blockPos.up())).getBlock();
-        final Block block2 = this.mc.world.getBlockState(new BlockPos(blockPos.up().up())).getBlock();
+        final Block block = mc.world.getBlockState(new BlockPos(blockPos.up())).getBlock();
+        final Block block2 = mc.world.getBlockState(new BlockPos(blockPos.up().up())).getBlock();
         return this.blackList.contains(block) && this.blackList.contains(block2);
     }
 
@@ -130,19 +130,19 @@ public class TeleportModule extends Module implements Render3DListener, Keyboard
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         this.hoverPos = this.getBlockHitResult();
-        if (this.teleportSelectKey.isPressed() && this.hoverPos != null && this.mc.currentScreen == null) {
+        if (this.teleportSelectKey.isPressed() && this.hoverPos != null && mc.currentScreen == null) {
             if (this.isPositionValid(this.hoverPos)) {
                 this.selectedPos = this.hoverPos;
             }
         }
-        if (this.selectedPos != null && this.teleportKey.isPressed() && this.mc.currentScreen == null) {
+        if (this.selectedPos != null && this.teleportKey.isPressed() && mc.currentScreen == null) {
             this.teleport = true;
         }
     }
 
     @Override
     public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
-        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
         final Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
         matrixStack.push();
         matrixStack.translate(vec.x, vec.y, vec.z);

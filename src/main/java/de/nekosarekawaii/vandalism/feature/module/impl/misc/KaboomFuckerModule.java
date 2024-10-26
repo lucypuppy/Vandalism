@@ -151,7 +151,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.delayTimer.hasReached(this.delay.getValue(), true)) {
             for (int i = 0; i < this.times.getValue(); i++) {
-                if (this.mc.player == null) {
+                if (mc.player == null) {
                     continue;
                 }
                 this.onExecute();
@@ -178,11 +178,11 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
                 for (int y = -range; y < range; y++) {
                     for (int z = -range; z < range; z++) {
                         final BlockPos blockPos = new BlockPos(
-                                (int) (this.mc.player.getX() + x),
-                                (int) (this.mc.player.getY() + y),
-                                (int) (this.mc.player.getZ() + z)
+                                (int) (mc.player.getX() + x),
+                                (int) (mc.player.getY() + y),
+                                (int) (mc.player.getZ() + z)
                         );
-                        if (this.mc.world.getBlockState(blockPos).getBlock() instanceof CommandBlock) {
+                        if (mc.world.getBlockState(blockPos).getBlock() instanceof CommandBlock) {
                             this.commandBlocks.add(blockPos);
                         }
                     }
@@ -192,13 +192,13 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
             return;
         }
 
-        if (!this.mc.interactionManager.getCurrentGameMode().isCreative()) {
-            this.mc.getNetworkHandler().sendChatCommand("gmc");
+        if (!mc.interactionManager.getCurrentGameMode().isCreative()) {
+            mc.getNetworkHandler().sendChatCommand("gmc");
         }
 
-        final String username = this.mc.session.getUsername();
-        if (this.mc.player.getPermissionLevel() < 4) {
-            this.mc.getNetworkHandler().sendChatCommand("op " + username);
+        final String username = mc.session.getUsername();
+        if (mc.player.getPermissionLevel() < 4) {
+            mc.getNetworkHandler().sendChatCommand("op " + username);
         }
 
         final List<String> commands = new ArrayList<>();
@@ -216,7 +216,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
                         "clear " + target
                 ));
             } else {
-                final List<PlayerListEntry> players = this.mc.getNetworkHandler().getPlayerList().stream().filter(p -> !p.getProfile().getName().equals(username)).toList();
+                final List<PlayerListEntry> players = mc.getNetworkHandler().getPlayerList().stream().filter(p -> !p.getProfile().getName().equals(username)).toList();
                 if (!players.isEmpty()) {
                     final String randomPlayer = players.get(RandomUtils.randomIndex(players.size())).getProfile().getName();
                     commands.addAll(Arrays.asList(
@@ -236,7 +236,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
         }
 
         if (!this.commandBlocks.isEmpty() && !commands.isEmpty()) {
-            this.mc.getNetworkHandler().getConnection().send(new UpdateCommandBlockC2SPacket(
+            mc.getNetworkHandler().getConnection().send(new UpdateCommandBlockC2SPacket(
                     this.commandBlocks.get(this.current),
                     commands.get(RandomUtils.randomIndex(commands.size())),
                     CommandBlockBlockEntity.Type.AUTO,
@@ -249,7 +249,7 @@ public class KaboomFuckerModule extends Module implements PlayerUpdateListener, 
         if (this.current < this.commandBlocks.size() - 1) this.current++;
         else this.current = 0;
 
-        if (this.mc.player.age % this.commandBlockRescanDelay.getValue() == 0) {
+        if (mc.player.age % this.commandBlockRescanDelay.getValue() == 0) {
             this.commandBlocks.clear();
         }
     }

@@ -62,7 +62,7 @@ public class TimerModule extends Module implements TickTimeListener {
 
     @Override
     public void onTickTimings(final TickTimeEvent event) {
-        if (this.guis.getValue() || this.mc.currentScreen == null) {
+        if (this.guis.getValue() || mc.currentScreen == null) {
             event.fromPercentage(this.timerSpeed.getValue());
         }
     }

@@ -94,7 +94,7 @@ public class ChunkUnloadModuleMode extends ModuleMulti<NoFallModule> implements 
             if (mc.world.getChunkManager().isChunkLoaded(x, z)) {
                 this.unloadedChunk = null;
                 this.lightingProvider = null;
-                this.mc.player.fallDistance = 0.0F;
+                mc.player.fallDistance = 0.0F;
                 this.state = State.CHUNK_LOADED;
             } else {
                 // Try loading the chunk again.

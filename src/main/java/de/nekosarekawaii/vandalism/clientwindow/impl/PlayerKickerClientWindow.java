@@ -324,7 +324,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                 SessionUtil.setSessionAsync(name, uuid);
             }
             if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
-                this.mc.keyboard.setClipboard(dataEntry.getData());
+                mc.keyboard.setClipboard(dataEntry.getData());
             }
             final boolean contains = this.intervalDataEntries.contains(listDataEntry);
             if (ImGui.button("Interval Kick: " + (contains ? "On" : "Off") + id + "intervalKick", buttonWidth, buttonHeight)) {

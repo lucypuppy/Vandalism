@@ -77,7 +77,7 @@ public class AutoClickerModule extends ClickerModule implements MouseInputListen
         }
 
         if (!this.onlyWhenHolding.getValue() || this.isPressed) {
-            this.mc.doAttack();
+            mc.doAttack();
         }
     }
 

@@ -47,17 +47,17 @@ public class CreativeModuleMode extends ModuleMulti<FlightModule> implements Pla
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        if (this.mc.player == null) return;
-        this.mc.player.getAbilities().flying = false;
-        this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
-        this.mc.player.getAbilities().setFlySpeed(this.speed.getDefaultValue());
+        if (mc.player == null) return;
+        mc.player.getAbilities().flying = false;
+        mc.player.getAbilities().allowFlying = mc.player.getAbilities().creativeMode;
+        mc.player.getAbilities().setFlySpeed(this.speed.getDefaultValue());
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.mc.player.getAbilities().flying = true;
-        this.mc.player.getAbilities().allowFlying = true;
-        this.mc.player.getAbilities().setFlySpeed(this.speed.getValue());
+        mc.player.getAbilities().flying = true;
+        mc.player.getAbilities().allowFlying = true;
+        mc.player.getAbilities().setFlySpeed(this.speed.getValue());
     }
 
 }

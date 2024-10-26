@@ -76,7 +76,7 @@ public class LegitModuleMode extends ModuleMulti<VelocityModule> implements Move
         if (mc.player == null) {
             return;
         }
-        if (mc.player.hurtTime == 9 && mc.player.isOnGround() && mc.player.isSprinting() && !this.mc.player.isInLava() && !this.mc.player.isTouchingWater() && (!mc.player.isOnFire() || mc.player.getFireTicks() > 0)) {
+        if (mc.player.hurtTime == 9 && mc.player.isOnGround() && mc.player.isSprinting() && !mc.player.isInLava() && !mc.player.isTouchingWater() && (!mc.player.isOnFire() || mc.player.getFireTicks() > 0)) {
             if (canJump()) {
                 event.jumping = true;
                 this.hits = 0;

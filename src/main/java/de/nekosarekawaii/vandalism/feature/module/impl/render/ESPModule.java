@@ -246,11 +246,11 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
     @Override
     public void onBlockState(final BlockPos pos, final BlockState state) {
         if (this.renderBlocks.getValue() && !this.espBlocks.contains(pos) && this.blockList.isSelected(state.getBlock())) {
-            double distance = pos.toCenterPos().distanceTo(this.mc.player.getPos());
+            double distance = pos.toCenterPos().distanceTo(mc.player.getPos());
             if (distance <= this.maxBlockDistance.getValue()) {
                 if (this.fovCheck.getValue()) {
                     Vec2f deltaRotation = this.getDeltaRotation(pos);
-                    if (Math.abs(deltaRotation.x) > this.mc.options.getFov().getValue() || Math.abs(deltaRotation.y) > this.mc.options.getFov().getValue() * 0.5) {
+                    if (Math.abs(deltaRotation.x) > mc.options.getFov().getValue() || Math.abs(deltaRotation.y) > mc.options.getFov().getValue() * 0.5) {
                         return;
                     }
                 }
@@ -272,12 +272,12 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         for (int i = 0; i < this.espBlocks.size(); i++) {
             final BlockPos blockPos = this.espBlocks.get(i);
-            final double distance = blockPos.toCenterPos().distanceTo(this.mc.player.getPos());
-            if (distance > this.maxBlockDistance.getValue() || !this.blockList.isSelected(this.mc.world.getBlockState(blockPos).getBlock())) {
+            final double distance = blockPos.toCenterPos().distanceTo(mc.player.getPos());
+            if (distance > this.maxBlockDistance.getValue() || !this.blockList.isSelected(mc.world.getBlockState(blockPos).getBlock())) {
                 this.espBlocks.remove(blockPos);
             } else if (this.fovCheck.getValue()) {
                 Vec2f deltaRotation = this.getDeltaRotation(blockPos);
-                if (Math.abs(deltaRotation.x) > this.mc.options.getFov().getValue() || Math.abs(deltaRotation.y) > this.mc.options.getFov().getValue() * 0.5) {
+                if (Math.abs(deltaRotation.x) > mc.options.getFov().getValue() || Math.abs(deltaRotation.y) > mc.options.getFov().getValue() * 0.5) {
                     this.espBlocks.remove(blockPos);
                 }
             }
@@ -286,7 +286,7 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
 
     @Override
     public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
-        if (!this.renderBlocks.getValue() || this.mc.player == null) {
+        if (!this.renderBlocks.getValue() || mc.player == null) {
             return;
         }
         final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
@@ -320,15 +320,15 @@ public class ESPModule extends Module implements PlayerUpdateListener, BlockStat
     }
 
     private Vec2f getDeltaRotation(final BlockPos blockPos) {
-        final double rotationDeltaX = blockPos.toCenterPos().x - this.mc.player.getPos().x;
-        final double rotationDeltaY = blockPos.toCenterPos().y - (this.mc.player.getPos().y + this.mc.player.getEyeHeight(this.mc.player.getPose()));
-        final double rotationDeltaZ = blockPos.toCenterPos().z - this.mc.player.getPos().z;
+        final double rotationDeltaX = blockPos.toCenterPos().x - mc.player.getPos().x;
+        final double rotationDeltaY = blockPos.toCenterPos().y - (mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose()));
+        final double rotationDeltaZ = blockPos.toCenterPos().z - mc.player.getPos().z;
 
         final float rotationYaw = (float) (Math.atan2(rotationDeltaZ, rotationDeltaX) * 180.0D / Math.PI) - 90.0F;
         final float rotationPitch = (float) (-(Math.atan2(rotationDeltaY, Math.hypot(rotationDeltaX, rotationDeltaZ)) * 180.0D / Math.PI));
 
-        final float deltaYaw = MathHelper.wrapDegrees(rotationYaw - this.mc.player.getYaw() - (this.mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
-        final float deltaPitch = rotationPitch - this.mc.player.getPitch();
+        final float deltaYaw = MathHelper.wrapDegrees(rotationYaw - mc.player.getYaw() - (mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT ? 180 : 0));
+        final float deltaPitch = rotationPitch - mc.player.getPitch();
         return new Vec2f(deltaYaw, deltaPitch);
     }
 

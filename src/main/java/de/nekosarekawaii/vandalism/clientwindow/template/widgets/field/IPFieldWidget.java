@@ -78,7 +78,7 @@ public interface IPFieldWidget extends MinecraftWrapper {
                 IP_FILTER
         );
         if (this.getImIP().isEmpty() && ServerUtil.lastServerExists()) {
-            if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
+            if (ImUtils.subButton("Use " + (mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
                 this.getImIP().set(ServerUtil.getLastServerInfo().address);
             }
         }

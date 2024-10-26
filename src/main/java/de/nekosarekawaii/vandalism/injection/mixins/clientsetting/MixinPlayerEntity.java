@@ -31,7 +31,7 @@ public abstract class MixinPlayerEntity implements MinecraftWrapper {
 
     @Inject(method = "isCreativeLevelTwoOp", at = @At("RETURN"), cancellable = true)
     private void spoofIsCreativeLevelTwoOp(final CallbackInfoReturnable<Boolean> cir) {
-        if (this.mc.player == (Object) this) {
+        if (mc.player == (Object) this) {
             if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().spoofIsCreativeLevelTwoOp.getValue()) {
                 cir.setReturnValue(true);
             }

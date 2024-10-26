@@ -26,9 +26,9 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
-import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -107,9 +107,9 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
                         this.clear();
                         this.setState("Error while getting uuid for name '" + this.lastUsername + "' from mojang api: " + e);
                     }
-                    if (this.lastUUID.isBlank() && this.mc.player != null) {
+                    if (this.lastUUID.isBlank() && mc.player != null) {
                         this.setState("Fallback: Trying to get the uuid from the user on the server...");
-                        for (final PlayerListEntry entry : Objects.requireNonNull(this.mc.getNetworkHandler()).getPlayerList()) {
+                        for (final PlayerListEntry entry : Objects.requireNonNull(mc.getNetworkHandler()).getPlayerList()) {
                             if (entry.getProfile().getName().equalsIgnoreCase(this.lastUsername)) {
                                 this.lastUUID = entry.getProfile().getId().toString();
                                 break;
@@ -187,11 +187,11 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
                 }
             }
             if (ImGui.button("Copy UUID" + id + "copyUuid", ImGui.getColumnWidth() / 3f, ImGui.getTextLineHeightWithSpacing())) {
-                this.mc.keyboard.setClipboard(this.lastUUID);
+                mc.keyboard.setClipboard(this.lastUUID);
             }
             ImGui.sameLine();
             if (ImGui.button("Copy UUID Array" + id + "copyUuidArray", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
-                this.mc.keyboard.setClipboard(Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
+                mc.keyboard.setClipboard(Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
             }
             ImGui.sameLine();
             if (ImGui.button("Copy Data" + id + "copyData", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
@@ -204,7 +204,7 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
                 for (final ListDataEntry nameHistoryDataEntry : this.nameHistoryDataEntries) {
                     dataBuilder.append(nameHistoryDataEntry.getData()).append("\n\n");
                 }
-                this.mc.keyboard.setClipboard(dataBuilder.toString());
+                mc.keyboard.setClipboard(dataBuilder.toString());
             }
             if (!this.nameHistoryDataEntries.isEmpty()) {
                 ImGui.separator();
@@ -232,7 +232,7 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
     @Override
     public void onDataEntryClick(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
-            this.mc.keyboard.setClipboard(listDataEntry.getFirst().getRight());
+            mc.keyboard.setClipboard(listDataEntry.getFirst().getRight());
         }
     }
 
@@ -241,7 +241,7 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             final String playerName = listDataEntry.getFirst().getRight();
             if (ImGui.button("Copy Data" + id + "copyData" + playerName, ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                this.mc.keyboard.setClipboard(listDataEntry.getData());
+                mc.keyboard.setClipboard(listDataEntry.getData());
             }
         }
     }

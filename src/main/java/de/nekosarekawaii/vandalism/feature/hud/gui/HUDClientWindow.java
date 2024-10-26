@@ -27,7 +27,7 @@ import imgui.flag.ImGuiCol;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class HUDClientWindow extends ClientWindow {
 
@@ -66,7 +66,7 @@ public class HUDClientWindow extends ClientWindow {
         for (final HUDElement hudElement : this.hudManager.getList()) {
             hudElement.render(context, delta, false);
         }
-        final Window window = this.mc.getWindow();
+        final Window window = mc.getWindow();
         final double scaledWidth = window.getScaledWidth(), scaledHeight = window.getScaledHeight();
         context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.66), Color.GREEN.getRGB());
         context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.33), Color.GREEN.getRGB());

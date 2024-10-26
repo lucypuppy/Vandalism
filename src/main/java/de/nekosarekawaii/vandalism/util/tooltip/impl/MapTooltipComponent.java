@@ -63,8 +63,8 @@ public class MapTooltipComponent implements TooltipComponent, MinecraftWrapper, 
         RenderSystem.setShaderTexture(0, TEXTURE_MAP_BACKGROUND);
         context.drawTexture(TEXTURE_MAP_BACKGROUND, 0, 0, 0, 0, 0, 64, 64, 64, 64);
         matrices.pop();
-        final VertexConsumerProvider.Immediate consumer = this.mc.getBufferBuilders().getEntityVertexConsumers();
-        final MapState mapState = FilledMapItem.getMapState(this.mapId, this.mc.world);
+        final VertexConsumerProvider.Immediate consumer = mc.getBufferBuilders().getEntityVertexConsumers();
+        final MapState mapState = FilledMapItem.getMapState(this.mapId, mc.world);
         if (mapState == null) {
             return;
         }
@@ -72,7 +72,7 @@ public class MapTooltipComponent implements TooltipComponent, MinecraftWrapper, 
         matrices.translate(x, y, 0);
         matrices.scale(this.scale, this.scale, 0);
         matrices.translate(8, 8, 0);
-        this.mc.gameRenderer.getMapRenderer().draw(matrices, consumer, this.mapId, mapState, false, 0xF000F0);
+        mc.gameRenderer.getMapRenderer().draw(matrices, consumer, this.mapId, mapState, false, 0xF000F0);
         consumer.draw();
         matrices.pop();
     }
