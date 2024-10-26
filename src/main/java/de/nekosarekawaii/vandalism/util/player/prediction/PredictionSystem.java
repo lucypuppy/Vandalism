@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.player.prediction;
 
 import de.nekosarekawaii.vandalism.injection.access.ILivingEntity;
 import de.nekosarekawaii.vandalism.injection.access.IParticleManager;

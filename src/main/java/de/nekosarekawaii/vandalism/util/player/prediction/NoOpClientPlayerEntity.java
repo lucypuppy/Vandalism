@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.player.prediction;
 
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.block.BlockState;

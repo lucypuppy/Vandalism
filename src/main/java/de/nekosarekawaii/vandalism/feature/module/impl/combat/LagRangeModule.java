@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.PacketHelper;
-import de.nekosarekawaii.vandalism.util.PredictionSystem;
+import de.nekosarekawaii.vandalism.util.player.prediction.PredictionSystem;
 import lombok.Getter;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderTickCounter;
