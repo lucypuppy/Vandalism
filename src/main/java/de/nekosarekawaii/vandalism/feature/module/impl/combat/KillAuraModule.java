@@ -94,6 +94,13 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             false
     );
 
+    private final BooleanValue clickInScreen = new BooleanValue(
+            this.clickerGroup,
+            "Click In Screen",
+            "Whether the player should click while in screens (like inventory).",
+            false
+    );
+
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
             "Target Selection",
@@ -287,7 +294,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         if (mc.player == null || mc.world == null) return;
         this.updateTarget();
 
-        if (this.target == null) {
+        if (this.target == null || isInScreen()) {
             Vandalism.getInstance().getRotationManager().resetRotation(RotationPriority.HIGH);
             this.hitPoint = null;
             return;
@@ -565,7 +572,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
 
     @Override
     public void onClick() {
-        if (mc.player == null || mc.world == null || this.hitPoint == null) {
+        if (mc.player == null || mc.world == null || this.hitPoint == null || isInScreen()) {
             return;
         }
 
@@ -603,7 +610,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
 
     @Override
     public void onFailClick() {
-        if (mc.player == null || mc.world == null || this.hitPoint == null) {
+        if (mc.player == null || mc.world == null || this.hitPoint == null || isInScreen()) {
             return;
         }
 
@@ -624,6 +631,10 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         }
 
         mc.player.swingHand(Hand.MAIN_HAND);
+    }
+
+    private boolean isInScreen() {
+        return mc.currentScreen != null && !clickInScreen.getValue();
     }
 
     private enum SelectionMode implements IName {

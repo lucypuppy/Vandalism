@@ -2,10 +2,6 @@ plugins {
     id "vandalism.addon-conventions"
 }
 
-repositories {
-    mavenLocal()
-}
-
 dependencies {
     File file = BinaryExt.includeMod(rootProject, "ItemVault")
     if (file != null) {

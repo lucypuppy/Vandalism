@@ -19,40 +19,64 @@
 package de.nekosarekawaii.vandalism.addonitemvault.creativetab;
 
 import com.itemvault.fabric_platform_api.ItemVaultFabricBase;
-import com.itemvault.fabric_platform_api.WrappedItemStack;
+import com.itemvault.fabric_platform_api.utils.WrappedItemStack;
 import com.itemvault.file_format.WrappedItem;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTab;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ItemVaultCreativeTab extends CreativeTab implements OutgoingPacketListener {
+public class ItemVaultCreativeTab implements OutgoingPacketListener {
 
-    private final ItemVaultFabricBase instance;
+    private final List<ItemStack> TEMP_ITEMS = new ArrayList<>();
 
-    public ItemVaultCreativeTab(final ItemVaultFabricBase instance) {
-        super(Text.of("Item Vault"), Items.CHEST);
+    private final Text name;
+    private final ItemStack icon;
+    private final ItemVaultFabricBase itemVault;
+
+    public ItemVaultCreativeTab(final ItemVaultFabricBase itemVault) {
+        this.name = Text.of("Item Vault");
+        this.icon = new ItemStack(Items.CHEST);
+        this.itemVault = itemVault;
+
         Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
-
-        this.instance = instance;
     }
 
     @Override
-    public void exposeItems(List<ItemStack> items) {
-        for (WrappedItem<WrappedItemStack> item : instance.getPartialItems().values()) {
-            items.add(instance.displayStack(item));
+    public void onOutgoingPacket(final OutgoingPacketEvent event) {
+        if (event.packet instanceof final CreativeInventoryActionC2SPacket packet) {
+            packet.stack = this.itemVault.finalizeStack(packet.stack());
         }
     }
 
-    @Override
-    public void onOutgoingPacket(OutgoingPacketEvent event) {
-        if (event.packet instanceof CreativeInventoryActionC2SPacket packet) {
-            packet.stack = instance.finalizeStack(packet.stack());
+    public void exposeItems(final List<ItemStack> items) {
+        for (final WrappedItem<WrappedItemStack> item : this.itemVault.getPartialItems().values()) {
+            items.add(this.itemVault.displayStack(item));
         }
     }
+
+    public void publish() {
+        final ItemGroup itemGroup = FabricItemGroup.builder().icon(() -> this.icon).displayName(this.name).entries(((displayContext, entries) -> {
+            if (this.TEMP_ITEMS.isEmpty()) {
+                exposeItems(this.TEMP_ITEMS);
+            }
+            entries.addAll(this.TEMP_ITEMS);
+        })).build();
+        Registry.register(Registries.ITEM_GROUP, Identifier.of(
+                FabricBootstrap.MOD_ID,
+                this.name.getString().toLowerCase().replace(" ", "_")
+        ), itemGroup);
+    }
+
 }

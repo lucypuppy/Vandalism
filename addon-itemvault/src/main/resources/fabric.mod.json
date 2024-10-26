@@ -17,9 +17,11 @@
   },
   "accessWidener": "vandalism-itemvault.accesswidener",
   "depends": {
-    "vandalism": "*"
+    "vandalism": "*",
+    "itemvault": "*"
   },
   "custom": {
+    "itemvault:disable_inbuilt_integration": true,
     "modmenu": {
       "parent": "vandalism"
     }
