@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.util.tooltip.impl;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class ContainerTooltipComponent implements TooltipComponent, MinecraftWrapper, ConvertibleTooltipData {
 

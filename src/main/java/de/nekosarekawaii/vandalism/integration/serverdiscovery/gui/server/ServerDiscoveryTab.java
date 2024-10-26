@@ -30,6 +30,7 @@ import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.Resp
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.api.response.impl.ServersResponse;
 import de.nekosarekawaii.vandalism.util.*;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;

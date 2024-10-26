@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.HAProxySpooferModule;
-import de.nekosarekawaii.vandalism.util.RandomUtils;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.haproxy.*;

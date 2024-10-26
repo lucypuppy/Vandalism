@@ -21,6 +21,8 @@ package de.nekosarekawaii.vandalism.util;
 import de.nekosarekawaii.vandalism.injection.access.ILivingEntity;
 import de.nekosarekawaii.vandalism.injection.access.IParticleManager;
 import de.nekosarekawaii.vandalism.injection.access.ISoundSystem;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;

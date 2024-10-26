@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.injection.access.IClientPlayNetworkHandler;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;

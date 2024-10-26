@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.feature.module.template.module.ClickerModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
 import net.minecraft.entity.attribute.EntityAttributes;
 
-import static de.nekosarekawaii.vandalism.util.MinecraftWrapper.mc;
+import static de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper.mc;
 
 public class CooldownClicker extends Clicker implements PlayerUpdateListener {
 

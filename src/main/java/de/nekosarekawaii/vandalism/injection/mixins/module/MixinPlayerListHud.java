@@ -25,7 +25,7 @@ import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.BetterTabListModule;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;

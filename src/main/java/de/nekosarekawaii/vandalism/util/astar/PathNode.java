@@ -94,6 +94,10 @@ public class PathNode {
         return this.pos.equals(node.pos);
     }
 
+    public double distanceTo(final PathNode node) {
+        return Math.sqrt(this.pos.getSquaredDistance(node.pos));
+    }
+
     public double getManhattanDistance(final PathNode node) {
         return Math.abs(this.pos.getX() - node.pos.getX())
                 + Math.abs(this.pos.getY() - node.pos.getY())

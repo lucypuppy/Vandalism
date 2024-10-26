@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.HealthUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.MoveFlyingListener;
 import de.nekosarekawaii.vandalism.event.player.StrafeListener;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

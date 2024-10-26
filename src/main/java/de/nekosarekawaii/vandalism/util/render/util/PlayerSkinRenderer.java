@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.util.render.util;
 
 import com.mojang.authlib.yggdrasil.ProfileResult;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import lombok.Getter;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.util.Identifier;

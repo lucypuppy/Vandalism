@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.movement.clip;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.Command;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import net.minecraft.command.CommandSource;
 
 public class ClipCommand extends Command {

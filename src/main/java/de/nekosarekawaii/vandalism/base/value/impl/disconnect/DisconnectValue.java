@@ -22,9 +22,9 @@ import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.ServerUtil;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import lombok.Getter;
 
 public class DisconnectValue extends ValueGroup {

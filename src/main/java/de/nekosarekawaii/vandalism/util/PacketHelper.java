@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.util;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

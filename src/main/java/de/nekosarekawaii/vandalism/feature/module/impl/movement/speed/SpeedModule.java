@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
 public class SpeedModule extends Module {

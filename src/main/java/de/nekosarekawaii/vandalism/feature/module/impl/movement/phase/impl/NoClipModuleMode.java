@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.event.game.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 import net.minecraft.util.shape.VoxelShapes;
 import org.lwjgl.glfw.GLFW;
 

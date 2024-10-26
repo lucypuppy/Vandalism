@@ -23,8 +23,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class GroundSpoofModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener {

@@ -24,6 +24,7 @@ import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.ViaFabricPlusAccess;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ReadTimeoutException;
 import net.lenni0451.mcping.responses.MCPingResponse;

@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.util.encryption;
 
-import de.nekosarekawaii.vandalism.util.RandomUtils;
 import de.nekosarekawaii.vandalism.util.encryption.impl.Base64;
 import de.nekosarekawaii.vandalism.util.encryption.impl.Rot13;
 import de.nekosarekawaii.vandalism.util.encryption.impl.aes.AES;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;

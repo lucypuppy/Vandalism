@@ -28,8 +28,8 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 
 import java.util.concurrent.ThreadLocalRandom;
 

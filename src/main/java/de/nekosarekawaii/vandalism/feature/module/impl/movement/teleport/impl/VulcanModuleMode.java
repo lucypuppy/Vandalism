@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.teleport.TeleportModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.PlayerDamageUtil;
+import de.nekosarekawaii.vandalism.util.player.PlayerDamageUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;

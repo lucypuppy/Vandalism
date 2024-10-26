@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.util.render.util;
 
-import de.nekosarekawaii.vandalism.util.IName;
 import de.nekosarekawaii.vandalism.util.StringUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 
 /**
  * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.

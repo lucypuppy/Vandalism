@@ -25,8 +25,8 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.scaffold.Scaffol
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.MinecraftConstants;
-import de.nekosarekawaii.vandalism.util.MovementUtil;
-import de.nekosarekawaii.vandalism.util.RandomUtils;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
+import de.nekosarekawaii.vandalism.util.player.MovementUtil;
 
 public class LegitSneakModuleMode extends ModuleMulti<ScaffoldModule> implements PlayerUpdateListener {
 

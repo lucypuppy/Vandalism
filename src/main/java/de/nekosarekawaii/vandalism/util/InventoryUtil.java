@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.util;
 
 import com.google.common.collect.Lists;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;

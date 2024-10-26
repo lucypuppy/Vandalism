@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.integration;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;

@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc.translator;
 
-import de.nekosarekawaii.vandalism.util.IName;
+import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import lombok.Getter;
 
 public enum FromLanguage implements IName {
