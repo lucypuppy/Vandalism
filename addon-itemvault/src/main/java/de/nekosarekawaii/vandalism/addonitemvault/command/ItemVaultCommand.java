@@ -19,38 +19,28 @@
 package de.nekosarekawaii.vandalism.addonitemvault.command;
 
 import com.itemvault.fabric_platform_api.ItemVaultFabricBase;
-import com.itemvault.fabric_platform_api.WrappedItemStack;
-import com.itemvault.file_format.WrappedItem;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.itemvault.fabric_platform_api.commands.CommandBase;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.Command;
 import net.minecraft.command.CommandSource;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 
-public class SaveItemCommand extends Command {
+public class ItemVaultCommand extends Command {
 
-    private ItemVaultFabricBase instance;
+    private final ItemVaultFabricBase vaultHolder;
 
-    public SaveItemCommand(final ItemVaultFabricBase instance) {
-        super("", Category.MISC, "saveitem");
+    public ItemVaultCommand(final ItemVaultFabricBase vaultHolder) {
+        super(null, Category.MISC, "itemvault");
 
-        this.instance = instance;
+        this.vaultHolder = vaultHolder;
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("displayName", StringArgumentType.string())).executes(context -> {
-            final ItemStack stack = mc.player.getMainHandStack();
-            if (stack.isEmpty())
-                return 0;
-
-            instance.addItem(new WrappedItem<>(
-                    StringArgumentType.getString(context, "displayName"),
-                    Registries.ITEM.getId(stack.getItem()).toString(),
-                    new WrappedItemStack(stack)
-            ));
-            return SINGLE_SUCCESS;
-        });
+    public void build(final LiteralArgumentBuilder<CommandSource> builder) {
+        for (final CommandBase command : this.vaultHolder.commands()) {
+            final LiteralArgumentBuilder<CommandSource> node = literal(command.name());
+            command.build(node);
+            builder.then(node);
+        }
     }
+
 }
