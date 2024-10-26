@@ -76,25 +76,24 @@ public class RotationUtil implements MinecraftWrapper {
             decelerationProgress = 0.0f;
         }
 
-        if (System.currentTimeMillis() - startRotateTime < 300 * Math.random()) {
-            float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
-            float accelerationFactor = Math.min((float) (System.currentTimeMillis() - startRotateTime) / 1000 / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
-//            System.out.println(accelerationFactor);
-            speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
-        }
-
-//        float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
-//        float accelerationFactor = Math.min(timeFactor / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
-//        //System.out.println(accelerationFactor);
-//        speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
-
-        // Apply deceleration if within the threshold
         float decelerationThreshold = (float) (5.0f + Math.random()); // Threshold angle to start decelerating
         if (Math.abs(yawDiff) < decelerationThreshold) {
-            float decelerationFactor = 0.04f * Math.max(Math.abs(yawDiff), 2); // Adjust this factor to change the deceleration rate
-//            System.out.println(decelerationFactor);
+            float decelerationFactor = 0.03f * Math.max(Math.abs(yawDiff), 2); // Adjust this factor to change the deceleration rate
             speed *= decelerationFactor;
+//            System.out.println("Decelerating" + decelerationFactor);
+        } else if (System.currentTimeMillis() - startRotateTime < 300 * Math.random()) {
+            float accelerationPhaseTime = 0.35f;  // The duration of the acceleration phase in seconds (adjust as necessary)
+            float accelerationFactor = Math.min((float) (System.currentTimeMillis() - startRotateTime) / 1000 / accelerationPhaseTime, 1.0f);  // Cap acceleration factor at 1.0 (100%)3
+            speed *= 0.5f + accelerationFactor * 0.5f;  // Starts at half speed and accelerates to full speed
+//            System.out.println("Accelerating" + accelerationFactor);
         }
+
+        // Apply deceleration if within the threshold
+//        float decelerationThreshold = (float) (5.0f + Math.random()); // Threshold angle to start decelerating
+//        if (Math.abs(yawDiff) < decelerationThreshold) {
+//            float decelerationFactor = 0.04f * Math.max(Math.abs(yawDiff), 2); // Adjust this factor to change the deceleration rate
+//            speed *= decelerationFactor;
+//        }
 
         // slowdown rotation in frame to keep rotating until all frames are finished until next tick, so the pitch reaches its destination in the same time as the yaw
         // Adjust speed multipliers to synchronize yaw and pitch changes
