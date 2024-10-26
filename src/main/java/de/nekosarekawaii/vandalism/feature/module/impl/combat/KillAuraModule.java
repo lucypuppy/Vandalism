@@ -37,11 +37,11 @@ import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPointM
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.RandomizerModeValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.NoneRandomizer;
 import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.PredictionSystem;
 import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import de.nekosarekawaii.vandalism.util.math.RandomUtils;
+import de.nekosarekawaii.vandalism.util.player.prediction.PredictionSystem;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
