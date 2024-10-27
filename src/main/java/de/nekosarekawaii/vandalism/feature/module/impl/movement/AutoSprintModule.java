@@ -22,6 +22,8 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 
 public class AutoSprintModule extends Module implements PlayerUpdateListener {
 
@@ -41,31 +43,13 @@ public class AutoSprintModule extends Module implements PlayerUpdateListener {
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
+        final KeyBinding sprintKey = mc.options.sprintKey;
+        sprintKey.setPressed(InputUtil.isKeyPressed(mc.getWindow().getHandle(), sprintKey.boundKey.getCode()));
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final boolean sneaking = mc.player.input.sneaking;
-        final boolean walking = mc.player.isWalking();
-        final boolean canStartSprinting = mc.player.canStartSprinting();
-        final boolean onGround = mc.player.hasVehicle() ? mc.player.getVehicle().isOnGround() : mc.player.isOnGround();
-        final boolean noSneakingAndNoWalking = !sneaking && !walking;
-        if ((onGround || mc.player.isSubmergedInWater()) && noSneakingAndNoWalking && canStartSprinting) {
-            mc.player.setSprinting(true);
-        }
-        if ((!mc.player.isTouchingWater() || mc.player.isSubmergedInWater()) && canStartSprinting) {
-            mc.player.setSprinting(true);
-        }
-        if (mc.player.isSprinting()) {
-            final boolean noForwardMovementOrNoSprint = !mc.player.input.hasForwardMovement() || !mc.player.canSprint();
-            final boolean isColliding = noForwardMovementOrNoSprint || mc.player.horizontalCollision && !mc.player.collidedSoftly || mc.player.isTouchingWater() && !mc.player.isSubmergedInWater();
-            if (mc.player.isSwimming()) {
-                if (!mc.player.isOnGround() && !mc.player.input.sneaking && noForwardMovementOrNoSprint || !mc.player.isTouchingWater()) {
-                    mc.player.setSprinting(false);
-                }
-            } else if (isColliding) {
-                mc.player.setSprinting(false);
-            }
-        }
+        this.mc.options.sprintKey.setPressed(true);
     }
+
 }
