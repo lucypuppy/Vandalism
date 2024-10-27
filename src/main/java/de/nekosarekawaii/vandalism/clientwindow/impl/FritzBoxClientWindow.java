@@ -20,6 +20,10 @@ package de.nekosarekawaii.vandalism.clientwindow.impl;
 
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
+import imgui.type.ImBoolean;
+import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 
 import java.net.InetSocketAddress;
@@ -37,19 +41,36 @@ public class FritzBoxClientWindow extends StateClientWindow {
     private static final byte[] BODY = "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:ForceTermination xmlns:u=\"urn:schemas-upnp-org:service:WANIPConnection:1\" /></s:Body></s:Envelope>".getBytes(StandardCharsets.UTF_8);
 
     private boolean reconnecting = false;
+    private final ImString address = new ImString(15);
+    private final ImBoolean showAddress = new ImBoolean();
 
     public FritzBoxClientWindow() {
-        super("Fritz Box", Category.MISC, 500f, 150f);
+        super("Fritz Box", Category.MISC, 500f, 300f);
+        this.address.set(this.getAddress());
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        ImGui.checkbox("Show address", this.showAddress);
+        ImGui.spacing();
+
+        int flags = ImGuiInputTextFlags.ReadOnly;
+        if (!this.showAddress.get()) {
+            flags |= ImGuiInputTextFlags.Password;
+        }
+
+        ImGui.text("Address");
+        ImGui.setNextItemWidth(-1);
+        ImGui.inputText("##" + this.getName() + "State", this.address, flags);
+        ImGui.spacing();
+
         super.onRender(context, mouseX, mouseY, delta);
         if (!this.reconnecting) {
             if (ImUtils.subButton("Reconnect")) {
                 new Thread(() -> {
                     try (final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build()) {
                         this.setState("Trying to reconnect...");
+                        boolean reconnected = false;
                         for (final String url : URLS) {
                             final HttpRequest request = HttpRequest.newBuilder()
                                     .uri(URI.create(String.format("http://fritz.box:49000/%supnp/control/WANIPConn1", url)))
@@ -63,17 +84,22 @@ public class FritzBoxClientWindow extends StateClientWindow {
                             this.reconnecting = true;
                             while (true) {
                                 try {
-                                    Thread.sleep(5000);
+                                    Thread.sleep(1000);
                                 } catch (final InterruptedException ignored) {
                                 }
                                 try (final Socket socket = new Socket()) {
                                     socket.connect(new InetSocketAddress("1.1.1.1", 80), 2000);
                                     this.setState("Successfully reconnected.");
+                                    reconnected = true;
                                     this.reconnecting = false;
                                     break;
                                 } catch (final Exception ignored) {
                                 }
                             }
+                        }
+                        if (reconnected) {
+                            this.address.set(this.getAddress());
+                            return;
                         }
                     } catch (final Exception e) {
                         this.setState("Failed to reconnect: " + e.getMessage());
@@ -83,6 +109,16 @@ public class FritzBoxClientWindow extends StateClientWindow {
                 }).start();
             }
         }
+    }
+
+    private String getAddress() {
+        try (final HttpClient awsClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build()) {
+            final HttpRequest awsRequest = HttpRequest.newBuilder().uri(URI.create("https://checkip.amazonaws.com/")).timeout(Duration.ofSeconds(10)).build();
+            final HttpResponse<String> awsResponse = awsClient.send(awsRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            return awsResponse.body();
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
 }
