@@ -6,12 +6,12 @@ cd ..
 
 REPO_URL="https://github.com/Wurst-Imperium/Wurst7.git"
 REPO_DIR="Wurst7"
-BINARIES_DIR="binaries"
+MODS_DIR="run/mods"
 
-if [ -d "$BINARIES_DIR" ]; then
+if [ -d "$MODS_DIR" ]; then
     echo "Checking for existing JAR files in the binaries directory..."
 
-    for f in "$BINARIES_DIR"/*.jar; do
+    for f in "$MODS_DIR"/*.jar; do
         echo "Found JAR file: $(basename "$f")"
 
         if [[ "$(basename "$f")" == *Wurst* ]]; then
@@ -42,8 +42,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-if [ ! -d "../$BINARIES_DIR" ]; then
-    mkdir "../$BINARIES_DIR"
+if [ ! -d "../$MODS_DIR" ]; then
+    mkdir "../$MODS_DIR"
 fi
 
 echo "Copying the JAR file..."
@@ -53,7 +53,7 @@ for f in build/libs/*.jar; do
 
     if [[ "$(basename "$f")" != *-sources* ]]; then
         echo "Found non-sources JAR: $(basename "$f")"
-        cp "$f" "../$BINARIES_DIR"
+        cp "$f" "../$MODS_DIR"
         JAR_COPIED=1
     fi
 done
