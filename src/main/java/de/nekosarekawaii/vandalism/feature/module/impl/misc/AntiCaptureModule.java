@@ -29,20 +29,20 @@ import imgui.ImGui;
 public class AntiCaptureModule extends Module {
 
     public AntiCaptureModule() {
-        super("AntiCapture", "Prevents the game from being captured.", Category.MISC);
+        super("Anti Capture", "Prevents the game from being captured.", Category.MISC);
     }
 
     @Override
     protected void onActivate() {
-        this.excludeFromCapture(true);
+        this.setWindowDisplayAffinity(true);
     }
 
     @Override
     protected void onDeactivate() {
-        this.excludeFromCapture(false);
+        this.setWindowDisplayAffinity(false);
     }
 
-    private void excludeFromCapture(boolean hide) {
+    private void setWindowDisplayAffinity(final boolean hide) {
         if (Platform.isWindows()) {
             User32.INSTANCE.SetWindowDisplayAffinity(new WinDef.HWND(new Pointer(ImGui.getMainViewport().getPlatformHandleRaw())), new WinDef.DWORD(hide ? 0x11 : 0));
         }
@@ -52,6 +52,8 @@ public class AntiCaptureModule extends Module {
 
         User32 INSTANCE = Native.load("user32", User32.class);
 
-        void SetWindowDisplayAffinity(WinDef.HWND hWnd, WinDef.DWORD dwAffinity);
+        void SetWindowDisplayAffinity(final WinDef.HWND hWnd, final WinDef.DWORD dwAffinity);
+
     }
+
 }
