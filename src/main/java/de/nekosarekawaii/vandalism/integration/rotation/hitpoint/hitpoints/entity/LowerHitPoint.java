@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.enti
 
 import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPoint;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class LowerHitPoint extends EntityHitPoint {
@@ -34,21 +35,16 @@ public class LowerHitPoint extends EntityHitPoint {
         final double localPlayerX = mc.player.getX();
         final double localPlayerY = mc.player.getY();
         final double localPlayerZ = mc.player.getZ();
-        final double localPlayerEyeY = localPlayerY + mc.player.getEyeY();
+        final double localPlayerEyeHeight = mc.player.getEyeHeight(mc.player.getPose());
+
         final double enemyX = entity.getX();
         final double enemyZ = entity.getZ();
 
         final double x = localPlayerX >= enemyX - width && localPlayerX <= enemyX + width ? localPlayerX : (enemyX - localPlayerX < 0 ? enemyX + width : enemyX - width);
         final double z = localPlayerZ >= enemyZ - width && localPlayerZ <= enemyZ + width ? localPlayerZ : (enemyZ - localPlayerZ < 0 ? enemyZ + width : enemyZ - width);
 
-        final double eposY = entity.getY() - 0.1;
-        double y = mc.player.getY() + mc.player.getEyeY();
-        if (entity.getY() + entity.getHeight() < localPlayerEyeY) {
-            y = eposY + (entity.getHeight() + 0.2f);
-        }
-        if (entity.getY() > localPlayerEyeY) {
-            y = eposY;
-        }
+        final double yDIff = MathHelper.clamp(entity.getY() - localPlayerY, -1, 1);
+        double y = (entity.getY() + localPlayerEyeHeight) - yDIff;
 
         // Aiming a bit lower will be improved
         y -= entity.getHeight() / 3f;
