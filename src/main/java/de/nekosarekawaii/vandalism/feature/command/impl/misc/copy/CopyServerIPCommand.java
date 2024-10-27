@@ -63,16 +63,16 @@ public class CopyServerIPCommand extends Command {
     }
 
     private void copyAddress(final boolean resolved) {
-        if (this.mc.isInSingleplayer()) {
+        if (mc.isInSingleplayer()) {
             ChatUtil.errorChatMessage("You are in singleplayer.");
             return;
         }
         if (resolved) {
-            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+            final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
             if (networkHandler != null) {
                 EXECUTOR.submit(() -> {
                     final Pair<String, Integer> address = ServerUtil.resolveServerAddress(networkHandler.getConnection().getAddress().toString());
-                    this.mc.keyboard.setClipboard(address.getLeft() + ":" + address.getRight());
+                    mc.keyboard.setClipboard(address.getLeft() + ":" + address.getRight());
                 });
             }
             else {
@@ -80,9 +80,9 @@ public class CopyServerIPCommand extends Command {
             }
         }
         else {
-            final ServerInfo serverInfo = this.mc.getCurrentServerEntry();
+            final ServerInfo serverInfo = mc.getCurrentServerEntry();
             if (serverInfo != null) {
-                this.mc.keyboard.setClipboard(serverInfo.address);
+                mc.keyboard.setClipboard(serverInfo.address);
             }
             else {
                 ChatUtil.errorChatMessage("You are not connected to a server.");

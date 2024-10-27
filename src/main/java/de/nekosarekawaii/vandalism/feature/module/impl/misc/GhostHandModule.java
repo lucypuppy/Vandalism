@@ -81,14 +81,14 @@ public class GhostHandModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.options.useKey.isPressed() || !this.interactionDelay.hasReached(10, true)) return;
-        final Entity cameraEntity = this.mc.getCameraEntity();
+        if (!mc.options.useKey.isPressed() || !this.interactionDelay.hasReached(10, true)) return;
+        final Entity cameraEntity = mc.getCameraEntity();
         final HitResult hitResult = cameraEntity.raycast(this.throughEntityReach.getValue(), 0, false);
         if (hitResult instanceof final BlockHitResult blockHitResult) {
             final BlockPos blockPos = blockHitResult.getBlockPos();
-            final BlockEntity blockEntity = this.mc.world.getBlockEntity(blockPos);
+            final BlockEntity blockEntity = mc.world.getBlockEntity(blockPos);
             if (blockEntity != null) {
-                this.mc.interactionManager.interactBlock(this.mc.player, Hand.MAIN_HAND, blockHitResult);
+                mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHitResult);
             }
         }
     }

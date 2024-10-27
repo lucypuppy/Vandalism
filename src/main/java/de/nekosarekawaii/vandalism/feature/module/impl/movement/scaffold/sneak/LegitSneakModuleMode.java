@@ -64,7 +64,7 @@ public class LegitSneakModuleMode extends ModuleMulti<ScaffoldModule> implements
             return;
         }
 
-        if (mc.options.sneakKey.isPressed()) {
+        if (mc.player.input.sneaking) {
             if (this.stopSneakDelay.hasReached(this.randomStopSneakDelay, true)) {
                 mc.options.sneakKey.setPressed(false);
                 this.randomStartSneakDelay = getRandomStartSneakDelay();

@@ -166,7 +166,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     }
 
     public int getX() {
-        final int scaledWidth = this.mc.getWindow().getScaledWidth();
+        final int scaledWidth = mc.getWindow().getScaledWidth();
         final int offset = 2;
         final int x;
         switch (this.alignmentX.getValue()) {
@@ -178,7 +178,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     }
 
     public int getY() {
-        final int scaledHeight = this.mc.getWindow().getScaledHeight();
+        final int scaledHeight = mc.getWindow().getScaledHeight();
         final int offset = 2;
         final int y;
         switch (this.alignmentY.getValue()) {
@@ -217,14 +217,14 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     public int getFontHeight() {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            return this.mc.textRenderer.fontHeight;
+            return mc.textRenderer.fontHeight;
         }
         return (int) this.fontRenderer.getFontSizeScaled();
     }
 
     public void getTextSize(final Text text, Vector2f dest) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            dest.set(this.mc.textRenderer.getWidth(text), this.mc.textRenderer.fontHeight);
+            dest.set(mc.textRenderer.getWidth(text), mc.textRenderer.fontHeight);
             return;
         }
         this.fontRenderer.getTextSizeScaled(text, TEXT_ALIGN, this.fontSize.getValue(), dest);
@@ -232,7 +232,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     public void getTextSize(final String text, Vector2f dest) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            dest.set(this.mc.textRenderer.getWidth(text), this.mc.textRenderer.fontHeight);
+            dest.set(mc.textRenderer.getWidth(text), mc.textRenderer.fontHeight);
             return;
         }
         this.fontRenderer.getTextSizeScaled(text, TEXT_ALIGN, this.fontSize.getValue(), dest);
@@ -240,21 +240,21 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     public int getTextHeight(final Text text) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            return this.mc.textRenderer.fontHeight;
+            return mc.textRenderer.fontHeight;
         }
         return (int) this.fontRenderer.getTextHeightScaled(text, TEXT_ALIGN, this.fontSize.getValue());
     }
 
     public int getTextWidth(final Text text) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            return this.mc.textRenderer.getWidth(text);
+            return mc.textRenderer.getWidth(text);
         }
         return (int) this.fontRenderer.getTextWidthScaled(text, TEXT_ALIGN, this.fontSize.getValue());
     }
 
     public int getTextWidth(final String text) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            return this.mc.textRenderer.getWidth(text);
+            return mc.textRenderer.getWidth(text);
         }
         return (int) this.fontRenderer.getTextWidthScaled(text, TEXT_ALIGN, this.fontSize.getValue());
     }
@@ -268,7 +268,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     protected void drawText(AttribConsumerProvider batch, final Text text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            context.drawText(this.mc.textRenderer, text, (int) x, (int) y, color, shadow);
+            context.drawText(mc.textRenderer, text, (int) x, (int) y, color, shadow);
             return;
         }
         this.fontRenderer.drawScaled(
@@ -289,7 +289,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     protected void drawText(AttribConsumerProvider batch, final String text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
-            context.drawText(this.mc.textRenderer, text, (int) x, (int) y, color, shadow);
+            context.drawText(mc.textRenderer, text, (int) x, (int) y, color, shadow);
             return;
         }
         this.fontRenderer.drawScaled(

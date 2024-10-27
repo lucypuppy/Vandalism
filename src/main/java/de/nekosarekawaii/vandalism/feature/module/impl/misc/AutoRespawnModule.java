@@ -72,12 +72,12 @@ public class AutoRespawnModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.player.isDead() || !this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
+        if (!mc.player.isDead() || !this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
             return;
         }
-        this.mc.player.requestRespawn();
+        mc.player.requestRespawn();
         if (this.autoBack.getValue()) {
-            this.mc.getNetworkHandler().sendChatCommand("back");
+            mc.getNetworkHandler().sendChatCommand("back");
         }
     }
 

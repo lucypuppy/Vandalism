@@ -72,10 +72,10 @@ public class NoClipModuleMode extends ModuleMulti<PhaseModule> implements Player
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.getBlockStateAtPos().isAir()) {
+        if (mc.player.getBlockStateAtPos().isAir()) {
             return;
         }
-        this.mc.player.setVelocity(
+        mc.player.setVelocity(
                 0,
                 this.upwardsKey.isPressed() ? this.motionYOffset.getValue() : this.downwardsKey.isPressed() ? -this.motionYOffset.getValue() : 0,
                 0

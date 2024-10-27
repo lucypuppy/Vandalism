@@ -169,11 +169,11 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.target == null) {
-            final Stream<AbstractClientPlayerEntity> players = this.mc.world.getPlayers().stream();
-            this.target = players.sorted(Comparator.comparingDouble(player -> this.mc.player.distanceTo(player))).
+            final Stream<AbstractClientPlayerEntity> players = mc.world.getPlayers().stream();
+            this.target = players.sorted(Comparator.comparingDouble(player -> mc.player.distanceTo(player))).
                     filter(player -> {
-                        final boolean playerIsNotCurrentPlayer = this.mc.player != player;
-                        final boolean distanceCheck = this.mc.player.distanceTo(player) <= this.maxDistance.getValue();
+                        final boolean playerIsNotCurrentPlayer = mc.player != player;
+                        final boolean distanceCheck = mc.player.distanceTo(player) <= this.maxDistance.getValue();
                         final boolean isNotFriend = !Vandalism.getInstance().getFriendsManager().isFriend(player.getGameProfile().getName(), true);
                         return playerIsNotCurrentPlayer && distanceCheck && isNotFriend;
                     }).
@@ -184,7 +184,7 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
         }
 
         final boolean targetIsDead = this.target.isDead();
-        final boolean targetIsNotInWorld = this.mc.world.getEntityById(this.target.getId()) == null;
+        final boolean targetIsNotInWorld = mc.world.getEntityById(this.target.getId()) == null;
         final boolean targetIsNotFriend = Vandalism.getInstance().getFriendsManager().isFriend(this.target.getGameProfile().getName(), true);
         if (targetIsDead || targetIsNotInWorld || targetIsNotFriend) {
             this.reset();
@@ -205,7 +205,7 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
             if (this.target.handSwingProgress > 0.16666667) {
                 if (!this.swung) {
                     this.swung = true;
-                    boolean switchHand = this.mc.player.preferredHand != this.target.preferredHand;
+                    boolean switchHand = mc.player.preferredHand != this.target.preferredHand;
                     final SyncedClientOptions options = mc.options.getSyncedOptions();
                     mc.player.networkHandler.sendPacket(new ClientOptionsC2SPacket(new SyncedClientOptions(
                             options.language(),
@@ -218,7 +218,7 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
                             options.allowsServerListing()
                     )));
                     this.serverArm = this.target.getMainArm();
-                    this.mc.player.swingHand(switchHand ? Hand.OFF_HAND : Hand.MAIN_HAND);
+                    mc.player.swingHand(switchHand ? Hand.OFF_HAND : Hand.MAIN_HAND);
                 }
             } else {
                 this.swung = false;
@@ -226,23 +226,23 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
         }
 
         if (this.useYawFromTarget.getValue()) {
-            this.mc.player.setYaw(this.target.getHeadYaw());
-            this.mc.player.setBodyYaw(this.target.getBodyYaw());
-            this.mc.player.setHeadYaw(this.target.getHeadYaw());
+            mc.player.setYaw(this.target.getHeadYaw());
+            mc.player.setBodyYaw(this.target.getBodyYaw());
+            mc.player.setHeadYaw(this.target.getHeadYaw());
         }
 
         if (this.usePitchFromTarget.getValue()) {
-            this.mc.player.setPitch(this.target.getPitch());
+            mc.player.setPitch(this.target.getPitch());
         }
 
         if (this.useSneakFromTarget.getValue()) {
-            this.mc.options.sneakKey.setPressed(this.target.isSneaking());
+            mc.options.sneakKey.setPressed(this.target.isSneaking());
         } else if (this.sneakSpam.getValue()) {
             if (this.sneakTimer.hasReached(this.sneakSpamDelay.getValue(), true)) {
                 this.sneaking = !this.sneaking;
             }
 
-            this.mc.options.sneakKey.setPressed(this.sneaking);
+            mc.options.sneakKey.setPressed(this.sneaking);
         }
 
         double diffZ = (this.target.getZ() - this.target.prevZ);
@@ -306,7 +306,7 @@ public class FOVFuckerModule extends Module implements PlayerUpdateListener {
         this.y = this.target.getY() + this.targetYPosOffset.getValue() + targetEyePosY;
         this.z = z;
 
-        this.mc.player.setVelocity(new Vec3d(this.x, this.y, this.z).subtract(this.mc.player.getPos()));
+        mc.player.setVelocity(new Vec3d(this.x, this.y, this.z).subtract(mc.player.getPos()));
     }
 
 }

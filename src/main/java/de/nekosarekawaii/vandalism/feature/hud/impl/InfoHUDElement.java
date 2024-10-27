@@ -56,6 +56,8 @@ import net.minecraft.registry.VersionedIdentifier;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.joml.Vector2f;
@@ -183,6 +185,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             this,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
+            true
+    );
+
+    private final BooleanValue lookingAtBlockPosition = new BooleanValue(
+            this,
+            "Looking At Block Position",
+            "Shows the position of the block you are currently looking at.",
             true
     );
 
@@ -363,7 +372,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 this.fasterPings.getValue() &&
                 this.ping.getValue() &&
                 !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
-            this.mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
+            mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
             this.lastPing = now;
         }
     }
@@ -449,7 +458,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             if (isPostProcessing) {
                 Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
                 Shaders.getColorFillEffect().setColor(glowOutlineColor);
-                Shaders.getColorFillEffect().renderFullscreen(this.mc.getFramebuffer(), false);
+                Shaders.getColorFillEffect().renderFullscreen(mc.getFramebuffer(), false);
             }
 
             this.width = width;
@@ -462,7 +471,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         final Map<String, String> infoMap = new LinkedHashMap<>();
 
         if (this.fps.getValue()) {
-            infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
+            infoMap.put("FPS", Integer.toString(mc.getCurrentFps()));
         }
 
         if (this.cps.getValue()) {
@@ -471,17 +480,17 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.username.getValue()) {
-            String username = this.mc.session.getUsername();
-            if (this.mc.player != null) {
-                username = this.mc.player.getGameProfile().getName();
+            String username = mc.session.getUsername();
+            if (mc.player != null) {
+                username = mc.player.getGameProfile().getName();
             }
             infoMap.put("Username", username);
         }
 
-        if (this.position.getValue() && this.mc.player != null) {
-            final double posX = this.mc.player.getX();
-            final double posY = this.mc.player.getY();
-            final double posZ = this.mc.player.getZ();
+        if (this.position.getValue() && mc.player != null) {
+            final double posX = mc.player.getX();
+            final double posY = mc.player.getY();
+            final double posZ = mc.player.getZ();
             final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
             if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
             else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
@@ -497,11 +506,11 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             );
         }
 
-        if (this.dimensionalPosition.getValue() && this.mc.world != null && this.mc.player != null) {
-            final double posX = this.mc.player.getX();
-            final double posY = this.mc.player.getY();
-            final double posZ = this.mc.player.getZ();
-            final DimensionType dimensionType = this.mc.world.getDimension();
+        if (this.dimensionalPosition.getValue() && mc.world != null && mc.player != null) {
+            final double posX = mc.player.getX();
+            final double posY = mc.player.getY();
+            final double posZ = mc.player.getZ();
+            final DimensionType dimensionType = mc.world.getDimension();
             if (dimensionType != WorldUtil.uncoverDimensionType(DimensionTypes.THE_END)) {
                 final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
                 if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
@@ -528,19 +537,27 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
         }
 
-        if (this.entities.getValue() && this.mc.world != null) {
-            infoMap.put("Entities", String.valueOf(this.mc.world.getRegularEntityCount()));
-        }
-
-        if (this.difficulty.getValue() && this.mc.world != null) {
+        if (this.lookingAtBlockPosition.getValue() && mc.player != null && mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
+            final BlockPos lookingAt = blockHitResult.getBlockPos();
             infoMap.put(
-                    "Difficulty",
-                    this.mc.world.getDifficulty().getName()
+                    "Looking At",
+                    String.format("%s, %s, %s", lookingAt.getX(), lookingAt.getY(), lookingAt.getZ())
             );
         }
 
-        if (this.permissionsLevel.getValue() && this.mc.player != null) {
-            final int permissionLevel = this.mc.player.getPermissionLevel();
+        if (this.entities.getValue() && mc.world != null) {
+            infoMap.put("Entities", String.valueOf(mc.world.getRegularEntityCount()));
+        }
+
+        if (this.difficulty.getValue() && mc.world != null) {
+            infoMap.put(
+                    "Difficulty",
+                    mc.world.getDifficulty().getName()
+            );
+        }
+
+        if (this.permissionsLevel.getValue() && mc.player != null) {
+            final int permissionLevel = mc.player.getPermissionLevel();
             if (permissionLevel != 0) {
                 infoMap.put(
                         "Permissions Level",
@@ -549,33 +566,33 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
         }
 
-        if (this.serverBrand.getValue() && this.mc.getNetworkHandler() != null) {
-            String brand = this.mc.getNetworkHandler().getBrand();
+        if (this.serverBrand.getValue() && mc.getNetworkHandler() != null) {
+            String brand = mc.getNetworkHandler().getBrand();
             if (brand != null) {
                 brand = BRAND_PATTERN.matcher(brand).replaceAll("");
                 infoMap.put("Server " + (DateUtil.isAprilFools() ? "Engine" : "Brand"), brand);
             }
         }
 
-        if (this.serverVersion.getValue() && this.mc.getNetworkHandler() != null) {
+        if (this.serverVersion.getValue() && mc.getNetworkHandler() != null) {
             if (this.serverVersionValue != null && !this.serverVersionValue.isEmpty()) {
                 infoMap.put("Server Version", this.serverVersionValue);
             }
         }
 
-        if (this.serverAddress.getValue() && this.mc.player != null && !this.mc.isInSingleplayer()) {
+        if (this.serverAddress.getValue() && mc.player != null && !mc.isInSingleplayer()) {
             final ServerInfo currentServerInfo = ServerUtil.getLastServerInfo();
             if (currentServerInfo != null) {
                 infoMap.put("Server Address", currentServerInfo.address);
             }
         }
 
-        if (this.ping.getValue() && this.mc.getNetworkHandler() != null) {
+        if (this.ping.getValue() && mc.getNetworkHandler() != null) {
             int ping = 0;
             if (this.clientPing > 3 && this.fasterPings.getValue()) {
                 ping = (int) this.clientPing;
             } else {
-                final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(this.mc.player.getGameProfile().getId());
+                final PlayerListEntry playerListEntry = mc.getNetworkHandler().getPlayerListEntry(mc.player.getGameProfile().getId());
                 if (playerListEntry != null) {
                     ping = playerListEntry.getLatency();
                 }
@@ -585,16 +602,16 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
         }
 
-        if (this.packetsSent.getValue() && this.mc.getNetworkHandler() != null) {
-            infoMap.put("Packets Sent", String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsSent()));
+        if (this.packetsSent.getValue() && mc.getNetworkHandler() != null) {
+            infoMap.put("Packets Sent", String.format("%.0f", mc.getNetworkHandler().getConnection().getAveragePacketsSent()));
         }
 
-        if (this.packetsReceived.getValue() && this.mc.getNetworkHandler() != null) {
-            infoMap.put("Packets Received", String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsReceived()));
+        if (this.packetsReceived.getValue() && mc.getNetworkHandler() != null) {
+            infoMap.put("Packets Received", String.format("%.0f", mc.getNetworkHandler().getConnection().getAveragePacketsReceived()));
         }
 
         if (this.lagMeter.getValue()) {
-            final long lagMillis = this.mc.getNetworkHandler() != null && !(this.mc.isInSingleplayer() && this.mc.isPaused()) ? System.currentTimeMillis() - this.lastUpdate : 0L;
+            final long lagMillis = mc.getNetworkHandler() != null && !(mc.isInSingleplayer() && mc.isPaused()) ? System.currentTimeMillis() - this.lastUpdate : 0L;
             if (lagMillis > this.lagMeterThreshold.getValue()) {
                 infoMap.put("Lag", lagMillis + " ms");
             }
@@ -616,7 +633,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.clientTPS.getValue()) {
-            final float tps = ((IRenderTickCounter) this.mc.getRenderTickCounter()).vandalism$getTPS();
+            final float tps = ((IRenderTickCounter) mc.getRenderTickCounter()).vandalism$getTPS();
             final float percentage = tps / 20.0f;
             infoMap.put("Client TPS", String.format("%.3f (%.3f)", tps, percentage));
         }

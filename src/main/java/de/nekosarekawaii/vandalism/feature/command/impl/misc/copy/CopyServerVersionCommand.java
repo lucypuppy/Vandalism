@@ -39,10 +39,10 @@ public class CopyServerVersionCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            if (this.mc.isInSingleplayer()) {
+            if (mc.isInSingleplayer()) {
                 ChatUtil.errorChatMessage("You are in singleplayer.");
             } else if (ServerUtil.lastServerExists()) {
-                this.mc.keyboard.setClipboard(ServerUtil.getLastServerInfo().version.getString());
+                mc.keyboard.setClipboard(ServerUtil.getLastServerInfo().version.getString());
                 ChatUtil.infoChatMessage("Server version copied into the clipboard.");
             }
             return SINGLE_SUCCESS;

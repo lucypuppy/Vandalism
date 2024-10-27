@@ -48,17 +48,17 @@ public class YPortModuleMode extends ModuleMulti<SpeedModule> implements PlayerU
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        this.mc.player.setVelocity(mc.player.getVelocity().getX(), 0.0, mc.player.getVelocity().getZ());
+        mc.player.setVelocity(mc.player.getVelocity().getX(), 0.0, mc.player.getVelocity().getZ());
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (MovementUtil.isMoving()) {
-            if (this.mc.player.isOnGround()) {
-                this.mc.player.setVelocity(mc.player.getVelocity().getX(), 1.0, mc.player.getVelocity().getZ());
+            if (mc.player.isOnGround()) {
+                mc.player.setVelocity(mc.player.getVelocity().getX(), 1.0, mc.player.getVelocity().getZ());
             }
             else {
-                this.mc.player.setVelocity(mc.player.getVelocity().getX(), -1.0, mc.player.getVelocity().getZ());
+                mc.player.setVelocity(mc.player.getVelocity().getX(), -1.0, mc.player.getVelocity().getZ());
             }
             MovementUtil.setSpeed(this.speed.getValue());
         }

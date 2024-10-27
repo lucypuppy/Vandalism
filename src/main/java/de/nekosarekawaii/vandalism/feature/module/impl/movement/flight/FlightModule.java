@@ -98,8 +98,8 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final double x = this.mc.player.getX();
-        final double z = this.mc.player.getZ();
+        final double x = mc.player.getX();
+        final double z = mc.player.getZ();
 
         if (!Double.isNaN(this.lastX) && !Double.isNaN(this.lastZ)) {
             this.flownDistance += Math.hypot(x - this.lastX, z - this.lastZ);
@@ -113,7 +113,7 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
         }
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (!PlayerUtil.isOnGround(0.1)) {
-                this.mc.player.ticksSinceLastPositionPacketSent = 20;
+                mc.player.ticksSinceLastPositionPacketSent = 20;
             }
         }
     }
@@ -125,7 +125,7 @@ public class FlightModule extends Module implements OutgoingPacketListener, Play
         }
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
-                if (!PlayerUtil.isOnGround(0.1) && this.mc.player.age % 2 == 0) {
+                if (!PlayerUtil.isOnGround(0.1) && mc.player.age % 2 == 0) {
                     playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
                 }
             }

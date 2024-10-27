@@ -57,16 +57,16 @@ public class SmartVClipModule extends Module implements KeyboardInputListener {
         }
 
         if (this.upKey.isPressed() || this.downKey.isPressed()) {
-            final BlockPos oldPos = this.mc.player.getBlockPos().mutableCopy();
+            final BlockPos oldPos = mc.player.getBlockPos().mutableCopy();
 
             for (int i = 1; i < this.maxScanRange.getValue(); i++) {
                 final BlockPos safeBlockPos = oldPos.add(0, this.upKey.isPressed() ? i : (-(i + 1)), 0);
                 final BlockPos airBlock1 = safeBlockPos.add(0, 1, 0);
                 final BlockPos airBlock2 = safeBlockPos.add(0, 2, 0);
 
-                final BlockState safeBlock = this.mc.world.getBlockState(safeBlockPos);
-                final BlockState airBlock1State = this.mc.world.getBlockState(airBlock1);
-                final BlockState airBlock2State = this.mc.world.getBlockState(airBlock2);
+                final BlockState safeBlock = mc.world.getBlockState(safeBlockPos);
+                final BlockState airBlock1State = mc.world.getBlockState(airBlock1);
+                final BlockState airBlock2State = mc.world.getBlockState(airBlock2);
 
                 if ((!(safeBlock.getBlock() instanceof AirBlock) && !(safeBlock.getBlock() instanceof FluidBlock)) && airBlock1State.isAir() && airBlock2State.isAir()) {
                     MovementUtil.bypassClip(

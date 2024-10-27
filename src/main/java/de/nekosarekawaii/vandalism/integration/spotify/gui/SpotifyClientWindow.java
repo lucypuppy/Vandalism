@@ -22,8 +22,8 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
-import de.nekosarekawaii.vandalism.util.math.Percentage;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.math.Percentage;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiInputTextFlags;
@@ -73,7 +73,7 @@ public class SpotifyClientWindow extends ClientWindow {
                     spotifyManager.setHttpServerPort(httpServerPort.get());
                 }
                 if (ImUtils.subButton("Copy redirect URI" + id + "copyRedirectUri")) {
-                    this.mc.keyboard.setClipboard(spotifyManager.getRedirectUri());
+                    mc.keyboard.setClipboard(spotifyManager.getRedirectUri());
                 }
                 if (spotifyManager.isLoggedIn()) {
                     if (ImUtils.subButton("Logout" + id + "logout")) {
@@ -96,13 +96,13 @@ public class SpotifyClientWindow extends ClientWindow {
         }
         spotifyManager.update();
         final SpotifyData spotifyData = spotifyManager.getCurrentSpotifyData();
-        AbstractTexture image = this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON);
+        AbstractTexture image = mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON);
         if (spotifyData.getImage() != null) {
             image = spotifyData.getImage();
         }
         ImGui.image(image.getGlId(), 80, 80);
         if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
-            this.mc.keyboard.setClipboard(spotifyData.getImageUrl());
+            mc.keyboard.setClipboard(spotifyData.getImageUrl());
         }
         if (spotifyData.isPaused()) {
             ImGui.sameLine(15);
@@ -133,7 +133,7 @@ public class SpotifyClientWindow extends ClientWindow {
         ImGui.button("  " + (!spotifyData.getType().isEmpty() ? spotifyData.getName() : waitingForData), -1, 30);
         ImGui.popStyleColor();
         if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
-            this.mc.keyboard.setClipboard(spotifyData.getName());
+            mc.keyboard.setClipboard(spotifyData.getName());
         }
         String artists = String.join(", ", spotifyData.getArtists());
         if (artists.isEmpty()) {
@@ -143,7 +143,7 @@ public class SpotifyClientWindow extends ClientWindow {
         ImGui.button("  " + artists, -1, 30);
         ImGui.popStyleColor();
         if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
-            this.mc.keyboard.setClipboard(artists);
+            mc.keyboard.setClipboard(artists);
         }
         ImGui.endChild();
         final long time = spotifyData.getTime();

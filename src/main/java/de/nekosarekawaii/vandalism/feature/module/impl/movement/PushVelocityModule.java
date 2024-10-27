@@ -92,13 +92,13 @@ public class PushVelocityModule extends Module implements EntityPushListener, Fl
     public void onFluidPush(final FluidPushEvent fluidPushEvent) {
         if (!this.modifyFluidPush.getValue()) return;
 
-        if (this.mc.options.useKey.isPressed()) {
-            final ItemStack mainHandStack = this.mc.player.getMainHandStack();
+        if (mc.options.useKey.isPressed()) {
+            final ItemStack mainHandStack = mc.player.getMainHandStack();
             if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getLevel(ItemStackUtil.getEnchantment(Enchantments.RIPTIDE), mainHandStack) > 0)
                 return;
         }
 
-        if (this.mc.player.isUsingRiptide()) return;
+        if (mc.player.isUsingRiptide()) return;
 
         final double speed = this.fluidPushSpeed.getValue();
         if (speed == 0.0d) fluidPushEvent.cancel();

@@ -63,7 +63,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         final HUDClientWindow hudImWindow = Vandalism.getInstance().getClientWindowManager().getByClass(HUDClientWindow.class);
-        if (this.mc.currentScreen instanceof ClientWindowScreen && hudImWindow.isActive()) {
+        if (mc.currentScreen instanceof ClientWindowScreen && hudImWindow.isActive()) {
             return;
         }
         for (final HUDElement hudElement : this.getList()) {

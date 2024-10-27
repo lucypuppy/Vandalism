@@ -33,7 +33,7 @@ public class HClipCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-200.0, 200.0)).executes(context -> {
-            if (this.mc.player != null) {
+            if (mc.player != null) {
                 MovementUtil.bypassClip(DoubleArgumentType.getDouble(context, "horizontal-offset"), 0);
             }
             return SINGLE_SUCCESS;

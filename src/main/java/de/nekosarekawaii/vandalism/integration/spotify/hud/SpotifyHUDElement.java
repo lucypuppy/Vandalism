@@ -59,7 +59,7 @@ public class SpotifyHUDElement extends HUDElement {
 
     @Override
     public int getX() {
-        final int scaledWidth = this.mc.getWindow().getScaledWidth();
+        final int scaledWidth = mc.getWindow().getScaledWidth();
         final int offset = 2;
         final int x;
         switch (this.alignmentX.getValue()) {
@@ -88,7 +88,7 @@ public class SpotifyHUDElement extends HUDElement {
         int width = 0, height = 0;
         final MatrixStack matrices = context.getMatrices();
         final float scale = 0.5f;
-        final int fontHeight = this.mc.textRenderer.fontHeight;
+        final int fontHeight = mc.textRenderer.fontHeight;
         final int heightAddition = fontHeight * 2;
         final Map<String, String> infoMap = new LinkedHashMap<>();
         final String waitingForData = "Waiting for data...";
@@ -124,7 +124,7 @@ public class SpotifyHUDElement extends HUDElement {
                 Integer.MIN_VALUE
         );
         Identifier imageIdentifier = FabricBootstrap.MOD_ICON;
-        AbstractTexture image = this.mc.getTextureManager().getTexture(imageIdentifier);
+        AbstractTexture image = mc.getTextureManager().getTexture(imageIdentifier);
         if (spotifyData.getImage() != null) {
             imageIdentifier = SpotifyData.IMAGE_IDENTIFIER;
             image = spotifyData.getImage();
@@ -209,7 +209,7 @@ public class SpotifyHUDElement extends HUDElement {
                 Color.GRAY.getRGB()
         );
         context.drawCenteredTextWithShadow(
-                this.mc.textRenderer,
+                mc.textRenderer,
                 current,
                 (int) (progressBarStartX / scale),
                 (int) ((progressBarY + 5) / scale),
@@ -222,7 +222,7 @@ public class SpotifyHUDElement extends HUDElement {
                 Color.GRAY.getRGB()
         );
         context.drawCenteredTextWithShadow(
-                this.mc.textRenderer,
+                mc.textRenderer,
                 max,
                 (int) (progressBarEndX / scale),
                 (int) ((progressBarY + 5) / scale),
@@ -233,13 +233,13 @@ public class SpotifyHUDElement extends HUDElement {
         final int textX = (int) ((this.getX() + textOffset) / scale);
         final int textY = (int) ((this.getY() + 4) / scale) + 7;
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
-            final List<OrderedText> wrappedTexts = this.mc.textRenderer.wrapLines(
+            final List<OrderedText> wrappedTexts = mc.textRenderer.wrapLines(
                     Text.literal(infoEntry.getKey() + ": " + infoEntry.getValue()),
                     (int) (wrapWidth / scale)
             );
             for (final OrderedText text : wrappedTexts) {
-                final int textWidth = (int) (this.mc.textRenderer.getWidth(text) * scale);
-                context.drawTextWithShadow(this.mc.textRenderer, text, textX, textY + height, -1);
+                final int textWidth = (int) (mc.textRenderer.getWidth(text) * scale);
+                context.drawTextWithShadow(mc.textRenderer, text, textX, textY + height, -1);
                 height += (int) (fontHeight / scale) - 4;
                 if (textWidth > width) {
                     width = textWidth;

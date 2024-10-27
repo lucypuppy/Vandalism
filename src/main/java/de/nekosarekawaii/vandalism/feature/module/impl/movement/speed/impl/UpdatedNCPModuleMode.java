@@ -52,14 +52,14 @@ public class UpdatedNCPModuleMode extends ModuleMulti<SpeedModule> implements Pl
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (MovementUtil.isMoving() && this.mc.player.isOnGround()) {
-            this.mc.player.jump();
+        if (MovementUtil.isMoving() && mc.player.isOnGround()) {
+            mc.player.jump();
         }
     }
 
     @Override
     public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.isOnGround()) {
+        if (mc.player.isOnGround()) {
             // MovementUtil.setSpeed(MovementUtil.getBaseSpeed() * 1.525);
             this.moveSpeed = MovementUtil.getBaseSpeed() * 2.15;
             this.offGroundTicks = 0;

@@ -452,13 +452,13 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
     private void updateTarget() {
         final List<Entity> entities = new ArrayList<>();
 
-        for (final Entity entity : this.mc.world.getEntities()) {
-            if (entity == this.mc.player || entity == this.mc.player.getVehicle()) {
+        for (final Entity entity : mc.world.getEntities()) {
+            if (entity == mc.player || entity == mc.player.getVehicle()) {
                 continue;
             }
             if (
                     this.targetGroup.isTarget(entity) &&
-                            this.mc.player.distanceTo(entity) <= getRotateRange() + 1.0 &&
+                            mc.player.distanceTo(entity) <= getRotateRange() + 1.0 &&
                             entity.getWidth() > 0.0 && entity.getHeight() > 0.0
             ) {
                 PlayerListEntry playerListEntry = null;
@@ -478,7 +478,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             return;
         }
 
-        final Vec3d eyePos = this.mc.player.getEyePos();
+        final Vec3d eyePos = mc.player.getEyePos();
         switch (this.selectionMode.getValue()) {
             case RANGE -> entities.sort((entity1, entity2) -> {
                 final double distance1 = eyePos.distanceTo(points.getValue().generateHitPoint(entity1));

@@ -37,7 +37,7 @@ public interface MinecraftBoostrapListener {
 
         @Override
         public void call(final MinecraftBoostrapListener listener) {
-            listener.onBootstrapGame(this.mc);
+            listener.onBootstrapGame(mc);
         }
 
     }

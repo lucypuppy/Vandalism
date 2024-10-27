@@ -55,8 +55,8 @@ public class SpartanFlagModuleMode extends ModuleMulti<SpeedModule> implements P
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (MovementUtil.isMoving() && !mc.player.isInFluid()) {
-            if (this.mc.player.isOnGround()) {
-                this.mc.player.jump();
+            if (mc.player.isOnGround()) {
+                mc.player.jump();
             }
 
             double random = Math.random() * 2.0;

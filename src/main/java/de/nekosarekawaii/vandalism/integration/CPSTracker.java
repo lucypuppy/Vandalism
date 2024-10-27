@@ -68,9 +68,9 @@ public class CPSTracker implements MouseInputListener, KeyboardInputListener, Mi
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
-        if (key == this.mc.options.attackKey.boundKey.getCode()) {
+        if (key == mc.options.attackKey.boundKey.getCode()) {
             this.leftClick();
-        } else if (key == this.mc.options.useKey.boundKey.getCode()) {
+        } else if (key == mc.options.useKey.boundKey.getCode()) {
             this.rightClick();
         }
     }
@@ -79,9 +79,9 @@ public class CPSTracker implements MouseInputListener, KeyboardInputListener, Mi
     public void onMouse(final MouseEvent event) {
         if (event.action != GLFW.GLFW_PRESS) return;
         final int button = event.button;
-        if (button == this.mc.options.attackKey.boundKey.getCode()) {
+        if (button == mc.options.attackKey.boundKey.getCode()) {
             this.leftClick();
-        } else if (button == this.mc.options.useKey.boundKey.getCode()) {
+        } else if (button == mc.options.useKey.boundKey.getCode()) {
             this.rightClick();
         }
     }

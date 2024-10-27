@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.command;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.StringUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
@@ -41,7 +41,7 @@ public abstract class MixinChatUtils {
                         input,
                         cmdName,
                         Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() +
-                                "wurst" + cmdName.substring(1)
+                                "wurst " + cmdName.substring(1)
                 );
             }
         }

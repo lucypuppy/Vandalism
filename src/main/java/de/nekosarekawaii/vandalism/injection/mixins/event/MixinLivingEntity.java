@@ -43,7 +43,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
 
     @ModifyArgs(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;<init>(DDD)V"))
     private void callMoveFlyingListener(final Args args) {
-        if (this.mc.player == (Object) this) {
+        if (mc.player == (Object) this) {
             final MoveFlyingListener.MoveFlyingEvent event = new MoveFlyingListener.MoveFlyingEvent(args.get(0), args.get(1), args.get(2));
             Vandalism.getInstance().getEventSystem().callExceptionally(MoveFlyingListener.MoveFlyingEvent.ID, event);
 

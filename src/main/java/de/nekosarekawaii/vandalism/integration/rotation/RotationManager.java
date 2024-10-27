@@ -96,7 +96,7 @@ public class RotationManager implements MinecraftWrapper, StrafeListener, Rotati
         final double deltaTime = currentTime - this.lastMillis;
         this.lastMillis = currentTime;
 
-        this.serverRotation = Objects.requireNonNullElseGet(this.clientRotation, () -> new PrioritizedRotation(this.mc.player.lastYaw, this.mc.player.lastPitch, RotationPriority.NORMAL));
+        this.serverRotation = Objects.requireNonNullElseGet(this.clientRotation, () -> new PrioritizedRotation(mc.player.lastYaw, mc.player.lastPitch, RotationPriority.NORMAL));
 
         if (targetRotation != null) {
             if (this.smoothingFunc == null) {
@@ -114,8 +114,8 @@ public class RotationManager implements MinecraftWrapper, StrafeListener, Rotati
         if (clientRotation == null)
             return;
 
-        final float yaw = MathHelper.wrapDegrees(this.mc.player.getYaw());
-        final float pitch = this.mc.player.getPitch();
+        final float yaw = MathHelper.wrapDegrees(mc.player.getYaw());
+        final float pitch = mc.player.getPitch();
         final float yawDiff = Math.abs(yaw - MathHelper.wrapDegrees(this.serverRotation.getYaw()));
         final float pitchDiff = Math.abs(pitch - this.serverRotation.getPitch());
 

@@ -47,7 +47,7 @@ public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements Pl
         final Vec3d target = this.parent.getSelectedPos();
         if (target == null) return;
         if (this.parent.isTeleportPositionValid()) {
-            final Vec3d pos = this.mc.player.getPos();
+            final Vec3d pos = mc.player.getPos();
             final Vec3d start = new Vec3d(pos.x, pos.y, pos.z);
             final double distance = start.distanceTo(target);
             final int packetsRequired = (int) Math.ceil(Math.abs(distance) / 10);
@@ -59,7 +59,7 @@ public class VanillaModuleMode extends ModuleMulti<TeleportModule> implements Pl
                     mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
                 }
             }
-            this.mc.player.setPos(target.x, target.y, target.z);
+            mc.player.setPos(target.x, target.y, target.z);
             this.parent.reset();
         }
     }

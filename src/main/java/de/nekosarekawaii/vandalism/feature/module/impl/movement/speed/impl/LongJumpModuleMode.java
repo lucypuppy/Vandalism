@@ -53,8 +53,8 @@ public class LongJumpModuleMode extends ModuleMulti<SpeedModule> implements Play
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (MovementUtil.isMoving()) {
-            if (this.mc.player.isOnGround()) {
-                this.mc.player.jump();
+            if (mc.player.isOnGround()) {
+                mc.player.jump();
             }
             MovementUtil.setSpeed(this.speed.getValue());
         }

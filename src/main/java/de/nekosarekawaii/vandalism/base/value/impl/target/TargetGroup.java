@@ -88,7 +88,7 @@ public class TargetGroup extends ValueGroup {
     }
 
     public boolean isTarget(final Entity entity, final boolean ignoreFriends) {
-        if (entity == this.mc.player || (!entity.isAlive() && this.isAlive.getValue())) {
+        if (entity == mc.player || (!entity.isAlive() && this.isAlive.getValue())) {
             return false;
         }
         if (!this.targetListValue.isSelected(entity.getType())) {

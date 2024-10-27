@@ -37,11 +37,11 @@ public class CopyServerBrandCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            if (this.mc.isInSingleplayer()) {
+            if (mc.isInSingleplayer()) {
                 ChatUtil.errorChatMessage("You are in singleplayer.");
             }
             else {
-                this.mc.keyboard.setClipboard(this.mc.getNetworkHandler().getBrand());
+                mc.keyboard.setClipboard(mc.getNetworkHandler().getBrand());
                 ChatUtil.infoChatMessage("Server brand copied into the clipboard.");
             }
             return SINGLE_SUCCESS;

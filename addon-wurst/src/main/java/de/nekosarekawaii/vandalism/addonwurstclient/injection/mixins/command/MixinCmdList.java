@@ -22,50 +22,53 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.Feature;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.feature.command.Command;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.wurstclient.WurstClient;
 import net.wurstclient.command.CmdList;
-import net.wurstclient.command.Command;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.TreeMap;
 
 @Mixin(value = CmdList.class)
 public abstract class MixinCmdList {
 
+    @Shadow
+    @Final
+    private TreeMap<String, net.wurstclient.command.Command> cmds;
+
     @Unique
     private void vandalism$runWurstCommand(final String input) {
         if (WurstClient.INSTANCE.isEnabled()) {
-            WurstClient.INSTANCE.getCmdProcessor().process(input.replaceFirst("wurst", ""));
+            WurstClient.INSTANCE.getCmdProcessor().process(input.replaceFirst("wurst ", ""));
         } else {
             ChatUtil.errorChatMessage("Wurst Client is not enabled!");
         }
     }
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), remap = false)
-    private Object registerWurstCommands(TreeMap instance, Object key, Object value) {
-        final Command command = (Command) value;
-        Vandalism.getInstance().getCommandManager().add(new AbstractCommand(command.getDescription(), Feature.Category.MISC, "wurst" + command.getName().substring(1)) {
+    @Inject(method = "<init>", at = @At(value = "RETURN"), remap = false)
+    private void registerWurstCommands(final CallbackInfo ci) {
+        Vandalism.getInstance().getCommandManager().add(new Command("Wurst Client command implementation.", Feature.Category.MISC, "wurst") {
 
             @Override
             public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-                builder.then(AbstractCommand.argument("input", StringArgumentType.greedyString()).executes(context -> {
-                    vandalism$runWurstCommand(context.getInput());
-                    return AbstractCommand.SINGLE_SUCCESS;
-                }));
-                builder.executes(context -> {
-                    vandalism$runWurstCommand(context.getInput());
-                    return AbstractCommand.SINGLE_SUCCESS;
-                });
+                for (final net.wurstclient.command.Command command : cmds.values()) {
+                    final String commandName = command.getName().substring(1);
+                    builder.then(literal(commandName).then(argument("input", StringArgumentType.greedyString()).executes(context -> {
+                        vandalism$runWurstCommand(commandName + " " + StringArgumentType.getString(context, "input"));
+                        return SINGLE_SUCCESS;
+                    })));
+                }
             }
 
         });
-        return instance.put(key, value);
     }
 
 }

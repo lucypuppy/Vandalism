@@ -37,7 +37,7 @@ public class CopyPositionCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            this.mc.keyboard.setClipboard(this.mc.player.getBlockPos().toShortString().replace(",", ""));
+            mc.keyboard.setClipboard(mc.player.getBlockPos().toShortString().replace(",", ""));
             ChatUtil.infoChatMessage("Position copied into the clipboard.");
             return SINGLE_SUCCESS;
         });

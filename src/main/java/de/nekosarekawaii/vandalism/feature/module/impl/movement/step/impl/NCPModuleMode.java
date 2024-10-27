@@ -77,7 +77,7 @@ public class NCPModuleMode extends ModuleMulti<StepModule> implements
 
     @Override
     public void onStep(final StepEvent event) {
-        if (this.mc.player.age % 2 == 0) {
+        if (mc.player.age % 2 == 0) {
             event.stepHeight = 1f;
         }
     }
@@ -87,18 +87,18 @@ public class NCPModuleMode extends ModuleMulti<StepModule> implements
         if (event.adjustMovementForCollisions.y > 0.0625) {
             this.applyTimer = true;
             MovementUtil.setSpeed(-0.2);
-            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+            final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
             networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
-                    this.mc.player.getX(),
-                    this.mc.player.getY() + 0.41999998688698,
-                    this.mc.player.getZ(),
-                    this.mc.player.isOnGround()
+                    mc.player.getX(),
+                    mc.player.getY() + 0.41999998688698,
+                    mc.player.getZ(),
+                    mc.player.isOnGround()
             ));
             networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
-                    this.mc.player.getX(),
-                    this.mc.player.getY() + 0.7531999805212,
-                    this.mc.player.getZ(),
-                    this.mc.player.isOnGround()
+                    mc.player.getX(),
+                    mc.player.getY() + 0.7531999805212,
+                    mc.player.getZ(),
+                    mc.player.isOnGround()
             ));
         }
     }

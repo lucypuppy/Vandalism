@@ -74,7 +74,7 @@ public class ProtectorModule extends Module implements TextDrawListener {
 
     @Override
     public void onTextDraw(final TextDrawEvent event) {
-        final Session session = this.mc.session;
+        final Session session = mc.session;
         if (this.protectUsername.getValue()) {
             event.text = StringUtils.replaceAll(event.text, session.getUsername(), this.username.getValue());
         }

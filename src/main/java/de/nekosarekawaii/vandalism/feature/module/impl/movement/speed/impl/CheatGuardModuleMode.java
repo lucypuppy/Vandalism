@@ -53,9 +53,9 @@ public class CheatGuardModuleMode extends ModuleMulti<SpeedModule> implements Pl
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (MovementUtil.isMoving()) {
-            if (this.mc.player.isOnGround()) {
-                this.mc.player.addVelocity(0, 0.8, 0);
-            } else if (this.mc.player.hurtTime == 1) {
+            if (mc.player.isOnGround()) {
+                mc.player.addVelocity(0, 0.8, 0);
+            } else if (mc.player.hurtTime == 1) {
                 MovementUtil.setSpeed(this.speed.getValue());
             }
         }

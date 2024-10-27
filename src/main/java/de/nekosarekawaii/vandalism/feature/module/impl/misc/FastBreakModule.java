@@ -90,14 +90,14 @@ public class FastBreakModule extends Module implements BlockBreakListener, Playe
         final Direction lastDirection = this.lastDirection;
         if (lastPos != null && lastDirection != null) {
             for (int i = 0; i < this.packetsPerTick.getValue(); i++) {
-                this.mc.interactionManager.sendSequencedPacket(this.mc.world, sequence -> new PlayerActionC2SPacket(
+                mc.interactionManager.sendSequencedPacket(mc.world, sequence -> new PlayerActionC2SPacket(
                         PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK,
                         lastPos,
                         lastDirection,
                         sequence
                 ));
             }
-            if (this.mc.world.getBlockState(lastPos).isAir()) {
+            if (mc.world.getBlockState(lastPos).isAir()) {
                 this.reset();
             }
         }

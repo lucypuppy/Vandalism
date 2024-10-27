@@ -70,7 +70,7 @@ public class ComponentCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(literal("add").then(argument("component", ComponentMapArgumentType.componentMap(REGISTRY_ACCESS)).executes(ctx -> {
             try {
-                final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+                final ItemStack stack = mc.player.getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     final ComponentMap itemComponents = stack.getComponents();
                     final ComponentMap newComponents = ComponentMapArgumentType.getComponentMap(ctx, "component");
@@ -88,7 +88,7 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("set").then(argument("component", ComponentMapArgumentType.componentMap(REGISTRY_ACCESS)).executes(ctx -> {
             try {
-                final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+                final ItemStack stack = mc.player.getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     final ComponentMap components = ComponentMapArgumentType.getComponentMap(ctx, "component");
                     final ComponentMapImpl stackComponents = (ComponentMapImpl) stack.getComponents();
@@ -112,7 +112,7 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("remove").then(argument("component", RegistryKeyArgumentType.registryKey(RegistryKeys.DATA_COMPONENT_TYPE)).executes(ctx -> {
             try {
-                final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+                final ItemStack stack = mc.player.getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     @SuppressWarnings("unchecked") final RegistryKey<ComponentType<?>> componentTypeKey = (RegistryKey<ComponentType<?>>) ctx.getArgument("component", RegistryKey.class);
                     final ComponentType<?> componentType = Registries.DATA_COMPONENT_TYPE.get(componentTypeKey);
@@ -146,7 +146,7 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("view").executes(context -> {
             try {
-                final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+                final ItemStack stack = mc.player.getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     final DataCommandObject dataCommandObject = new EntityDataObject(mc.player);
                     final NbtPathArgumentType.NbtPath handPath = NbtPathArgumentType.NbtPath.parse("SelectedItem");
@@ -180,7 +180,7 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("view-entity").executes(context -> {
             try {
-                if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+                if (mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
                     final Entity entity = entityHitResult.getEntity();
                     if (entity != null) {
                         final NbtCompound tag = entity.writeNbt(new NbtCompound());
@@ -211,12 +211,12 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("view-block-entity").executes(context -> {
             try {
-                if (this.mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
+                if (mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
                     final BlockPos pos = blockHitResult.getBlockPos();
-                    final BlockEntity blockEntity = this.mc.world.getBlockEntity(pos);
+                    final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                     if (blockEntity != null) {
                         final NbtCompound tag = new NbtCompound();
-                        blockEntity.writeNbt(tag, this.mc.player.getRegistryManager());
+                        blockEntity.writeNbt(tag, mc.player.getRegistryManager());
                         final MutableText copyButton = Text.literal("Components");
                         copyButton.setStyle(
                                 copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
@@ -243,7 +243,7 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("copy").executes(context -> {
             try {
-                final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+                final ItemStack stack = mc.player.getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     final DataCommandObject dataCommandObject = new EntityDataObject(mc.player);
                     final NbtPathArgumentType.NbtPath handPath = NbtPathArgumentType.NbtPath.parse("SelectedItem");
@@ -260,7 +260,7 @@ public class ComponentCommand extends Command {
                     if (tagString.startsWith(" ")) {
                         tagString = tagString.substring(1);
                     }
-                    this.mc.keyboard.setClipboard(tagString);
+                    mc.keyboard.setClipboard(tagString);
                     ChatUtil.infoChatMessage("Components copied into the clipboard.");
                 }
             } catch (final Throwable t) {
@@ -271,11 +271,11 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("copy-entity").executes(context -> {
             try {
-                if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+                if (mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
                     final Entity entity = entityHitResult.getEntity();
                     if (entity != null) {
                         final NbtCompound tag = entity.writeNbt(new NbtCompound());
-                        this.mc.keyboard.setClipboard(tag.toString());
+                        mc.keyboard.setClipboard(tag.toString());
                         ChatUtil.infoChatMessage("Components copied into the clipboard.");
                         return SINGLE_SUCCESS;
                     }
@@ -289,13 +289,13 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("copy-block-entity").executes(context -> {
             try {
-                if (this.mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
+                if (mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
                     final BlockPos pos = blockHitResult.getBlockPos();
                     final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                     if (blockEntity != null) {
                         final NbtCompound tag = new NbtCompound();
-                        blockEntity.writeNbt(tag, this.mc.player.getRegistryManager());
-                        this.mc.keyboard.setClipboard(tag.toString());
+                        blockEntity.writeNbt(tag, mc.player.getRegistryManager());
+                        mc.keyboard.setClipboard(tag.toString());
                         ChatUtil.infoChatMessage("Components copied into the clipboard.");
                         return SINGLE_SUCCESS;
                     }
@@ -309,7 +309,7 @@ public class ComponentCommand extends Command {
 
         builder.then(literal("count").then(argument("count", IntegerArgumentType.integer(-127, 127)).executes(context -> {
             try {
-                final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+                final ItemStack stack = mc.player.getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     final int count = IntegerArgumentType.getInteger(context, "count");
                     stack.setCount(count);

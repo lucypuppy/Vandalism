@@ -62,17 +62,17 @@ public class NoChatReportsModule extends Module implements PlayerUpdateListener,
     @Override
     protected void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, ChatModifyReceiveEvent.ID);
-        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
         if (networkHandler != null && networkHandler.session == null) {
-            this.mc.getProfileKeys().fetchKeyPair().thenAcceptAsync(optional -> optional.ifPresent(profileKeys -> {
+            mc.getProfileKeys().fetchKeyPair().thenAcceptAsync(optional -> optional.ifPresent(profileKeys -> {
                 networkHandler.session = ClientPlayerSession.create(profileKeys);
-            }), this.mc);
+            }), mc);
         }
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
         if (networkHandler == null) {
             return;
         }
