@@ -5,12 +5,12 @@ cd ..
 
 set REPO_URL=https://github.com/Wurst-Imperium/Wurst7.git
 set REPO_DIR=Wurst7
-set BINARIES_DIR=binaries
+set MODS_DIR=run\mods
 
-if exist %BINARIES_DIR% (
+if exist %MODS_DIR% (
     echo Checking for existing JAR files in the binaries directory...
 
-    for %%f in (%BINARIES_DIR%\*.jar) do (
+    for %%f in (%MODS_DIR%\*.jar) do (
         echo Found JAR file: %%~nxf
 
         echo %%~nxf | findstr /i /c:"Wurst" >nul
@@ -41,8 +41,8 @@ if errorlevel 1 (
     exit /b 1
 )
 
-if not exist ..\%BINARIES_DIR% (
-    mkdir ..\%BINARIES_DIR%
+if not exist ..\%MODS_DIR% (
+    mkdir ..\%MODS_DIR%
 )
 
 echo Copying the JAR file...
@@ -51,7 +51,7 @@ for %%f in (build\libs\*.jar) do (
     echo %%~nxf | findstr /i /c:"-sources" >nul
     if errorlevel 1 (
         echo Found non-sources JAR: %%~nxf
-        copy "%%f" "..\%BINARIES_DIR%"
+        copy "%%f" "..\%MODS_DIR%"
         set JAR_COPIED=1
     )
 )
