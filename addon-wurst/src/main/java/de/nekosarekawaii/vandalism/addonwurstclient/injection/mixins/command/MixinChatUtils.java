@@ -41,7 +41,7 @@ public abstract class MixinChatUtils {
                         input,
                         cmdName,
                         Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() +
-                                "wurst" + cmdName.substring(1)
+                                "wurst " + cmdName.substring(1)
                 );
             }
         }
