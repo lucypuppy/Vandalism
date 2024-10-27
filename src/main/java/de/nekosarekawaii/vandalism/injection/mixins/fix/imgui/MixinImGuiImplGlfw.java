@@ -40,14 +40,14 @@ public abstract class MixinImGuiImplGlfw implements IImGuiImplGlfw, MinecraftWra
 
     @Inject(method = "charCallback", at = @At(value = "INVOKE", target = "Limgui/ImGui;getIO()Limgui/ImGuiIO;", shift = At.Shift.BEFORE), cancellable = true)
     public void cancelCharCallback(final long windowId, final int c, final CallbackInfo ci) {
-        if (!(this.mc.currentScreen instanceof ClientWindowScreen)) {
+        if (!(mc.currentScreen instanceof ClientWindowScreen)) {
             ci.cancel();
         }
     }
 
     @Override
     public void vandalism$forceUpdateMouseCursor() {
-        final long handle = this.mc.getWindow().getHandle();
+        final long handle = mc.getWindow().getHandle();
         GLFW.glfwSetCursor(handle, this.mouseCursors[ImGuiMouseCursor.Arrow]);
         GLFW.glfwSetInputMode(handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
     }

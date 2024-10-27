@@ -93,9 +93,9 @@ public class BetterTabListModule extends Module implements KeyboardInputListener
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (this.toggleable.getValue()
-                && this.mc.currentScreen == null
+                && mc.currentScreen == null
                 && action == GLFW.GLFW_PRESS
-                && key == this.mc.options.playerListKey.boundKey.getCode())
+                && key == mc.options.playerListKey.boundKey.getCode())
             this.toggleState = !this.toggleState;
     }
 

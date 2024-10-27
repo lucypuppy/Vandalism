@@ -60,7 +60,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper, ILivingEnti
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"), slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F", ordinal = 1)))
     private float modifyRotationYaw(final LivingEntity instance) {
-        if (this.mc.player == (Object) this) {
+        if (mc.player == (Object) this) {
             final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
             if (rotation != null) return rotation.getYaw();
         }
@@ -69,7 +69,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper, ILivingEnti
 
     @Redirect(method = "turnHead", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
     private float modifyRotationHeadYaw(final LivingEntity instance) {
-        if (this.mc.player == (Object) this) {
+        if (mc.player == (Object) this) {
             final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
             if (rotation != null) return rotation.getYaw();
         }
@@ -78,7 +78,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper, ILivingEnti
 
     @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getPitch()F"))
     private float modifyRotationPitch(final LivingEntity instance) {
-        if (this.mc.player == (Object) this) {
+        if (mc.player == (Object) this) {
             final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
             if (rotation != null) return rotation.getPitch();
         }

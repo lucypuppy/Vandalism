@@ -22,10 +22,10 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.PingState;
 import de.nekosarekawaii.vandalism.util.ServerUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import imgui.ImGui;
 import lombok.Getter;
 import net.lenni0451.mcping.MCPing;
@@ -86,7 +86,7 @@ public class PortResult extends ListDataEntry implements MinecraftWrapper {
     }
 
     private void clear() {
-        this.mcPingResponse = null;
+        mcPingResponse = null;
         this.description = "";
         this.resetState();
     }
@@ -115,8 +115,8 @@ public class PortResult extends ListDataEntry implements MinecraftWrapper {
                         }
                     })
                     .finishHandler(response -> {
-                        this.mcPingResponse = response;
-                        if (this.mcPingResponse != null) {
+                        mcPingResponse = response;
+                        if (mcPingResponse != null) {
                             final String descriptionString = mcPingResponse.description;
                             try {
                                 final MutableText description = Text.Serialization.fromJson(descriptionString, DynamicRegistryManager.EMPTY);
@@ -136,14 +136,14 @@ public class PortResult extends ListDataEntry implements MinecraftWrapper {
 
     public void renderContextMenu(final String id) {
         final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
-        final String address = this.address + ':' + this.mcPingResponse.server.port;
+        final String address = this.address + ':' + mcPingResponse.server.port;
         ImGui.text(address);
         ImGui.separator();
         ImGui.spacing();
         if (ImGui.button("Connect" + id + "connect", buttonWidth, buttonHeight)) {
             ServerUtil.connect(address);
         }
-        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(this.mcPingResponse.version.protocol);
+        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(mcPingResponse.version.protocol);
         if (protocolVersion.isKnown()) {
             if (ImGui.button("Connect with Server Version" + id + "connectWithServerVersion", buttonWidth, buttonHeight)) {
                 ServerUtil.connectWithVFPFix(address, protocolVersion, true);
@@ -153,54 +153,54 @@ public class PortResult extends ListDataEntry implements MinecraftWrapper {
             final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
             serverList.loadFile();
             serverList.add(new ServerInfo(
-                    "Port Scan Result (" + this.mcPingResponse.server.port + ")",
+                    "Port Scan Result (" + mcPingResponse.server.port + ")",
                     address,
                     ServerInfo.ServerType.OTHER
             ), false);
             serverList.saveFile();
         }
         if (ImGui.button("Copy Address" + id + "copyAddress", buttonWidth, buttonHeight)) {
-            this.mc.keyboard.setClipboard(address);
+            mc.keyboard.setClipboard(address);
         }
         if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
             final StringBuilder serverInfoBuilder = new StringBuilder();
             serverInfoBuilder.append("Server Address: ").append(address).append('\n');
-            String resolvedServerAddress = this.mcPingResponse.server.ip;
+            String resolvedServerAddress = mcPingResponse.server.ip;
             if (resolvedServerAddress.endsWith(".")) {
                 resolvedServerAddress = resolvedServerAddress.substring(0, resolvedServerAddress.length() - 1);
             }
             serverInfoBuilder.append("Resolved Server Address: ").append(resolvedServerAddress).append('\n');
-            if (this.mcPingResponse.version != null) {
-                serverInfoBuilder.append("Protocol: ").append(this.mcPingResponse.version.protocol).append('\n');
-                serverInfoBuilder.append("Version: ").append(ServerUtil.fixVersionName(this.mcPingResponse.version.name, true)).append('\n');
+            if (mcPingResponse.version != null) {
+                serverInfoBuilder.append("Protocol: ").append(mcPingResponse.version.protocol).append('\n');
+                serverInfoBuilder.append("Version: ").append(ServerUtil.fixVersionName(mcPingResponse.version.name, true)).append('\n');
             }
-            if (this.mcPingResponse.players != null) {
+            if (mcPingResponse.players != null) {
                 serverInfoBuilder.append("Players: ");
-                serverInfoBuilder.append(this.mcPingResponse.players.online).append('/');
-                serverInfoBuilder.append(this.mcPingResponse.players.max).append('\n');
+                serverInfoBuilder.append(mcPingResponse.players.online).append('/');
+                serverInfoBuilder.append(mcPingResponse.players.max).append('\n');
             }
             if (this.description != null) {
                 serverInfoBuilder.append("Description: ").append(this.description).append('\n');
             }
-            if (this.mcPingResponse.players != null && this.mcPingResponse.players.sample.length > 0) {
+            if (mcPingResponse.players != null && mcPingResponse.players.sample.length > 0) {
                 serverInfoBuilder.append("Player List: ").append('\n');
-                for (final MCPingResponse.Players.Player player : this.mcPingResponse.players.sample) {
+                for (final MCPingResponse.Players.Player player : mcPingResponse.players.sample) {
                     serverInfoBuilder.append(" - ").append(player.name).append('\n');
                 }
             }
-            if (this.mcPingResponse.modinfo != null && this.mcPingResponse.modinfo.modList.length > 0) {
+            if (mcPingResponse.modinfo != null && mcPingResponse.modinfo.modList.length > 0) {
                 serverInfoBuilder.append("Mods: ").append('\n');
-                for (final MCPingResponse.ModInfo.Mod mod : this.mcPingResponse.modinfo.modList) {
+                for (final MCPingResponse.ModInfo.Mod mod : mcPingResponse.modinfo.modList) {
                     serverInfoBuilder.append(" - ").append(mod.modid).append(" (").append(mod.version).append(")\n");
                 }
             }
-            if (this.mcPingResponse.forgeData != null && this.mcPingResponse.forgeData.mods.length > 0) {
+            if (mcPingResponse.forgeData != null && mcPingResponse.forgeData.mods.length > 0) {
                 serverInfoBuilder.append("Forge Mods: ").append('\n');
-                for (final MCPingResponse.ForgeData.Mod mod : this.mcPingResponse.forgeData.mods) {
+                for (final MCPingResponse.ForgeData.Mod mod : mcPingResponse.forgeData.mods) {
                     serverInfoBuilder.append(" - ").append(mod.modId).append(" (").append(mod.modmarker).append(")\n");
                 }
             }
-            this.mc.keyboard.setClipboard(serverInfoBuilder.toString());
+            mc.keyboard.setClipboard(serverInfoBuilder.toString());
         }
     }
 

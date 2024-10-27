@@ -51,17 +51,17 @@ public class AutoeyeModuleMode extends ModuleMulti<FlightModule> implements Bloc
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.mc.options.sprintKey.setPressed(false);
-        this.mc.options.forwardKey.setPressed(false);
-        this.mc.options.backKey.setPressed(false);
-        this.mc.options.leftKey.setPressed(false);
-        this.mc.options.rightKey.setPressed(false);
+        mc.options.sprintKey.setPressed(false);
+        mc.options.forwardKey.setPressed(false);
+        mc.options.backKey.setPressed(false);
+        mc.options.leftKey.setPressed(false);
+        mc.options.rightKey.setPressed(false);
         if (this.timer.hasReached(100, true)) {
             MovementUtil.setSpeed(0.5);
-            this.currentPos = (int) this.mc.player.getY();
+            this.currentPos = (int) mc.player.getY();
         }
-        if (this.mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR == 0 && this.mc.player.age % 12 == 0) {
-            this.mc.player.addVelocity(0, 0.5, 0);
+        if (mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR == 0 && mc.player.age % 12 == 0) {
+            mc.player.addVelocity(0, 0.5, 0);
         }
     }
 

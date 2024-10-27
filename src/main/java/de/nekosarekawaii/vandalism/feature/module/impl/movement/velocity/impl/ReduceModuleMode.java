@@ -62,7 +62,7 @@ public class ReduceModuleMode extends ModuleMulti<VelocityModule> implements Inc
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
-                this.mc.player != null && velocityPacket.getEntityId() == this.mc.player.getId()) {
+                mc.player != null && velocityPacket.getEntityId() == mc.player.getId()) {
             if (this.checkAim.getValue() && (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY))
                 return;
 

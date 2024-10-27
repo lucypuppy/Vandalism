@@ -170,7 +170,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             if (isPostProcessing) {
                 Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
                 Shaders.getColorFillEffect().setColor(glowOutlineColor);
-                Shaders.getColorFillEffect().renderFullscreen(this.mc.getFramebuffer(), false);
+                Shaders.getColorFillEffect().renderFullscreen(mc.getFramebuffer(), false);
             }
         }
     }

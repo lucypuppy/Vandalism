@@ -77,19 +77,19 @@ public class AntiFireballModule extends Module implements PlayerUpdateListener {
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         final float range = this.range.getValue();
-        if (this.target == null || this.target.isRemoved() || this.target.distanceTo(this.mc.player) >= range) {
+        if (this.target == null || this.target.isRemoved() || this.target.distanceTo(mc.player) >= range) {
             this.reset();
             final List<FireballEntity> fireballEntities = new ArrayList<>();
-            for (final Entity entity : this.mc.world.getEntities()) {
-                if (entity == this.mc.player) continue;
-                if (this.mc.player.getPos().distanceTo(entity.getPos()) > range) continue;
+            for (final Entity entity : mc.world.getEntities()) {
+                if (entity == mc.player) continue;
+                if (mc.player.getPos().distanceTo(entity.getPos()) > range) continue;
                 if (entity instanceof final FireballEntity fireballEntity) {
                     fireballEntities.add(fireballEntity);
                     break;
                 }
             }
             if (fireballEntities.isEmpty()) return;
-            fireballEntities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
+            fireballEntities.sort(Comparator.comparingDouble(entity -> mc.player.distanceTo(entity)));
             this.target = fireballEntities.getFirst();
         } else {
             Vandalism.getInstance().getRotationManager().setRotation(
@@ -99,9 +99,9 @@ public class AntiFireballModule extends Module implements PlayerUpdateListener {
                                     this.rotateSpeed.getValue(), deltaTime, hasClientRotation)
             );
         }
-        if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+        if (mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
             if (entityHitResult.getEntity() instanceof FireballEntity) {
-                this.mc.doAttack();
+                mc.doAttack();
             }
         }
     }

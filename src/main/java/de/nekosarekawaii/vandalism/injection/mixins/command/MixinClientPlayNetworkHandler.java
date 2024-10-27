@@ -48,13 +48,13 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayNetwor
             return;
         }
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
-        if (message.startsWith(prefix) && this.mc.currentScreen instanceof ChatScreen) {
+        if (message.startsWith(prefix) && mc.currentScreen instanceof ChatScreen) {
             try {
                 Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(message.substring(prefix.length()), Command.COMMAND_SOURCE);
             } catch (CommandSyntaxException e) {
                 ChatUtil.errorChatMessage(e.getMessage());
             }
-            this.mc.inGameHud.getChatHud().addToMessageHistory(message);
+            mc.inGameHud.getChatHud().addToMessageHistory(message);
             ci.cancel();
         }
     }

@@ -72,7 +72,7 @@ public class HenkelPortModule extends Module implements PlayerUpdateListener {
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         HenklerSprenklerModule henklerSprenklerModule = Vandalism.getInstance().getModuleManager().getHenklerSprenklerModule();
         if (teleportTime == -1L) {
-            if (!this.mc.player.isUsingItem() && !this.mc.options.useKey.isPressed()) return;
+            if (!mc.player.isUsingItem() && !mc.options.useKey.isPressed()) return;
             final Vec3d target = this.getBlockHitResult();
             if (target == null) return;
             startPos = mc.player.getPos();
@@ -107,7 +107,7 @@ public class HenkelPortModule extends Module implements PlayerUpdateListener {
     }
 
     private Vec3d getBlockHitResult() {
-        final HitResult result = this.mc.player.raycast(this.maxDistance.getValue(), this.mc.getRenderTickCounter().getTickDelta(false), false);
+        final HitResult result = mc.player.raycast(this.maxDistance.getValue(), mc.getRenderTickCounter().getTickDelta(false), false);
         if (result instanceof BlockHitResult) {
             return result.getPos();
         }

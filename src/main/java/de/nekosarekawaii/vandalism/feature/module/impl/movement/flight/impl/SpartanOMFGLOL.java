@@ -47,13 +47,13 @@ public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerU
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.fallDistance > 3.0f) {
-            this.mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+        if (mc.player.fallDistance > 3.0f) {
+            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
 
-            final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : this.mc.player.getVelocity();
-            this.mc.player.setVelocity(velocity.x, 0.73, velocity.z);
+            final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : mc.player.getVelocity();
+            mc.player.setVelocity(velocity.x, 0.73, velocity.z);
 
-            this.mc.player.fallDistance = 0.0f;
+            mc.player.fallDistance = 0.0f;
         }
 
         if (mc.player.hurtTime > 2 && MovementUtil.isMoving()) {
@@ -65,8 +65,8 @@ public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerU
     public void onIncomingPacket(IncomingPacketEvent event) {
         if (
                 event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
-                        this.mc.player != null &&
-                        velocityPacket.getEntityId() == this.mc.player.getId()
+                        mc.player != null &&
+                        velocityPacket.getEntityId() == mc.player.getId()
         ) {
             event.cancel();
         }

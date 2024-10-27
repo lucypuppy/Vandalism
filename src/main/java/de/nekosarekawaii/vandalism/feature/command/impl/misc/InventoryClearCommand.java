@@ -37,7 +37,7 @@ public class InventoryClearCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            final DefaultedList<ItemStack> mainInventory = this.mc.player.getInventory().main;
+            final DefaultedList<ItemStack> mainInventory = mc.player.getInventory().main;
             for (int i = 0; i < mainInventory.size(); ++i) {
                 if (mainInventory.get(i).isEmpty()) continue;
                 this.clearSlot(i);
@@ -50,19 +50,17 @@ public class InventoryClearCommand extends Command {
     }
 
     private void clearSlot(final int id) {
-        switch (this.mc.interactionManager.getCurrentGameMode()) {
-            case CREATIVE ->
-                    this.mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(
+        switch (mc.interactionManager.getCurrentGameMode()) {
+            case CREATIVE -> mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(
                             id,
                             ItemStack.EMPTY
                     ));
-            case SURVIVAL, ADVENTURE ->
-                    this.mc.interactionManager.clickSlot(
-                            this.mc.player.currentScreenHandler.syncId,
+            case SURVIVAL, ADVENTURE -> mc.interactionManager.clickSlot(
+                    mc.player.currentScreenHandler.syncId,
                             id,
                             -999,
                             SlotActionType.THROW,
-                            this.mc.player
+                    mc.player
                     );
             default -> {}
         }

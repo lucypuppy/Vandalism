@@ -104,8 +104,8 @@ public class InventoryMoveModule extends Module implements PlayerUpdateListener,
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.currentScreen instanceof HandledScreen<?>) {
-            final GameOptions options = this.mc.options;
+        if (mc.currentScreen instanceof HandledScreen<?>) {
+            final GameOptions options = mc.options;
             final List<KeyBinding> keyBindings = new ArrayList<>();
             if (this.allowSprint.getValue()) {
                 keyBindings.add(options.sprintKey);
@@ -120,7 +120,7 @@ public class InventoryMoveModule extends Module implements PlayerUpdateListener,
             keyBindings.add(options.backKey);
             keyBindings.add(options.leftKey);
             keyBindings.add(options.rightKey);
-            if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
+            if (mc.currentScreen instanceof CreativeInventoryScreen) {
                 if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
                     for (final KeyBinding keyBinding : keyBindings) {
                         keyBinding.setPressed(false);
@@ -129,7 +129,7 @@ public class InventoryMoveModule extends Module implements PlayerUpdateListener,
                 }
             }
             for (final KeyBinding keyBinding : keyBindings) {
-                keyBinding.setPressed(InputUtil.isKeyPressed(this.mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
+                keyBinding.setPressed(InputUtil.isKeyPressed(mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
             }
         }
     }
@@ -139,9 +139,9 @@ public class InventoryMoveModule extends Module implements PlayerUpdateListener,
         if (!this.allowArrowKeyRotation.getValue()) {
             return;
         }
-        if (this.mc.player != null) {
-            if (this.mc.currentScreen instanceof AbstractInventoryScreen<?> || this.mc.currentScreen instanceof ClientWindowScreen) {
-                if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
+        if (mc.player != null) {
+            if (mc.currentScreen instanceof AbstractInventoryScreen<?> || mc.currentScreen instanceof ClientWindowScreen) {
+                if (mc.currentScreen instanceof CreativeInventoryScreen) {
                     if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
                         return;
                     }
@@ -149,19 +149,19 @@ public class InventoryMoveModule extends Module implements PlayerUpdateListener,
                 final float value = this.rotationSpeed.getValue();
                 switch (key) {
                     case GLFW.GLFW_KEY_UP -> {
-                        float newPitch = this.mc.player.getPitch() - value;
+                        float newPitch = mc.player.getPitch() - value;
                         if (newPitch > 90) newPitch = 90;
                         if (newPitch < -90) newPitch = -90;
-                        this.mc.player.setPitch(newPitch);
+                        mc.player.setPitch(newPitch);
                     }
                     case GLFW.GLFW_KEY_DOWN -> {
-                        float newPitch = this.mc.player.getPitch() + value;
+                        float newPitch = mc.player.getPitch() + value;
                         if (newPitch > 90) newPitch = 90;
                         if (newPitch < -90) newPitch = -90;
-                        this.mc.player.setPitch(newPitch);
+                        mc.player.setPitch(newPitch);
                     }
-                    case GLFW.GLFW_KEY_LEFT -> this.mc.player.setYaw(this.mc.player.getYaw() - value);
-                    case GLFW.GLFW_KEY_RIGHT -> this.mc.player.setYaw(this.mc.player.getYaw() + value);
+                    case GLFW.GLFW_KEY_LEFT -> mc.player.setYaw(mc.player.getYaw() - value);
+                    case GLFW.GLFW_KEY_RIGHT -> mc.player.setYaw(mc.player.getYaw() + value);
                     default -> {
                     }
                 }

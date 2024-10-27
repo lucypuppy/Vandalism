@@ -16,6 +16,7 @@
     "common.MixinKeybindList",
     "common.MixinOtfList",
     "hack.MixinChatTranslatorHack",
+    "other_features.MixinNoChatReportsOtf",
     "other_features.MixinWurstLogoOtf",
     "other_features.MixinZoomOtf",
     "privacy.MixinJGoogleAnalyticsTracker",

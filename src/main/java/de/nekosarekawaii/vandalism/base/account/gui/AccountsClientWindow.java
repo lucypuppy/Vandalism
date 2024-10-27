@@ -82,7 +82,7 @@ public class AccountsClientWindow extends ClientWindow {
             }
             if (this.hoveredAccount != null) {
                 if (ImUtils.subButton("Copy Name")) {
-                    this.mc.keyboard.setClipboard(this.hoveredAccount.getDisplayName());
+                    mc.keyboard.setClipboard(this.hoveredAccount.getDisplayName());
                 }
                 final Session session = this.hoveredAccount.getSession();
                 if (session != null) {
@@ -90,11 +90,11 @@ public class AccountsClientWindow extends ClientWindow {
                     final boolean uuidAvailable = uuid != null;
                     if (uuidAvailable) {
                         if (ImUtils.subButton("Copy UUID")) {
-                            this.mc.keyboard.setClipboard(uuid.toString());
+                            mc.keyboard.setClipboard(uuid.toString());
                         }
                     }
                     if (ImUtils.subButton("Copy Access token")) {
-                        this.mc.keyboard.setClipboard(session.getAccessToken());
+                        mc.keyboard.setClipboard(session.getAccessToken());
                     }
                     ImGui.text("Type: " + this.hoveredAccount.getType());
                     final String lastLogin = this.hoveredAccount.getLastLogin();

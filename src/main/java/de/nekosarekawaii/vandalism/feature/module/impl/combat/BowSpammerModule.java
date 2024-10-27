@@ -72,10 +72,10 @@ public class BowSpammerModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.getMainHandStack().isOf(Items.BOW)) {
+        if (mc.player.getMainHandStack().isOf(Items.BOW)) {
             if (this.shootTimer.hasReached(this.shootDelay.getValue(), true)) {
                 for (int i = 0; i < this.maxPacketsPerTick.getValue(); i++) {
-                    this.mc.interactionManager.interactItem(this.mc.player, Hand.MAIN_HAND);
+                    mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 }
             }
         }

@@ -36,7 +36,7 @@ public class CheatDetectorModule extends Module implements WorldListener {
 
     @Override
     public void onActivate() {
-        addPlayer(this.mc.player);
+        addPlayer(mc.player);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CheatDetectorModule extends Module implements WorldListener {
     @Override
     public void onPostWorldLoad() {
         clearPlayers();
-        addPlayer(this.mc.player);
+        addPlayer(mc.player);
     }
 
     private void addPlayer(final PlayerEntity player) {

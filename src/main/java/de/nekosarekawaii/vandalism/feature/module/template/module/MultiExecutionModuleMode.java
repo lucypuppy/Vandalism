@@ -55,7 +55,7 @@ public abstract class MultiExecutionModuleMode<M extends Module> extends SingleE
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.delayTimer.hasReached(this.delay.getValue(), true)) {
             for (int i = 0; i < this.times.getValue(); i++) {
-                if (this.mc.player == null) {
+                if (mc.player == null) {
                     continue;
                 }
                 this.onExecute();

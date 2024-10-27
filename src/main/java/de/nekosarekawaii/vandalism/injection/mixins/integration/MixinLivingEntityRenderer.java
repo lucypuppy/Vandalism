@@ -52,7 +52,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "HEAD"))
     private void initRenderedModRotationPitch(final T livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
         final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
-        if (livingEntity != this.mc.player || rotation == null) {
+        if (livingEntity != mc.player || rotation == null) {
             this.vandalism$rotationPitch = null;
             return;
         }

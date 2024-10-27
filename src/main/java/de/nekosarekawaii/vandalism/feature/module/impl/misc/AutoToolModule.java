@@ -71,9 +71,9 @@ public class AutoToolModule extends Module implements PlayerUpdateListener, PreB
 
     @Override
     public void onActivate() {
-        if (this.mc.player != null) {
-            this.oldSlot = this.mc.player.getInventory().selectedSlot;
-            this.lastCrosshairTarget = this.mc.crosshairTarget;
+        if (mc.player != null) {
+            this.oldSlot = mc.player.getInventory().selectedSlot;
+            this.lastCrosshairTarget = mc.crosshairTarget;
         }
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, PreBlockBreakEvent.ID);
     }
@@ -86,14 +86,14 @@ public class AutoToolModule extends Module implements PlayerUpdateListener, PreB
     }
 
     private void handleBlockInteraction(final BlockPos blockPos) {
-        final BlockState blockState = this.mc.world.getBlockState(blockPos);
+        final BlockState blockState = mc.world.getBlockState(blockPos);
         final Block block = blockState.getBlock();
         if (block instanceof AirBlock || block instanceof FluidBlock) return;
         final List<Pair<ItemStack, Integer>> toolList = new ArrayList<>();
         final AtomicBoolean foundSwordForBamboo = new AtomicBoolean(false);
         for (int i = 0; i < 9; i++) {
             if (!PlayerInventory.isValidHotbarIndex(i)) continue;
-            final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+            final ItemStack itemStack = mc.player.getInventory().getStack(i);
             if (itemStack == null) {
                 continue;
             }
@@ -132,23 +132,23 @@ public class AutoToolModule extends Module implements PlayerUpdateListener, PreB
             return Float.compare(speed2, speed1);
         });
         final Pair<ItemStack, Integer> bestTool = toolList.getFirst();
-        final ItemStack mainHandStack = this.mc.player.getInventory().getMainHandStack();
+        final ItemStack mainHandStack = mc.player.getInventory().getMainHandStack();
         final float bestToolSpeed = bestTool.getLeft().getMiningSpeedMultiplier(blockState);
         if (!foundSwordForBamboo.get()) {
             if (bestToolSpeed <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
-                if (this.mc.player.getInventory().selectedSlot == bestTool.getRight()) {
-                    for (int i = 0; i < this.mc.player.getInventory().main.size(); i++) {
+                if (mc.player.getInventory().selectedSlot == bestTool.getRight()) {
+                    for (int i = 0; i < mc.player.getInventory().main.size(); i++) {
                         if (!PlayerInventory.isValidHotbarIndex(i)) {
                             continue;
                         }
-                        final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+                        final ItemStack itemStack = mc.player.getInventory().getStack(i);
                         if (itemStack == null) {
                             continue;
                         }
                         final Item item = itemStack.getItem();
                         if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
-                            this.oldSlot = this.mc.player.getInventory().selectedSlot;
-                            this.mc.player.getInventory().selectedSlot = i;
+                            this.oldSlot = mc.player.getInventory().selectedSlot;
+                            mc.player.getInventory().selectedSlot = i;
                             break;
                         }
                     }
@@ -156,24 +156,24 @@ public class AutoToolModule extends Module implements PlayerUpdateListener, PreB
                 return;
             }
         }
-        this.oldSlot = this.mc.player.getInventory().selectedSlot;
-        this.mc.player.getInventory().selectedSlot = bestTool.getRight();
+        this.oldSlot = mc.player.getInventory().selectedSlot;
+        mc.player.getInventory().selectedSlot = bestTool.getRight();
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.options.attackKey.isPressed()) {
+        if (!mc.options.attackKey.isPressed()) {
             this.resetSlot();
         }
         if (!this.mode.getValue().equals("Tools")) {
-            if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+            if (mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
                 final Entity entity = entityHitResult.getEntity();
                 if (entity == null) return;
                 if (!this.entityGroup.isTarget(entity)) return;
                 final List<Pair<Float, Integer>> toolList = new ArrayList<>();
                 for (int i = 0; i < 9; i++) {
                     if (!PlayerInventory.isValidHotbarIndex(i)) continue;
-                    final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+                    final ItemStack itemStack = mc.player.getInventory().getStack(i);
                     if (itemStack == null || itemStack.isEmpty()) continue;
                     final Item item = itemStack.getItem();
                     if (item instanceof final ToolItem toolItem) {
@@ -186,21 +186,21 @@ public class AutoToolModule extends Module implements PlayerUpdateListener, PreB
                 if (toolList.isEmpty()) return;
                 toolList.sort((o1, o2) -> Float.compare(o1.getLeft(), o2.getLeft()));
                 final Pair<Float, Integer> bestTool = toolList.getFirst();
-                if (this.mc.player.getInventory().getMainHandStack().getItem() instanceof final ToolItem toolItem) {
+                if (mc.player.getInventory().getMainHandStack().getItem() instanceof final ToolItem toolItem) {
                     if ((toolItem instanceof SwordItem) || (toolItem instanceof AxeItem)) {
                         if (bestTool.getLeft() <= toolItem.getMaterial().getAttackDamage()) {
                             return;
                         }
                     }
                 }
-                this.oldSlot = this.mc.player.getInventory().selectedSlot;
+                this.oldSlot = mc.player.getInventory().selectedSlot;
                 InventoryUtil.setSlot(bestTool.getRight());
             }
         }
         if (!(this.lastCrosshairTarget instanceof BlockHitResult)) {
             this.resetSlot();
         }
-        this.lastCrosshairTarget = this.mc.crosshairTarget;
+        this.lastCrosshairTarget = mc.crosshairTarget;
     }
 
     @Override

@@ -70,7 +70,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         final GameProfile profile = list.get(vandalism$index).getProfile();
         if (betterTabListModule.isActive()) {
-            if (betterTabListModule.highlightSelf.getValue() && this.mc.player != null && profile.getId().equals(this.mc.player.getGameProfile().getId())) {
+            if (betterTabListModule.highlightSelf.getValue() && mc.player != null && profile.getId().equals(mc.player.getGameProfile().getId())) {
                 color = betterTabListModule.selfColor.getColor().getRGB();
             }
             else {

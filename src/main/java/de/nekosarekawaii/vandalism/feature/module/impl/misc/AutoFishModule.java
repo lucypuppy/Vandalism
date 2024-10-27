@@ -68,18 +68,18 @@ public class AutoFishModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final FishingBobberEntity fishHook = this.mc.player.fishHook;
+        final FishingBobberEntity fishHook = mc.player.fishHook;
         if (fishHook != null) {
             if (!this.hasFish && fishHook.caughtFish && fishHook.getVelocity().y < -0.2) {
                 this.hasFish = true;
                 this.retractDelayTimer.reset();
             }
             if (this.hasFish && this.retractDelayTimer.hasReached(this.retractDelayValue.getValue(), true)) {
-                this.mc.doItemUse();
+                mc.doItemUse();
                 this.throwDelayTimer.reset();
             }
         } else if (this.throwDelayTimer.hasReached(this.throwDelayValue.getValue(), true)) {
-            this.mc.doItemUse();
+            mc.doItemUse();
             this.hasFish = false;
         }
     }

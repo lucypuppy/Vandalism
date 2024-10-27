@@ -39,7 +39,7 @@ public abstract class MixinChatHud implements MinecraftWrapper {
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At("HEAD"))
     private void hookNoChatReportsAndShowClickEvents(final Text message, final MessageSignatureData signature, final MessageIndicator indicatorDontUse, final CallbackInfo ci, @Local(argsOnly = true) LocalRef<MessageIndicator> indicator) {
         final NoChatReportsModule noChatReportsModule = Vandalism.getInstance().getModuleManager().getNoChatReportsModule();
-        if (!this.mc.isInSingleplayer() && noChatReportsModule.isActive()) {
+        if (!mc.isInSingleplayer() && noChatReportsModule.isActive()) {
             indicator.set(noChatReportsModule.modifyIndicator(signature, indicator.get()));
         }
         final ShowClickEventsModule showClickEventsModule = Vandalism.getInstance().getModuleManager().getShowClickEventsModule();

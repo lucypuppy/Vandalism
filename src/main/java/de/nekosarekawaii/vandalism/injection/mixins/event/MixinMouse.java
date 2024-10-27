@@ -43,7 +43,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
 
     @Inject(method = "onMouseButton", at = @At("HEAD"), cancellable = true)
     private void callMouseButtonListener(final long window, final int button, final int action, final int mods, final CallbackInfo ci) {
-        if (this.mc.getWindow().getHandle() == window) {
+        if (mc.getWindow().getHandle() == window) {
             final MouseInputListener.MouseEvent mouseEvent = new MouseInputListener.MouseEvent(button, action, mods);
             Vandalism.getInstance().getEventSystem().callExceptionally(MouseInputListener.MouseEvent.ID, mouseEvent);
             if (mouseEvent.isCancelled()) {
@@ -54,7 +54,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void callMouseScrollListener(final long window, final double horizontal, final double vertical, final CallbackInfo ci) {
-        if (this.mc.getWindow().getHandle() == window) {
+        if (mc.getWindow().getHandle() == window) {
             final MouseInputListener.MouseEvent event = new MouseInputListener.MouseEvent(true, horizontal, vertical);
             Vandalism.getInstance().getEventSystem().callExceptionally(MouseInputListener.MouseEvent.ID, event);
             if (event.isCancelled()) {
@@ -65,7 +65,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
 
     @Inject(method = "onCursorPos", at = @At("HEAD"))
     private void callMousePosListener(final long window, final double x, final double y, final CallbackInfo ci) {
-        if (this.mc.getWindow().getHandle() == window) {
+        if (mc.getWindow().getHandle() == window) {
             Vandalism.getInstance().getEventSystem().callExceptionally(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(false, x, y));
         }
     }

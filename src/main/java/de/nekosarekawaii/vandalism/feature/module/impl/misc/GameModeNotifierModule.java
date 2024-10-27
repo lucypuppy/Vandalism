@@ -64,8 +64,8 @@ public class GameModeNotifierModule extends Module implements WorldListener, Pla
 
     @Override
     public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.getNetworkHandler() == null) return;
-        for (final PlayerListEntry playerListEntry : this.mc.getNetworkHandler().getPlayerList()) {
+        if (mc.getNetworkHandler() == null) return;
+        for (final PlayerListEntry playerListEntry : mc.getNetworkHandler().getPlayerList()) {
             final GameProfile profile = playerListEntry.getProfile();
             if (profile != null) {
                 final GameMode gameMode = playerListEntry.getGameMode();

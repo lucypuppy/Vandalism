@@ -169,14 +169,14 @@ public class BackTrackModule extends Module implements PlayerUpdateListener,
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        for (final Entity entity : this.mc.world.getEntities()) {
+        for (final Entity entity : mc.world.getEntities()) {
             if (
                     this.targetGroup.isTarget(entity)
                             && entity.getWidth() > 0.0
                             && entity.getHeight() > 0.0
                             && entity instanceof final LivingEntity livingEntity
             ) {
-                if (this.mc.player.distanceTo(livingEntity) <= backTrackRange.getValue()) {
+                if (mc.player.distanceTo(livingEntity) <= backTrackRange.getValue()) {
                     if (!this.backTrackedEntities.containsKey(livingEntity.getId())) {
                         this.backTrackedEntities.put(livingEntity.getId(), new SyncPosition(entity.getPos()));
                     } else {
@@ -205,8 +205,8 @@ public class BackTrackModule extends Module implements PlayerUpdateListener,
                         packet instanceof BundleS2CPacket ||
                         packet instanceof BundleDelimiterS2CPacket ||
                         packet instanceof ScoreboardObjectiveUpdateS2CPacket ||
-                        this.backTrackedEntities.isEmpty() || this.mc.player == null ||
-                        this.mc.world == null || event.networkPhase != NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
+                        this.backTrackedEntities.isEmpty() || mc.player == null ||
+                        mc.world == null || event.networkPhase != NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
         ) {
             return;
         }
@@ -270,7 +270,7 @@ public class BackTrackModule extends Module implements PlayerUpdateListener,
         this.handlePackets(this.backTrackedEntities.isEmpty());
 
         for (final Map.Entry<Integer, SyncPosition> entry : this.backTrackedEntities.entrySet()) {
-            final Entity entity = this.mc.world.getEntityById(entry.getKey());
+            final Entity entity = mc.world.getEntityById(entry.getKey());
             final Vec3d pos = entry.getValue().pos;
 
             if (entity == null) {
@@ -296,10 +296,10 @@ public class BackTrackModule extends Module implements PlayerUpdateListener,
             final Vec3d center = box.getCenter();
             final double scale = 1.5;
 
-            final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
+            final Vec3d camPos = mc.gameRenderer.getCamera().getPos();
             matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
-            final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
+            final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
 
             matrixStack.push();
             final double minX = (box.minX - center.x) * scale + center.x;
@@ -321,12 +321,12 @@ public class BackTrackModule extends Module implements PlayerUpdateListener,
     }
 
     private boolean checkForResync(final TrackedPosition trackedPosition, final int id) {
-        final Entity entity = this.mc.world.getEntityById(id);
+        final Entity entity = mc.world.getEntityById(id);
         if (entity == null)
             return false;
 
-        final double distanceToOrigin = this.mc.player.distanceTo(entity);
-        final double distanceToRealPos = this.mc.player.getPos().distanceTo(trackedPosition.pos);
+        final double distanceToOrigin = mc.player.distanceTo(entity);
+        final double distanceToRealPos = mc.player.getPos().distanceTo(trackedPosition.pos);
         final double distanceOriginToRealPos = entity.getPos().distanceTo(trackedPosition.pos);
 
         final boolean condition1 = this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos;

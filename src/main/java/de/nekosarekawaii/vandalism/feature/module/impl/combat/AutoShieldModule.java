@@ -72,7 +72,7 @@ public class AutoShieldModule extends Module implements PlayerUpdateListener {
     private void reset() {
         this.target = null;
         Vandalism.getInstance().getRotationManager().resetRotation();
-        this.mc.options.useKey.setPressed(false);
+        mc.options.useKey.setPressed(false);
     }
 
     @Override
@@ -89,33 +89,33 @@ public class AutoShieldModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final ItemStack mainHand = this.mc.player.getMainHandStack();
-        final ItemStack offHand = this.mc.player.getOffHandStack();
+        final ItemStack mainHand = mc.player.getMainHandStack();
+        final ItemStack offHand = mc.player.getOffHandStack();
         if (!(mainHand.getItem() instanceof ShieldItem) && !(offHand.getItem() instanceof ShieldItem)) {
             this.reset();
             return;
         }
         final float range = this.range.getValue();
-        if (this.target == null || !this.entityGroup.isTarget(this.target) || this.target.distanceTo(this.mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
+        if (this.target == null || !this.entityGroup.isTarget(this.target) || this.target.distanceTo(mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
             this.reset();
             final List<Entity> entities = new ArrayList<>();
-            for (final Entity entity : this.mc.world.getEntities()) {
-                if (entity == this.mc.player) continue;
-                if (entity == this.mc.player.getVehicle()) continue;
+            for (final Entity entity : mc.world.getEntities()) {
+                if (entity == mc.player) continue;
+                if (entity == mc.player.getVehicle()) continue;
                 if (!this.entityGroup.isTarget(entity)) continue;
-                if (this.mc.player.getPos().distanceTo(entity.getPos()) > range) continue;
+                if (mc.player.getPos().distanceTo(entity.getPos()) > range) continue;
                 entities.add(entity);
                 break;
             }
             if (entities.isEmpty()) return;
-            entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
+            entities.sort(Comparator.comparingDouble(entity -> mc.player.distanceTo(entity)));
             this.target = entities.getFirst();
         } else {
             final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.target.getPos(), RotationPriority.NORMAL);
             Vandalism.getInstance().getRotationManager().setRotation(rotation, false, (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.rotateSpeed.getValue(), deltaTime, hasClientRotation));
-            if (!this.mc.player.isBlocking()) {
-                this.mc.options.useKey.setPressed(true);
+            if (!mc.player.isBlocking()) {
+                mc.options.useKey.setPressed(true);
             }
         }
     }

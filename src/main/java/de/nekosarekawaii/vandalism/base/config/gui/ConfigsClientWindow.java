@@ -112,7 +112,7 @@ public class ConfigsClientWindow extends ClientWindow {
                 }
                 if (ImUtils.subButton("Copy")) {
                     try {
-                        this.mc.keyboard.setClipboard(Files.readString(this.hoveredConfig.toPath()));
+                        mc.keyboard.setClipboard(Files.readString(this.hoveredConfig.toPath()));
                     } catch (final Exception ignored) {
                     }
                 }

@@ -247,9 +247,9 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
 
     private float getForwardMultiplier() {
         final float defaultValue = -1.0f;
-        final ItemStack stack = this.mc.player.getActiveItem();
+        final ItemStack stack = mc.player.getActiveItem();
         if (!stack.isEmpty()) {
-            final Item item = this.mc.player.getActiveItem().getItem();
+            final Item item = mc.player.getActiveItem().getItem();
             if (item.getComponents().contains(DataComponentTypes.FOOD) && this.modifyFoodSlowdown.getValue()) {
                 return this.foodForwardMultiplier.getValue();
             }
@@ -275,7 +275,7 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
                 return this.bowForwardMultiplier.getValue();
             }
         }
-        if (this.mc.player.isSneaking() && this.modifySneakSlowdown.getValue()) {
+        if (mc.player.isSneaking() && this.modifySneakSlowdown.getValue()) {
             return this.sneakForwardMultiplier.getValue();
         }
         return defaultValue;
@@ -283,9 +283,9 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
 
     private float getSidewaysMultiplier() {
         final float defaultValue = -1.0f;
-        final ItemStack stack = this.mc.player.getActiveItem();
+        final ItemStack stack = mc.player.getActiveItem();
         if (!stack.isEmpty()) {
-            final Item item = this.mc.player.getActiveItem().getItem();
+            final Item item = mc.player.getActiveItem().getItem();
             if (item.getComponents().contains(DataComponentTypes.FOOD) && this.modifyFoodSlowdown.getValue()) {
                 return this.foodSidewaysMultiplier.getValue();
             }
@@ -311,7 +311,7 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
                 return this.bowSidewaysMultiplier.getValue();
             }
         }
-        if (this.mc.player.isSneaking() && this.modifySneakSlowdown.getValue()) {
+        if (mc.player.isSneaking() && this.modifySneakSlowdown.getValue()) {
             return this.sneakSidewaysMultiplier.getValue();
         }
         return defaultValue;

@@ -53,8 +53,8 @@ public class LowHopModuleMode extends ModuleMulti<SpeedModule> implements Player
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (MovementUtil.isMoving()) {
-            if (this.mc.player.isOnGround()) {
-                this.mc.player.addVelocity(0, 0.3, 0);
+            if (mc.player.isOnGround()) {
+                mc.player.addVelocity(0, 0.3, 0);
             }
             MovementUtil.setSpeed(this.speed.getValue());
         }

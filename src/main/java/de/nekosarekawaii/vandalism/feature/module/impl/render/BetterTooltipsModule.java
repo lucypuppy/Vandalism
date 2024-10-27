@@ -208,13 +208,13 @@ public class BetterTooltipsModule extends Module implements TooltipDrawListener,
                 if (this.openContainerKey.isPressed()) {
                     final GenericContainerScreenHandler genericContainerScreen = GenericContainerScreenHandler.createGeneric9x3(
                             0,
-                            this.mc.player.getInventory(),
+                            mc.player.getInventory(),
                             new InventoryNoop(itemStacks)
                     );
 
-                    this.mc.setScreen(new CustomContainerScreen(
+                    mc.setScreen(new CustomContainerScreen(
                             genericContainerScreen,
-                            this.mc.player.getInventory(),
+                            mc.player.getInventory(),
                             Text.of(itemStack.getName())
                     ));
                 }

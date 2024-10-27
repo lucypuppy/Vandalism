@@ -83,11 +83,11 @@ public class ClientSettingsClientWindow extends ClientWindow {
                             final JsonObject valuesJsonObject = new JsonObject();
                             ConfigWithValues.saveValues(valuesJsonObject, values);
                             jsonObject.add("values", valuesJsonObject);
-                            this.mc.keyboard.setClipboard(jsonObject.toString());
+                            mc.keyboard.setClipboard(jsonObject.toString());
                         }
                         ImGui.sameLine();
                         if (ImGui.button("Paste " + name + " Settings" + tabId + "pastesettingsbutton", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                            final String clipboard = this.mc.keyboard.getClipboard();
+                            final String clipboard = mc.keyboard.getClipboard();
                             if (clipboard != null && !clipboard.isBlank()) {
                                 try {
                                     final JsonObject jsonObject = JsonParser.parseString(clipboard).getAsJsonObject();

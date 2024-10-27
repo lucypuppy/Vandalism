@@ -51,11 +51,11 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Pl
     public void onActivate() {
         this.reset();
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, TickTimeEvent.ID);
-        if (this.mc.getNetworkHandler() != null) {
+        if (mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
             this.moveSpeed = MovementUtil.getBaseSpeed() * 3.5;
-            this.lastPosY = this.mc.player.getY();
+            this.lastPosY = mc.player.getY();
         }
     }
 
@@ -67,48 +67,48 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Pl
 
     @Override
     public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.hurtTime > 0) {
+        if (mc.player.hurtTime > 0) {
             this.waitTicks++;
             if (this.waitTicks >= 4) {
                 this.canLongJump = true;
             }
         }
         if (this.canLongJump) {
-            if (this.mc.player.isOnGround()) {
-                this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, 1, 0));
+            if (mc.player.isOnGround()) {
+                mc.player.setVelocity(mc.player.getVelocity().add(0, 1, 0));
             } else {
-                final Vec3d moveVelocity = this.mc.player.getVelocity();
-                if (this.mc.player.fallDistance > 0.2f && this.moveTicks <= 2) {
-                    this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
-                    this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, 0.01, 0));
+                final Vec3d moveVelocity = mc.player.getVelocity();
+                if (mc.player.fallDistance > 0.2f && this.moveTicks <= 2) {
+                    mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
+                    mc.player.setVelocity(mc.player.getVelocity().add(0, 0.01, 0));
                     this.moveTicks = 5;
                     timer = 0.85f;
                     return;
                 } else {
                     timer = 1.7f;
                 }
-                if (Math.abs(this.mc.player.getY() - this.lastPosY) > 1) {
+                if (Math.abs(mc.player.getY() - this.lastPosY) > 1) {
                     MovementUtil.setSpeed(-0.01);
-                    this.mc.player.fallDistance = 0;
-                    this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
-                    this.mc.player.setPos(this.mc.player.getX(), this.lastPosY, this.mc.player.getZ());
-                    if (this.mc.options.jumpKey.isPressed()) {
-                        this.mc.player.setPos(
-                                this.mc.player.getX(),
-                                this.mc.player.getY() + 0.8 + Math.random() * 0.04,
-                                this.mc.player.getZ()
+                    mc.player.fallDistance = 0;
+                    mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
+                    mc.player.setPos(mc.player.getX(), this.lastPosY, mc.player.getZ());
+                    if (mc.player.input.jumping) {
+                        mc.player.setPos(
+                                mc.player.getX(),
+                                mc.player.getY() + 0.8 + Math.random() * 0.04,
+                                mc.player.getZ()
                         );
-                    } else if (this.mc.options.sneakKey.isPressed()) {
-                        this.mc.player.setPos(
-                                this.mc.player.getX(),
-                                this.mc.player.getY() - 0.8 + Math.random() * 0.04,
-                                this.mc.player.getZ()
+                    } else if (mc.player.input.sneaking) {
+                        mc.player.setPos(
+                                mc.player.getX(),
+                                mc.player.getY() - 0.8 + Math.random() * 0.04,
+                                mc.player.getZ()
                         );
                     }
-                    this.lastPosY = this.mc.player.getY();
+                    this.lastPosY = mc.player.getY();
                     return;
                 }
-                if (this.mc.options.jumpKey.isPressed() || this.mc.options.sneakKey.isPressed()) {
+                if (mc.player.input.jumping || mc.player.input.sneaking) {
                     MovementUtil.setSpeed(0);
                     return;
                 }
@@ -117,14 +117,14 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Pl
                     this.moveSpeed = 0.27f;
                     return;
                 }
-                if (this.mc.player.hurtTime == 0) {
+                if (mc.player.hurtTime == 0) {
                     this.moveSpeed -= 0.1f;
                 }
                 final Vec3d adjustedVelocity = MovementUtil.applyFriction(velocityVector, 40);
                 this.moveSpeed = Math.hypot(adjustedVelocity.getX(), adjustedVelocity.getZ());
                 this.moveTicks--;
             }
-            if (this.mc.player.hurtTime >= 9) {
+            if (mc.player.hurtTime >= 9) {
                 MovementUtil.setSpeed(8);
             }
         }
