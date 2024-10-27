@@ -31,7 +31,14 @@ if not exist %REPO_DIR% (
     cd ..
 )
 
+:: Read the minecraft_version from gradle.properties
+for /f "tokens=2 delims==" %%a in ('findstr /r /c:"^minecraft_version=" gradle.properties') do set MC_VERSION=%%a
+
 cd %REPO_DIR%
+
+:: Switch to the branch corresponding to the minecraft_version
+echo Switching to branch %MC_VERSION%...
+git checkout %MC_VERSION%
 
 echo Building the project...
 call gradlew.bat build
@@ -60,5 +67,10 @@ cd ..
 
 echo Deleting the cloned repository...
 rmdir /s /q %REPO_DIR%
+
+echo.
+echo When you see an error above this message than say thank you to Gradle,
+echo taskkill java and delete the Wurst7 directory inside the root directory by yourself.
+echo.
 
 echo Done.
