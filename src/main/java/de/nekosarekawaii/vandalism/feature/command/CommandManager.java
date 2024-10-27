@@ -94,7 +94,8 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new SkillSpamCommand(),
                 new SpamCommand(),
                 new KaboomKickCommand(),
-                new PlaceholdersCommand()
+                new PlaceholdersCommand(),
+                new CrashSkullCommand()
         );
 
         // This should always be the last command
