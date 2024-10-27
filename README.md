@@ -18,10 +18,6 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 Alternatively you can run ``scripts/install_wurst.bat`` or ``scripts/install_wurst.sh`` to download the latest Wurst
 Client binary automatically.
 
-### Note
-
-The Wurst Client addon is deprecated, and it's not recommended to use it.
-
 ## Guidelines
 
 ### How to name commits

@@ -19,10 +19,10 @@
 package de.nekosarekawaii.vandalism.addonwurstclient.module;
 
 import de.nekosarekawaii.vandalism.addonwurstclient.injection.access.IWurstClient;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.Module;
 import net.wurstclient.WurstClient;
 
-public class WurstClientModule extends AbstractModule {
+public class WurstClientModule extends Module {
 
     public WurstClientModule() {
         super("Wurst Client", "Implementation of the Wurst client.", Category.MISC);

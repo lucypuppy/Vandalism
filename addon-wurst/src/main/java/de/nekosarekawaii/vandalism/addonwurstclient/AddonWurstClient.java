@@ -24,12 +24,14 @@ import de.nekosarekawaii.vandalism.addonwurstclient.module.WurstClientModule;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
+import lombok.Getter;
 import net.wurstclient.WurstClient;
 
 import java.util.List;
 
 public class AddonWurstClient implements VandalismAddonLauncher {
 
+    @Getter
     private static AddonWurstClient instance;
 
     // Temporary list to store the enabled hacks when the user disables the WurstClient module
@@ -60,10 +62,6 @@ public class AddonWurstClient implements VandalismAddonLauncher {
     @Override
     public void onLateLaunch(final Vandalism vandalism) {
         ((IWurstClient) (Object) WurstClient.INSTANCE).vandalism$setSilentEnabled(this.module.isActive());
-    }
-
-    public static AddonWurstClient getInstance() {
-        return instance;
     }
 
 }
