@@ -221,7 +221,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new UseItemSpammerModule(),
                 new TriggerBotModule(),
                 new AutoDisconnectModule(),
-                new TeamsModule()
+                new TeamsModule(),
+                new MaceInstaKillModule()
         );
         if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
             this.add(new AntiCaptureModule());
