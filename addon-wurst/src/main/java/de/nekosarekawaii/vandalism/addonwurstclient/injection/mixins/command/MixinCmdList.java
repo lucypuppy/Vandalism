@@ -22,8 +22,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.Feature;
-import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.wurstclient.WurstClient;
 import net.wurstclient.command.CmdList;
@@ -50,17 +49,17 @@ public abstract class MixinCmdList {
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), remap = false)
     private Object registerWurstCommands(TreeMap instance, Object key, Object value) {
         final Command command = (Command) value;
-        Vandalism.getInstance().getCommandManager().add(new AbstractCommand(command.getDescription(), Feature.Category.MISC, "wurst" + command.getName().substring(1)) {
+        Vandalism.getInstance().getCommandManager().add(new de.nekosarekawaii.vandalism.feature.command.Command(command.getDescription(), Feature.Category.MISC, "wurst" + command.getName().substring(1)) {
 
             @Override
             public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-                builder.then(AbstractCommand.argument("input", StringArgumentType.greedyString()).executes(context -> {
+                builder.then(de.nekosarekawaii.vandalism.feature.command.Command.argument("input", StringArgumentType.greedyString()).executes(context -> {
                     vandalism$runWurstCommand(context.getInput());
-                    return AbstractCommand.SINGLE_SUCCESS;
+                    return de.nekosarekawaii.vandalism.feature.command.Command.SINGLE_SUCCESS;
                 }));
                 builder.executes(context -> {
                     vandalism$runWurstCommand(context.getInput());
-                    return AbstractCommand.SINGLE_SUCCESS;
+                    return de.nekosarekawaii.vandalism.feature.command.Command.SINGLE_SUCCESS;
                 });
             }
 

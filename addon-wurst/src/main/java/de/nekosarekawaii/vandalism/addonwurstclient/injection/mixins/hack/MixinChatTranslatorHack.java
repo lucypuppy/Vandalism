@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.hack;
 
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.wurstclient.hacks.ChatTranslatorHack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = ChatTranslatorHack.class)
 public abstract class MixinChatTranslatorHack {
 
-    @Redirect(method = "translate", at = @At(value = "INVOKE", target = "Ljava/lang/String;startsWith(Ljava/lang/String;)Z", ordinal = 0), remap = false)
+    @Redirect(method = "onReceivedMessage", at = @At(value = "INVOKE", target = "Ljava/lang/String;startsWith(Ljava/lang/String;)Z", ordinal = 0), remap = false)
     private boolean addVandalismChatPrefix(final String string, final String prefix) {
         return string.startsWith(prefix) || string.startsWith(ChatUtil.getChatPrefix().getString());
     }

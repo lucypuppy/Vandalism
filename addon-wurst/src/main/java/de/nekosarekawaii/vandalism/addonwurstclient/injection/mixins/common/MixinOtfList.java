@@ -20,10 +20,7 @@ package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.common;
 
 import net.wurstclient.other_feature.OtfList;
 import net.wurstclient.other_feature.OtherFeature;
-import net.wurstclient.other_features.DisableOtf;
-import net.wurstclient.other_features.HackListOtf;
-import net.wurstclient.other_features.WurstCapesOtf;
-import net.wurstclient.other_features.ZoomOtf;
+import net.wurstclient.other_features.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,7 +38,8 @@ public abstract class MixinOtfList {
             HackListOtf.class,
             DisableOtf.class,
             WurstCapesOtf.class,
-            ZoomOtf.class
+            ZoomOtf.class,
+            NoChatReportsOtf.class
     );
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), remap = false)
