@@ -21,8 +21,8 @@ package de.nekosarekawaii.vandalism.integration.serverlist;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.util.MSTimer;
-import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.PingState;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;
@@ -54,6 +54,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: Fix too long address names by shortening them with "..." at the end
 public class ServerPingerWidget implements MinecraftWrapper {
 
     private static final String BASE64_START = "data:image/png;base64,";
