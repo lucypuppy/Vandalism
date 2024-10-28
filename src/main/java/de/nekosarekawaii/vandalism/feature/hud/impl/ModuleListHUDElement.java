@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.util.RenderUtil;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
@@ -36,6 +37,7 @@ import net.minecraft.client.gui.DrawContext;
 import org.joml.Vector2f;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -43,6 +45,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
 
     private final List<String> activatedModules = new CopyOnWriteArrayList<>();
     private final List<String> externalModules = new CopyOnWriteArrayList<>();
+    private final HashMap<String, AnimationState> animationStates = new HashMap<>();
 
     private boolean sort;
 
@@ -151,19 +154,23 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             int yOffset = 0;
             this.width = 0;
             for (final String activatedModule : this.activatedModules) {
+                final AnimationState animationState = this.animationStates.get(activatedModule);
+                animationState.updateAnimation(activatedModule);
+
                 this.getTextSize(activatedModule, sizeVec);
-                final int textWidth = (int) sizeVec.x;
-                final int textHeight = (int) sizeVec.y;
+                final float textWidth = (int) sizeVec.x * animationState.xAnimation;
+                final float textHeight = (int) sizeVec.y;
                 switch (this.alignmentX.getValue()) {
                     case MIDDLE ->
-                            this.drawText(renderer, context, activatedModule, this.getX() - textWidth / 2, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
+                            this.drawText(renderer, context, activatedModule, this.getX() - textWidth / 2.f, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
                     case RIGHT ->
                             this.drawText(renderer, context, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
                     default ->
                             this.drawText(renderer, context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
                 }
-                this.width = Math.max(this.width, textWidth);
-                yOffset += textHeight + this.heightOffset.getValue();
+
+                this.width = (int) Math.max(this.width, textWidth);
+                yOffset += (int) (textHeight * animationState.yAnimation + this.heightOffset.getValue());
             }
             this.height = yOffset;
             renderer.draw();
@@ -175,37 +182,58 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         }
     }
 
-    private void drawText(AttribConsumerProvider batch, final DrawContext context, final String text, final int x, final int y, final boolean isPostProcessing) {
+    private void drawText(AttribConsumerProvider batch, final DrawContext context, final String text, final float x, final float y, final boolean isPostProcessing) {
         if (this.glowOutline.getValue()) {
-            context.fill(
+            RenderUtil.fill(context,
                     x - 2,
                     y,
                     x + this.getTextWidth(text) + 2,
                     y + heightOffset.getValue() + this.getFontHeight(),
-                    1677721600
-            );
+                    1677721600);
         }
         if (!isPostProcessing) {
-            this.drawText(batch, text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), this.color.getColor(-y * 20).getRGB());
+            this.drawText(batch, text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), this.color.getColor((int) (-y * 20)).getRGB());
         }
     }
 
     private void sort() {
         if (this.sort) {
             this.sort = false;
-            this.activatedModules.clear();
-            final List<Module> modules = Vandalism.getInstance().getModuleManager().getList();
-            for (final Module module : modules) {
+
+            for (final Module module : Vandalism.getInstance().getModuleManager().getList()) {
+                final String name = module.getName();
+
                 if (module.isActive() && module.isShowInHUD()) {
-                    this.activatedModules.add(module.getName());
+                    if (!this.animationStates.containsKey(name)) {
+                        this.activatedModules.add(name);
+
+                        final AnimationState animationState = new AnimationState();
+                        animationState.yAnimation = 0;
+                        animationState.xAnimation = 0;
+                        animationState.showModule = true;
+                        this.animationStates.put(name, animationState);
+                    }
+                } else if (this.animationStates.containsKey(name)) {
+                    this.animationStates.get(name).showModule = false;
                 }
             }
+
             for (String activatedModule : this.externalModules) {
-                if (!this.showExternalClientName.getValue()) {
-                    activatedModule = activatedModule.split("\\s", 2)[1];
+                if (!this.animationStates.containsKey(activatedModule)) {
+                    final AnimationState animationState = new AnimationState();
+                    animationState.yAnimation = 0;
+                    animationState.xAnimation = 0;
+                    animationState.showModule = true;
+                    this.animationStates.put(activatedModule, animationState);
+
+                    if (!this.showExternalClientName.getValue()) {
+                        activatedModule = activatedModule.split("\\s", 2)[1];
+                    }
+
+                    this.activatedModules.add(activatedModule);
                 }
-                this.activatedModules.add(activatedModule);
             }
+
             this.activatedModules.sort((s1, s2) -> switch (this.alignmentY.getValue()) {
                 case TOP, MIDDLE -> this.getTextWidth(s2) - this.getTextWidth(s1);
                 case BOTTOM -> this.getTextWidth(s1) - this.getTextWidth(s2);
@@ -223,12 +251,44 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     }
 
     public void removeExternalModule(final String source, final String name) {
-        this.externalModules.remove(source + " " + name);
+        final String realName = source + " " + name;
+        this.externalModules.remove(realName);
         this.sort = true;
+
+        final AnimationState state = this.animationStates.get(realName);
+        if (state != null) state.showModule = false;
     }
 
     public void markForSorting() {
         sort = true;
+    }
+
+    private class AnimationState {
+        public float yAnimation;
+        public float xAnimation;
+        public boolean showModule;
+
+        public void updateAnimation(final String activatedModule) { //TOdo replace with easing some time
+            if (showModule) {
+                if (yAnimation >= 1) {
+                    if (xAnimation < 1)
+                        xAnimation += 0.1f;
+                } else {
+                    yAnimation += 0.1f;
+                }
+            } else {
+                if (xAnimation > 0) {
+                    xAnimation -= 0.1f;
+                } else if (yAnimation > 0) {
+                    yAnimation -= 0.1f;
+
+                    if (yAnimation <= 0) {
+                        animationStates.remove(activatedModule);
+                        activatedModules.remove(activatedModule);
+                    }
+                }
+            }
+        }
     }
 
 }
