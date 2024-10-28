@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.util;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.injection.access.IClientPlayNetworkHandler;
 import de.nekosarekawaii.vandalism.util.interfaces.IName;
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
@@ -138,6 +139,15 @@ public class ChatUtil implements MinecraftWrapper {
         mc.inGameHud.getChatHud().addMessage(text);
     }
 
+    public static void chatMessageToServer(final String message) {
+        if (message.startsWith("/") && message.length() > 1) {
+            mc.getNetworkHandler().sendChatCommand(message.substring(1));
+            return;
+        }
+
+        ((IClientPlayNetworkHandler) mc.getNetworkHandler()).vandalism$sendChatMessage(message);
+    }
+
     public static Text trimText(final Text text, final int length) {
         if (text.getString().length() <= length) {
             return text;
@@ -164,7 +174,7 @@ public class ChatUtil implements MinecraftWrapper {
 
             mutableText
                     .append(Text.literal(String.valueOf(text.charAt(i)))
-                    .setStyle(style.withColor(TextColor.fromRgb(color.getRGB()))));
+                            .setStyle(style.withColor(TextColor.fromRgb(color.getRGB()))));
         }
 
         return mutableText;
