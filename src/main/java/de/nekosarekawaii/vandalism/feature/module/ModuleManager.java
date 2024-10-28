@@ -222,7 +222,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new TriggerBotModule(),
                 new AutoDisconnectModule(),
                 new TeamsModule(),
-                new MaceInstaKillModule()
+                new MaceInstaKillModule(),
+                new AnticheatChecker()
         );
         if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
             this.add(new AntiCaptureModule());
