@@ -33,7 +33,9 @@ import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentX;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentY;
+import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.math.MathHelper;
 import org.joml.Vector2f;
 
 import java.awt.*;
@@ -162,11 +164,11 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                 final float textHeight = (int) sizeVec.y;
                 switch (this.alignmentX.getValue()) {
                     case MIDDLE ->
-                            this.drawText(renderer, context, activatedModule, this.getX() - textWidth / 2.f, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
+                            this.drawText(renderer, context, animationState, activatedModule, this.getX() - textWidth / 2.f, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
                     case RIGHT ->
-                            this.drawText(renderer, context, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
+                            this.drawText(renderer, context, animationState, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
                     default ->
-                            this.drawText(renderer, context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
+                            this.drawText(renderer, context, animationState, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
                 }
 
                 this.width = (int) Math.max(this.width, textWidth);
@@ -182,7 +184,9 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         }
     }
 
-    private void drawText(AttribConsumerProvider batch, final DrawContext context, final String text, final float x, final float y, final boolean isPostProcessing) {
+    private void drawText(AttribConsumerProvider batch, final DrawContext context, AnimationState animationState, final String text, final float x, final float y, final boolean isPostProcessing) {
+        final int alpha = MathHelper.clamp((int) (255 * animationState.xAnimation), 0, 255);
+
         if (this.glowOutline.getValue()) {
             RenderUtil.fill(context,
                     x - 2,
@@ -191,8 +195,10 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                     y + heightOffset.getValue() + this.getFontHeight(),
                     1677721600);
         }
+
         if (!isPostProcessing) {
-            this.drawText(batch, text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), this.color.getColor((int) (-y * 20)).getRGB());
+            final Color textColor = ColorUtils.withAlpha(this.color.getColor((int) (-y * 20)), alpha);
+            this.drawText(batch, text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), textColor.getRGB());
         }
     }
 
@@ -272,15 +278,15 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             if (showModule) {
                 if (yAnimation >= 1) {
                     if (xAnimation < 1)
-                        xAnimation += 0.1f;
+                        xAnimation += 0.05f;
                 } else {
-                    yAnimation += 0.1f;
+                    yAnimation += 0.05f;
                 }
             } else {
                 if (xAnimation > 0) {
-                    xAnimation -= 0.1f;
+                    xAnimation -= 0.05f;
                 } else if (yAnimation > 0) {
-                    yAnimation -= 0.1f;
+                    yAnimation -= 0.05f;
 
                     if (yAnimation <= 0) {
                         animationStates.remove(activatedModule);
