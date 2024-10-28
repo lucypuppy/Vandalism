@@ -194,3 +194,4 @@ accessible field net/minecraft/client/network/ClientPlayerEntity ticksToNextAuto
 mutable field net/minecraft/client/network/ClientPlayerEntity autoJumpEnabled Z
 mutable field net/minecraft/client/network/ClientPlayerEntity ticksToNextAutojump I
 accessible field net/minecraft/client/sound/SoundManager soundSystem Lnet/minecraft/client/sound/SoundSystem;
+accessible method net/minecraft/client/gui/DrawContext tryDraw ()V
