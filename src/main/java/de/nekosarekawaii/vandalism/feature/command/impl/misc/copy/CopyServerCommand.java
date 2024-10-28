@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.Command;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
@@ -31,38 +30,37 @@ import net.minecraft.util.Pair;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class CopyServerIPCommand extends Command {
+public class CopyServerCommand extends Command {
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
-    public CopyServerIPCommand() {
+    public CopyServerCommand() {
         super(
-                "Copies the ip address of the server your are currently connected to.",
+                "Copies the data of the ip address from the server your are currently connected to.",
                 Category.MISC,
-                "copyserverip",
-                "serveripcopy",
-                "copyserveraddress",
-                "serveraddresscopy",
-                "copyip",
-                "ipcopy"
+                "copyserver",
+                "servercopy",
+                "copyip"
         );
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.executes(context -> {
-            this.copyAddress(false);
-            return SINGLE_SUCCESS;
-        });
-        builder.then(argument("resolved", BoolArgumentType.bool())
-                .executes(context -> {
-                    this.copyAddress(BoolArgumentType.getBool(context, "resolved"));
-                    return SINGLE_SUCCESS;
-                })
-        );
+        for (final Mode mode : Mode.values()) {
+            final String name = mode.name().toLowerCase();
+            builder.then(literal(name).executes(context -> {
+                switch (mode) {
+                    case PORT -> this.copyServer(false, false);
+                    case FULL_RESOLVED -> this.copyServer(true, true);
+                    case PORT_RESOLVED -> this.copyServer(true, false);
+                    default -> this.copyServer(false, true);
+                }
+                return SINGLE_SUCCESS;
+            }));
+        }
     }
 
-    private void copyAddress(final boolean resolved) {
+    private void copyServer(final boolean resolved, final boolean full) {
         if (mc.isInSingleplayer()) {
             ChatUtil.errorChatMessage("You are in singleplayer.");
             return;
@@ -72,23 +70,28 @@ public class CopyServerIPCommand extends Command {
             if (networkHandler != null) {
                 EXECUTOR.submit(() -> {
                     final Pair<String, Integer> address = ServerUtil.resolveServerAddress(networkHandler.getConnection().getAddress().toString());
-                    mc.keyboard.setClipboard(address.getLeft() + ":" + address.getRight());
+                    mc.keyboard.setClipboard((full ? address.getLeft() + ":" : "") + address.getRight());
                 });
-            }
-            else {
+            } else {
                 ChatUtil.errorChatMessage("You are not connected to a server.");
             }
-        }
-        else {
+        } else {
             final ServerInfo serverInfo = mc.getCurrentServerEntry();
             if (serverInfo != null) {
-                mc.keyboard.setClipboard(serverInfo.address);
-            }
-            else {
+                final Pair<String, Integer> address = ServerUtil.splitServerAddress(serverInfo.address);
+                mc.keyboard.setClipboard((full ? address.getLeft() + ":" : "") + address.getRight());
+            } else {
                 ChatUtil.errorChatMessage("You are not connected to a server.");
             }
         }
-        ChatUtil.infoChatMessage("Server IP copied into the clipboard.");
+        ChatUtil.infoChatMessage("Server IP Data copied into the clipboard.");
+    }
+
+    private enum Mode {
+        FULL,
+        PORT,
+        FULL_RESOLVED,
+        PORT_RESOLVED
     }
 
 }

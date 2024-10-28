@@ -72,7 +72,7 @@ public class CommandManager extends Storage<Command> implements MinecraftWrapper
                 new PluginsCommand(),
                 new GiveCommand(),
                 new CommandBlockStateCommand(),
-                new CopyServerIPCommand(),
+                new CopyServerCommand(),
                 new CopyServerBrandCommand(),
                 new CopyServerVersionCommand(),
                 new CopyPositionCommand(),
