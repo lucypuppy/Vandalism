@@ -56,10 +56,10 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     @Override
     public void init() {
         this.add(
+                this.hotbarHUDElement = new HotbarHUDElement(),
                 this.watermarkHUDElement = new WatermarkHUDElement(this.logoFolder),
                 this.infoHUDElement = new InfoHUDElement(),
-                this.moduleListHUDElement = new ModuleListHUDElement(),
-                this.hotbarHUDElement = new HotbarHUDElement()
+                this.moduleListHUDElement = new ModuleListHUDElement()
         );
     }
 

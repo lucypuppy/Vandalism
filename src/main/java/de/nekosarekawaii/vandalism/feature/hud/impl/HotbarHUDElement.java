@@ -34,9 +34,13 @@ import de.nekosarekawaii.vandalism.util.render.gl.shader.GlobalUniforms;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentX;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentY;
+import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.world.GameMode;
 
 import java.awt.*;
 
@@ -83,8 +87,78 @@ public class HotbarHUDElement extends HUDElement {
         elementX += this.xOffset.getValue();
         elementY += this.yOffset.getValue();
 
+        if (mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR)
+            return;
+
         renderBackgroundRect(context, 0, elementY - this.height, mc.getWindow().getScaledWidth(), elementY);
         renderItems(context, elementX - 70, elementY);
+
+        if (mc.interactionManager.getCurrentGameMode() != GameMode.CREATIVE)
+            renderBars(context, elementX - 70, elementY);
+
+        final int experienceLevel = mc.player.experienceLevel;
+        if (mc.player.getJumpingMount() == null && mc.interactionManager.hasExperienceBar() && experienceLevel > 0) {
+            final String experienceString = experienceLevel + "";
+            drawText(experienceString, context, elementX + 22.5f - getTextWidth(experienceString) / 1.5f, elementY - 34, true, Color.GREEN.getRGB());
+        }
+    }
+
+    private void renderBars(final DrawContext context, final int x, int y) {
+        // XPBar or JumpBar
+        if (mc.player.getJumpingMount() != null) {
+            RenderUtil.fillWidth(context, x, y - 24, 180, 2, Integer.MIN_VALUE);
+            RenderUtil.fillWidth(context, x, y - 24, 180 * mc.player.getMountJumpStrength(), 2, ColorUtils.withAlpha(Color.GREEN, 150).getRGB());
+        } else {
+            RenderUtil.fillWidth(context, x, y - 24, 180, 2, Integer.MIN_VALUE);
+            RenderUtil.fillWidth(context, x, y - 24, 180 * mc.player.experienceProgress, 2, ColorUtils.withAlpha(Color.GREEN, 150).getRGB());
+        }
+
+        y -= 6;
+
+        // HealthBar
+        float healthPercentage = mc.player.getHealth() / mc.player.getMaxHealth();
+        RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
+        RenderUtil.fillWidth(context, x, y - 24, 80 * healthPercentage, 4, 0xffff2b63);
+
+        // FoodBar or Horse Health
+        if (mc.player.getVehicle() != null) {
+            if (mc.player.getVehicle() instanceof final LivingEntity livingEntity) {
+                final float foodPercentage = livingEntity.getHealth() / livingEntity.getMaxHealth();
+                RenderUtil.fillWidth(context, x + 100, y - 24, 80, 4, Integer.MIN_VALUE);
+                RenderUtil.fillWidth(context, x + 100, y - 24, 80 * foodPercentage, 4, 0xfffc3566);
+            }
+        } else {
+            final float foodPercentage = mc.player.getHungerManager().getFoodLevel() / 20.0f;
+            RenderUtil.fillWidth(context, x + 100, y - 24, 80, 4, Integer.MIN_VALUE);
+            RenderUtil.fillWidth(context, x + 100, y - 24, 80 * foodPercentage, 4, 0xffffd749);
+        }
+
+
+        // Absorption Bar
+        if (mc.player.getAbsorptionAmount() > 0) {
+            final float absorptionPercentage = mc.player.getAbsorptionAmount() / mc.player.getMaxAbsorption();
+            y -= 6;
+            RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
+            RenderUtil.fillWidth(context, x, y - 24, 80 * absorptionPercentage, 4, Color.YELLOW.getRGB());
+        }
+
+        y -= 6;
+
+        // AirBar
+        final float maxAir = mc.player.getMaxAir();
+        final float air = Math.min(Math.max(mc.player.getAir(), 0), maxAir);
+        if (mc.player.isSubmergedIn(FluidTags.WATER) || air < maxAir) {
+            final float airPercentage = air / maxAir;
+            RenderUtil.fillWidth(context, x + 100, y - 24, 80, 4, Integer.MIN_VALUE);
+            RenderUtil.fillWidth(context, x + 100, y - 24, 80 * airPercentage, 4, 0xff7cffff);
+        }
+
+        // ArmorBar
+        final float armorPercentage = mc.player.getArmor() / 20.0f;
+        if (armorPercentage > 0) {
+            RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
+            RenderUtil.fillWidth(context, x, y - 24, 80 * armorPercentage, 4, 0xFFa3a3a3);
+        }
     }
 
     private void renderItems(final DrawContext context, final int x, final int y) {
@@ -135,7 +209,7 @@ public class HotbarHUDElement extends HUDElement {
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.disableDepthTest();
         GlobalUniforms.setBackgroundUniforms(backgroundShader);
-        backgroundShader.uniform("alpha").set(0.7f);
+        backgroundShader.uniform("alpha").set(backgroundColor.getColor().getAlpha() / 255.0f);
         backgroundShader.uniform("color").set(backgroundColor.getColor(), false);
         RenderUtil.drawShaderRect(x, y + 0.5f, x2, y2);
         RenderSystem.disableBlend();
