@@ -133,11 +133,16 @@ public class HotbarHUDElement extends HUDElement {
             RenderUtil.fillWidth(context, x + 100, y - 24, 80 * foodPercentage, 4, 0xffffd749);
         }
 
+        y -= 6;
+
+        // Saturation Bar
+        final float saturationPercentage = mc.player.getHungerManager().getSaturationLevel() / 20.0f;
+        RenderUtil.fillWidth(context, x + 100, y - 24, 80, 4, Integer.MIN_VALUE);
+        RenderUtil.fillWidth(context, x + 100, y - 24, 80 * saturationPercentage, 4, 0xffffd749);
 
         // Absorption Bar
         if (mc.player.getAbsorptionAmount() > 0) {
             final float absorptionPercentage = mc.player.getAbsorptionAmount() / mc.player.getMaxAbsorption();
-            y -= 6;
             RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
             RenderUtil.fillWidth(context, x, y - 24, 80 * absorptionPercentage, 4, Color.YELLOW.getRGB());
         }
