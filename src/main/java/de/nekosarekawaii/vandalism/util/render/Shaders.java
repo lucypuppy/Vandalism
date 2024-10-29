@@ -86,6 +86,7 @@ public class Shaders {
     @Getter
     private static ShaderProgram loadingScreenBackgroundShader;
     @Getter private static ShaderProgram ingameGuiBackgroundShader;
+    @Getter private static ShaderProgram hotbarBackgroundShader;
 
     // Font
     @Getter private static ShaderProgram fontShader;
@@ -113,6 +114,7 @@ public class Shaders {
         shaders.add(backgroundShader = create("background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/default")));
         shaders.add(loadingScreenBackgroundShader = create("loading_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/loading_screen")));
         shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui")));
+        shaders.add(hotbarBackgroundShader = create("hotbar_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/hotbar_background")));
 
         for (Field field : Shaders.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) continue;
