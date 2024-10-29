@@ -68,6 +68,7 @@ public class HotbarHUDElement extends HUDElement {
 
     @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
+        if (mc.interactionManager == null || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) return;
         this.width = mc.getWindow().getScaledWidth();
         this.height = 22;
 
@@ -86,9 +87,6 @@ public class HotbarHUDElement extends HUDElement {
 
         elementX += this.xOffset.getValue();
         elementY += this.yOffset.getValue();
-
-        if (mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR)
-            return;
 
         renderBackgroundRect(context, 0, elementY - this.height, mc.getWindow().getScaledWidth(), elementY);
         renderItems(context, elementX - 70, elementY);
