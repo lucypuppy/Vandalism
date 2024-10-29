@@ -53,6 +53,10 @@ public class RenderUtil implements MinecraftWrapper {
         fill(context, RenderLayer.getGui(), x1, y1, x2, y2, 0, color);
     }
 
+    public static void fillWidth(DrawContext context, float x, float y, float width, float height, int color) {
+        fill(context, RenderLayer.getGui(), x, y, x + width, y + height, 0, color);
+    }
+
     public static void drawShaderRect(float x, float y, float x2, float y2) {
         final float guiWidth = mc.getWindow().getScaledWidth();
         final float guiHeight = mc.getWindow().getScaledHeight();
