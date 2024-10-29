@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.hud.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.EasingTypeValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -27,6 +28,7 @@ import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.RenderUtil;
+import de.nekosarekawaii.vandalism.util.interfaces.Easing;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
@@ -121,6 +123,17 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             4.0f
     ).visibleCondition(this.glowOutline::getValue);
 
+    public final EasingTypeValue animationIn = new EasingTypeValue(this, "Zoom-in Animation", "The easing animation to use when zooming in", Easing.LINEAR);
+    public final EasingTypeValue animationOut = new EasingTypeValue(this, "Zoom-out Animation", "The easing animation to use when zooming out", Easing.LINEAR);
+    private final FloatValue animationSpeed = new FloatValue(
+            this,
+            "Animation Speed",
+            "Speed of the modlist sliding animation.",
+            1f,
+            0.1f,
+            2.0f
+    );
+
     public ModuleListHUDElement() {
         super("Module List", true, AlignmentX.RIGHT, AlignmentY.TOP);
         this.alignmentX.onValueChange((oldValue, newValue) -> this.sort = true);
@@ -137,12 +150,12 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         this.sort();
         if (this.glowOutline.getValue()) {
-            this.draw(context, true);
+            this.draw(context, delta, true);
         }
-        this.draw(context, false);
+        this.draw(context, delta, false);
     }
 
-    private void draw(final DrawContext context, final boolean isPostProcessing) {
+    private void draw(final DrawContext context, final float delta, final boolean isPostProcessing) {
         try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
             final float outlineWidth = this.glowOutlineWidth.getValue();
             final float outlineAccuracy = this.glowOutlineAccuracy.getValue();
@@ -157,7 +170,9 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             this.width = 0;
             for (final String activatedModule : this.activatedModules) {
                 final AnimationState animationState = this.animationStates.get(activatedModule);
-                animationState.updateAnimation(activatedModule);
+
+                if (!isPostProcessing)
+                    animationState.updateAnimation(activatedModule, delta);
 
                 this.getTextSize(activatedModule, sizeVec);
                 final float textWidth = (int) sizeVec.x * animationState.xAnimation;
@@ -274,21 +289,42 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         public float xAnimation;
         public boolean showModule;
 
-        public void updateAnimation(final String activatedModule) { //TOdo replace with easing some time
+        private float xProgress = 0f;
+        private float yProgress = 0f;
+
+        public void updateAnimation(final String activatedModule, final float delta) {
+            final float duration = 1.0f; // Duration in seconds for the easing function
+            final float startValue = 0f; // Starting animation value
+            final float endValue = 1.0f; // Ending animation value
+            final float increment = (animationSpeed.getValue() / 10f); // Animation increment per frame (adjust as needed)
+
             if (showModule) {
-                if (yAnimation >= 1) {
-                    if (xAnimation < 1)
-                        xAnimation += 0.05f;
+                // yAnimation is animated first until it reaches the end value
+                if (yAnimation < 1) {
+                    yProgress += increment / duration; // Increase progress
+                    yProgress = Math.min(yProgress, 1); // Clamp progress to max 1
+                    yAnimation = animationIn.getValue().easePercent(yProgress, startValue, endValue, duration);
                 } else {
-                    yAnimation += 0.05f;
+                    // Once yAnimation is complete, start animating xAnimation
+                    if (xAnimation < 1) {
+                        xProgress += increment / duration; // Increase progress
+                        xProgress = Math.min(xProgress, 1); // Clamp progress to max 1
+                        xAnimation = animationIn.getValue().easePercent(xProgress, startValue, endValue, duration);
+                    }
                 }
             } else {
+                // Reverse animation for xAnimation first
                 if (xAnimation > 0) {
-                    xAnimation -= 0.05f;
+                    xProgress -= increment / duration; // Decrease progress
+                    xProgress = Math.max(xProgress, 0); // Clamp progress to min 0
+                    xAnimation = animationOut.getValue().easePercent(xProgress, startValue, endValue, duration);
                 } else if (yAnimation > 0) {
-                    yAnimation -= 0.05f;
+                    // Once xAnimation is reversed, start reversing yAnimation
+                    yProgress -= increment / duration; // Decrease progress
+                    yProgress = Math.max(yProgress, 0); // Clamp progress to min 0
+                    yAnimation = animationOut.getValue().easePercent(yProgress, startValue, endValue, duration);
 
-                    if (yAnimation <= 0) {
+                    if (yProgress <= 0) { // Reset and remove the module when the animation is completev
                         animationStates.remove(activatedModule);
                         activatedModules.remove(activatedModule);
                     }
