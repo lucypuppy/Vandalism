@@ -36,7 +36,6 @@ import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPointModeValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.RandomizerModeValue;
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.NoneRandomizer;
-import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.StringUtils;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
@@ -320,7 +319,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         }
 
         final double pointPlayerDiff = Math.abs((mc.player.getY() + mc.player.getEyeHeight(mc.player.getPose())) - this.hitPoint.getY());
-        ChatUtil.infoChatMessage("Point Player Diff: " + pointPlayerDiff);
+        //ChatUtil.infoChatMessage("Point Player Diff: " + pointPlayerDiff);
         if (this.reuseOldPoint.getValue() && pointPlayerDiff > 0.5) {
             this.hitPoint = newPoint;
         }
