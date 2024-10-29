@@ -195,3 +195,4 @@ mutable field net/minecraft/client/network/ClientPlayerEntity autoJumpEnabled Z
 mutable field net/minecraft/client/network/ClientPlayerEntity ticksToNextAutojump I
 accessible field net/minecraft/client/sound/SoundManager soundSystem Lnet/minecraft/client/sound/SoundSystem;
 accessible method net/minecraft/client/gui/DrawContext tryDraw ()V
+accessible method net/minecraft/client/gui/hud/InGameHud renderHotbarItem (Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V

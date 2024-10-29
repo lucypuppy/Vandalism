@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.hud.config.HUDConfig;
 import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
+import de.nekosarekawaii.vandalism.feature.hud.impl.HotbarHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.InfoHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.ModuleListHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
@@ -39,6 +40,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     public WatermarkHUDElement watermarkHUDElement;
     public ModuleListHUDElement moduleListHUDElement;
     public InfoHUDElement infoHUDElement;
+    public HotbarHUDElement hotbarHUDElement;
 
     private final File logoFolder;
 
@@ -56,7 +58,8 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
         this.add(
                 this.watermarkHUDElement = new WatermarkHUDElement(this.logoFolder),
                 this.infoHUDElement = new InfoHUDElement(),
-                this.moduleListHUDElement = new ModuleListHUDElement()
+                this.moduleListHUDElement = new ModuleListHUDElement(),
+                this.hotbarHUDElement = new HotbarHUDElement()
         );
     }
 

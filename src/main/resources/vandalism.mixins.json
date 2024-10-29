@@ -84,6 +84,7 @@
     "integration.MixinConnectScreen",
     "integration.MixinDrawContext",
     "integration.MixinEntity",
+    "integration.MixinGuiIngame",
     "integration.MixinHeldItemRenderer",
     "integration.MixinIcons",
     "integration.MixinLivingEntity",

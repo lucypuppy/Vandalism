@@ -18,12 +18,12 @@
 
 package de.nekosarekawaii.vandalism.util;
 
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.*;
 import org.joml.Matrix4f;
 
-public class RenderUtil {
+public class RenderUtil implements MinecraftWrapper {
 
     public static void fill(DrawContext context, RenderLayer layer, float x1, float y1, float x2, float y2, int z, int color) {
         final Matrix4f matrix4f = context.getMatrices().peek().getPositionMatrix();
@@ -51,6 +51,22 @@ public class RenderUtil {
 
     public static void fill(DrawContext context, float x1, float y1, float x2, float y2, int color) {
         fill(context, RenderLayer.getGui(), x1, y1, x2, y2, 0, color);
+    }
+
+    public static void drawShaderRect(float x, float y, float x2, float y2) {
+        final float guiWidth = mc.getWindow().getScaledWidth();
+        final float guiHeight = mc.getWindow().getScaledHeight();
+        final float rectLeft = (x / guiWidth) * 2.0f - 1.0f;
+        final float rectRight = (x2 / guiWidth) * 2.0f - 1.0f;
+        final float rectTop = 1.0f - (y / guiHeight) * 2.0f;
+        final float rectBottom = 1.0f - (y2 / guiHeight) * 2.0f;
+
+        final BufferBuilder bb = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        bb.vertex(rectLeft, rectBottom, 0.0f);
+        bb.vertex(rectRight, rectBottom, 0.0f);
+        bb.vertex(rectRight, rectTop, 0.0f);
+        bb.vertex(rectLeft, rectTop, 0.0f);
+        BufferRenderer.draw(bb.end());
     }
 
 }
