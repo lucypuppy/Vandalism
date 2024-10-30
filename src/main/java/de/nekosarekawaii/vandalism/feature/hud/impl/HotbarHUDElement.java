@@ -47,20 +47,37 @@ import java.awt.*;
 public class HotbarHUDElement extends HUDElement {
 
     private final BooleanValue blurEnabled = new BooleanValue(this, "Blur", "Enable / Disable hotbar blur", true);
+    private final ColorValue backgroundColor = new ColorValue(this, "Background Color", "Color of the hotbar background", new Color(168, 10, 225, 150));
 
-    public final EasingTypeValue selectItemAnimatino = new EasingTypeValue(this, "Select item animation", "hdf", Easing.LINEAR);
-    private final FloatValue animationSpeed = new FloatValue(
+    public final EasingTypeValue selectItemAnimatino = new EasingTypeValue(this, "Select item animation", "Hotbar select item animation", Easing.LINEAR);
+    private final FloatValue hotbarAnimationSpeed = new FloatValue(
             this,
-            "Animation Speed",
-            "Speed of the modlist sliding animation.",
+            "Select item Animation Speed",
+            "Speed of the hotbar select item animation.",
             1f,
             0.1f,
             2.0f
     );
 
-    private final ColorValue backgroundColor = new ColorValue(this, "Background Color", "Color of the hotbar background", new Color(168, 10, 225, 150));
+    public final EasingTypeValue barAnimation = new EasingTypeValue(this, "Bar animation", "Select the Bar animation", Easing.LINEAR);
+    private final FloatValue barAnimationSpeed = new FloatValue(
+            this,
+            "Bar Animation Speed",
+            "Speed of the bar animations.",
+            0.3f,
+            0.1f,
+            2.0f
+    );
+
+    private final BooleanValue showBarsBelow = new BooleanValue(this, "Show Bars Below", "Show the bars below the hotbar", false);
 
     private final Animator hotbarSlotAnimation = new Animator();
+    private final Animator xpBarAnimation = new Animator();
+    private final Animator healthBarAnimation = new Animator();
+    private final Animator foodBarAnimation = new Animator();
+    private final Animator saturationBarAnimation = new Animator();
+    private final Animator absorbtionBarAnimation = new Animator();
+    private final Animator armorBarAnimation = new Animator();
 
     public HotbarHUDElement() {
         super("Hotbar", true, AlignmentX.MIDDLE, AlignmentY.BOTTOM);
@@ -87,10 +104,14 @@ public class HotbarHUDElement extends HUDElement {
         elementX += this.xOffset.getValue();
         elementY += this.yOffset.getValue();
 
-        if (mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR)
+        if (mc.player != null && mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR)
             return;
 
         renderBackgroundRect(context, 0, elementY - this.height, mc.getWindow().getScaledWidth(), elementY);
+
+        if (mc.player == null)
+            return;
+
         renderItems(context, elementX - 70, elementY);
 
         if (mc.interactionManager.getCurrentGameMode() != GameMode.CREATIVE)
@@ -104,50 +125,61 @@ public class HotbarHUDElement extends HUDElement {
     }
 
     private void renderBars(final DrawContext context, final int x, int y) {
+        final boolean below = this.showBarsBelow.getValue();
+
+        if (below) {
+            y += 24;
+        }
+
         // XPBar or JumpBar
         if (mc.player.getJumpingMount() != null) {
             RenderUtil.fillWidth(context, x, y - 24, 180, 2, Integer.MIN_VALUE);
             RenderUtil.fillWidth(context, x, y - 24, 180 * mc.player.getMountJumpStrength(), 2, ColorUtils.withAlpha(Color.GREEN, 150).getRGB());
         } else {
+            this.xpBarAnimation.ease(this.barAnimation.getValue(), mc.player.experienceProgress, this.barAnimationSpeed.getValue());
             RenderUtil.fillWidth(context, x, y - 24, 180, 2, Integer.MIN_VALUE);
-            RenderUtil.fillWidth(context, x, y - 24, 180 * mc.player.experienceProgress, 2, ColorUtils.withAlpha(Color.GREEN, 150).getRGB());
+            RenderUtil.fillWidth(context, x, y - 24, 180 * this.xpBarAnimation.getCurrentX(), 2, ColorUtils.withAlpha(Color.GREEN, 150).getRGB());
         }
 
-        y -= 6;
+        y -= below ? -4 : 6;
 
         // HealthBar
         float healthPercentage = mc.player.getHealth() / mc.player.getMaxHealth();
+        this.healthBarAnimation.ease(this.barAnimation.getValue(), healthPercentage, this.barAnimationSpeed.getValue());
         RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
-        RenderUtil.fillWidth(context, x, y - 24, 80 * healthPercentage, 4, 0xffff2b63);
+        RenderUtil.fillWidth(context, x, y - 24, 80 * this.healthBarAnimation.getCurrentX(), 4, 0xffff2b63);
 
         // FoodBar or Horse Health
         if (mc.player.getVehicle() != null) {
             if (mc.player.getVehicle() instanceof final LivingEntity livingEntity) {
-                final float foodPercentage = livingEntity.getHealth() / livingEntity.getMaxHealth();
+                final float vehicleHealthPercentage = livingEntity.getHealth() / livingEntity.getMaxHealth();
                 RenderUtil.fillWidth(context, x + 100, y - 24, 80, 4, Integer.MIN_VALUE);
-                RenderUtil.fillWidth(context, x + 100, y - 24, 80 * foodPercentage, 4, 0xfffc3566);
+                RenderUtil.fillWidth(context, x + 100, y - 24, 80 * vehicleHealthPercentage, 4, 0xfffc3566);
             }
         } else {
             final float foodPercentage = mc.player.getHungerManager().getFoodLevel() / 20.0f;
+            this.foodBarAnimation.ease(this.barAnimation.getValue(), foodPercentage, this.barAnimationSpeed.getValue());
             RenderUtil.fillWidth(context, x + 100, y - 24, 80, 4, Integer.MIN_VALUE);
-            RenderUtil.fillWidth(context, x + 100, y - 24, 80 * foodPercentage, 4, 0xffffd749);
+            RenderUtil.fillWidth(context, x + 100, y - 24, 80 * this.foodBarAnimation.getCurrentX(), 4, 0xffffd749);
         }
 
-        y -= 6;
+        y -= below ? -6 : 6;
 
         // Saturation Bar
         final float saturationPercentage = mc.player.getHungerManager().getSaturationLevel() / 20.0f;
+        this.saturationBarAnimation.ease(this.barAnimation.getValue(), saturationPercentage, this.barAnimationSpeed.getValue());
         RenderUtil.fillWidth(context, x + 100, y - 24, 80, 4, Integer.MIN_VALUE);
-        RenderUtil.fillWidth(context, x + 100, y - 24, 80 * saturationPercentage, 4, 0xffffd749);
+        RenderUtil.fillWidth(context, x + 100, y - 24, 80 * this.saturationBarAnimation.getCurrentX(), 4, 0xffffd749);
 
         // Absorption Bar
         if (mc.player.getAbsorptionAmount() > 0) {
             final float absorptionPercentage = mc.player.getAbsorptionAmount() / mc.player.getMaxAbsorption();
+            this.absorbtionBarAnimation.ease(this.barAnimation.getValue(), absorptionPercentage, this.barAnimationSpeed.getValue());
             RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
-            RenderUtil.fillWidth(context, x, y - 24, 80 * absorptionPercentage, 4, Color.YELLOW.getRGB());
+            RenderUtil.fillWidth(context, x, y - 24, 80 * this.armorBarAnimation.getCurrentX(), 4, Color.YELLOW.getRGB());
         }
 
-        y -= 6;
+        y -= below ? -6 : 6;
 
         // AirBar
         final float maxAir = mc.player.getMaxAir();
@@ -161,8 +193,9 @@ public class HotbarHUDElement extends HUDElement {
         // ArmorBar
         final float armorPercentage = mc.player.getArmor() / 20.0f;
         if (armorPercentage > 0) {
+            this.armorBarAnimation.ease(this.barAnimation.getValue(), armorPercentage, this.barAnimationSpeed.getValue());
             RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
-            RenderUtil.fillWidth(context, x, y - 24, 80 * armorPercentage, 4, 0xFFa3a3a3);
+            RenderUtil.fillWidth(context, x, y - 24, 80 * this.armorBarAnimation.getCurrentX(), 4, 0xFFa3a3a3);
         }
     }
 
@@ -171,7 +204,7 @@ public class HotbarHUDElement extends HUDElement {
             RenderUtil.fill(context, x, y - 22, x + 180, y, new Color(0, 0, 0, 50).getRGB());
 
             final int selectedX = x + playerEntity.getInventory().selectedSlot * 20;
-            this.hotbarSlotAnimation.ease(this.selectItemAnimatino.getValue(), selectedX, this.animationSpeed.getValue());
+            this.hotbarSlotAnimation.ease(this.selectItemAnimatino.getValue(), selectedX, this.hotbarAnimationSpeed.getValue());
             RenderUtil.fill(context, this.hotbarSlotAnimation.getCurrentX(), y - 22, this.hotbarSlotAnimation.getCurrentX() + 20, y, 0x80FFFFFF);
 
             for (int slot = 0; slot < 9; ++slot) {
