@@ -192,6 +192,10 @@ public class HotbarHUDElement extends HUDElement {
             RenderUtil.fillWidth(context, x + 100, y - 24, 80 * airPercentage, 4, 0xff7cffff);
         }
 
+        if (mc.player.getAbsorptionAmount() == 0) {
+            y -= below ? 6 : -6;
+        }
+
         // ArmorBar
         final float armorPercentage = mc.player.getArmor() / 20.0f;
         if (armorPercentage > 0) {
