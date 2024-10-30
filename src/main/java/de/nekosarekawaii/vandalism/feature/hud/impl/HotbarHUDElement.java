@@ -119,8 +119,10 @@ public class HotbarHUDElement extends HUDElement {
 
         final int experienceLevel = mc.player.experienceLevel;
         if (mc.player.getJumpingMount() == null && mc.interactionManager.hasExperienceBar() && experienceLevel > 0) {
+            elementY -= this.showBarsBelow.getValue() ? -2 : 34;
+
             final String experienceString = experienceLevel + "";
-            drawText(experienceString, context, elementX + 22.5f - getTextWidth(experienceString) / 1.5f, elementY - 34, true, Color.GREEN.getRGB());
+            drawText(experienceString, context, elementX + 22.5f - getTextWidth(experienceString) / 1.5f, elementY, true, Color.GREEN.getRGB());
         }
     }
 
