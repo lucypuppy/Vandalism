@@ -425,7 +425,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
 
     @Override
     public void onRender3D(float tickDelta, MatrixStack matrixStack) {
-        if (this.visualizeHitPoint.getValue() && mc.player != null && mc.world != null && this.hitPoint != null) {
+        if (this.visualizeHitPoint.getValue() && mc.player != null && mc.world != null && this.target != null && Vandalism.getInstance().getRotationManager().getClientRotation() != null) {
             final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
             final int color = Color.RED.getRGB();
             final float red = ((color >> 16) & 0xff) / 255f;
@@ -435,6 +435,11 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             final Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
             matrixStack.push();
             matrixStack.translate(vec.x, vec.y, vec.z);
+
+            PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
+            final Vec3d direction = Vec3d.fromPolar(rotation.getPitch(), rotation.getYaw());
+            final double distance = mc.player.distanceTo(this.target);
+            final Vec3d hitPoint = mc.player.getEyePos().add(direction.multiply(distance));
 
             DebugRenderer.drawBox(
                     matrixStack,
