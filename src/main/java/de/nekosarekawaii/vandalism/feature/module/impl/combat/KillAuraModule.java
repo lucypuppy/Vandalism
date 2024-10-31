@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
@@ -57,6 +58,7 @@ import net.minecraft.scoreboard.ScoreboardEntry;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Pair;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
@@ -201,6 +203,27 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             "Hit Point",
             "The mode of the hit point."
     );
+
+    private final BooleanValue delayOnDirectionChange = new BooleanValue(
+            this.rotationGroup,
+            "Delay On Direction Change",
+            "Whether the rotation should be delayed on direction change.",
+            false
+    );
+
+    private final LongValue minDelayOnDirectionChange = new LongValue(
+            this.rotationGroup,
+            "Min Delay On Direction Change",
+            "The minimal delay on direction change.",
+            50L, 0L, 1000L
+    ).visibleCondition(this.delayOnDirectionChange::getValue);
+
+    private final LongValue maxDelayOnDirectionChange = new LongValue(
+            this.rotationGroup,
+            "Max Delay On Direction Change",
+            "The maximal delay on direction change.",
+            150L, 0L, 1000L
+    ).visibleCondition(this.delayOnDirectionChange::getValue);
 
     private final ValueGroup randomisation = new ValueGroup(
             this.rotationGroup,
@@ -352,31 +375,27 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.hitPoint, RotationPriority.HIGH);
         final PrioritizedRotation preRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
 
-//        if (preRotation != null) {
-//            final float yawDifference = MathHelper.wrapDegrees(rotation.getYaw()) - MathHelper.wrapDegrees(preRotation.getYaw());
-//            final float threshold = 5.0f;
-//
-//            int direction = 0;
-//            if (yawDifference > threshold) {
-//                direction = 1;
-//            } else if (yawDifference < -threshold) {
-//                direction = -1;
-//            }
-//
-//            if (direction != 0) {
-//                final boolean changedDiection = direction != this.currentDirection;
-//                this.currentDirection = direction;
-//
-//                if (changedDiection && this.rotationDelay == 0L) {
-//                    this.rotationDelay = RandomUtils.randomLong(20L, 100L);
-//                    this.rotationTimer.reset();
-//                    ChatUtil.infoChatMessage("Direction changed! (Rotation timer reset! " + this.rotationDelay + ")");
-//                }
-//            }
-//        }
+        if (preRotation != null && delayOnDirectionChange.getValue()) {
+            final float yawDifference = MathHelper.wrapDegrees(rotation.getYaw()) - MathHelper.wrapDegrees(preRotation.getYaw());
+            final float threshold = 5.0f;
 
-        // Update the current reaction time
-//        updateReactionTime(rotation);
+            int direction = 0;
+            if (yawDifference > threshold) {
+                direction = 1;
+            } else if (yawDifference < -threshold) {
+                direction = -1;
+            }
+
+            if (direction != 0) {
+                final boolean changedDiection = direction != this.currentDirection;
+                this.currentDirection = direction;
+
+                if (changedDiection && this.rotationDelay == 0L) {
+                    this.rotationDelay = RandomUtils.randomLong(minDelayOnDirectionChange.getValue(), maxDelayOnDirectionChange.getValue());
+                    this.rotationTimer.reset();
+                }
+            }
+        }
 
         if (!this.useRotations.getValue()) {
             return;
@@ -386,13 +405,14 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         if (this.rotationDelay == 0L || this.rotationTimer.hasReached(this.rotationDelay)) {
             Vandalism.getInstance().getRotationManager().setRotation(rotation, this.movementFix.getValue(), (targetRotation, serverRotation, deltaTime, hasClientRotation) ->
                     RotationUtil.rotateMouse(targetRotation, serverRotation, this.getRotationSpeed(), deltaTime, hasClientRotation));
-            this.rotationDelay = 0L;
-        }
 
-        final PrioritizedRotation currentRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
-        if (currentRotation != null && this.clientRotation.getValue()) {
-            mc.player.setYaw(currentRotation.getYaw());
-            mc.player.setPitch(currentRotation.getPitch());
+            final PrioritizedRotation currentRotation = Vandalism.getInstance().getRotationManager().getClientRotation();
+            if (currentRotation != null && this.clientRotation.getValue()) {
+                mc.player.setYaw(currentRotation.getYaw());
+                mc.player.setPitch(currentRotation.getPitch());
+            }
+
+            this.rotationDelay = 0L;
         }
     }
 
@@ -405,7 +425,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
 
     @Override
     public void onRender3D(float tickDelta, MatrixStack matrixStack) {
-        if (this.visualizeHitPoint.getValue() && mc.player != null && mc.world != null && this.hitPoint != null) {
+        if (this.visualizeHitPoint.getValue() && mc.player != null && mc.world != null && this.target != null && Vandalism.getInstance().getRotationManager().getClientRotation() != null) {
             final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
             final int color = Color.RED.getRGB();
             final float red = ((color >> 16) & 0xff) / 255f;
@@ -415,6 +435,11 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
             final Vec3d vec = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().negate();
             matrixStack.push();
             matrixStack.translate(vec.x, vec.y, vec.z);
+
+            PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
+            final Vec3d direction = Vec3d.fromPolar(rotation.getPitch(), rotation.getYaw());
+            final double distance = mc.player.distanceTo(this.target);
+            final Vec3d hitPoint = mc.player.getEyePos().add(direction.multiply(distance));
 
             DebugRenderer.drawBox(
                     matrixStack,
