@@ -26,6 +26,9 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
@@ -77,22 +80,52 @@ public class InventoryUtil implements MinecraftWrapper {
 
     public static boolean isBestArmor(final ItemStack itemStack) {
         if (mc.currentScreen instanceof InventoryScreen screen) {
-            if (itemStack.getItem() instanceof ArmorItem) {
+            if (itemStack.getItem() instanceof final ArmorItem oldArmorItem) {
+
                 for (int i = 5; i <= MinecraftConstants.LAST_SLOT_IN_HOTBAR; i++) {
-                    ItemStack stack = screen.getScreenHandler().getSlot(i).getStack();
-                    if (!(stack.getItem() instanceof ArmorItem itemToCheck)) continue;
-                    final ArmorItem currentItem = (ArmorItem) itemStack.getItem();
-                    if (currentItem.getType() == itemToCheck.getType()) {
-                        if (currentItem.getProtection() < itemToCheck.getProtection() || currentItem.getToughness() < itemToCheck.getToughness()) {
-                            return false;
-                        }
+                    final ItemStack stack = screen.getScreenHandler().getSlot(i).getStack();
+
+                    if (stack.isEmpty() || !(stack.getItem() instanceof final ArmorItem armorItem) || armorItem.getType() != oldArmorItem.getType()) {
+                        continue;
+                    }
+
+                    if (getProtection(itemStack) < getProtection(stack)) {
+                        return false;
                     }
                 }
+
                 return true;
             }
         }
+
         return false;
     }
+
+    private static int getProtection(ItemStack is) {
+        if (is.getItem() instanceof final ArmorItem armorItem) {
+            int prot = 0;
+            int blastMultiplier = 1;
+            int protectionMultiplier = 2;
+
+            if (is.hasEnchantments()) {
+                final ItemEnchantmentsComponent enchants = EnchantmentHelper.getEnchantments(is);
+
+                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().get(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION).get()))
+                    prot += enchants.getLevel(mc.world.getRegistryManager().get(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION).get()) * protectionMultiplier;
+
+                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().get(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get()))
+                    prot += enchants.getLevel(mc.world.getRegistryManager().get(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get()) * blastMultiplier;
+
+                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().get(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BINDING_CURSE).get()))
+                    prot = -999;
+            }
+
+            return (armorItem.getProtection() + (int) Math.ceil(armorItem.getToughness())) * 10 + prot;
+        }
+
+        return -1;
+    }
+
 
     public static int getHotbarSlotForItem(final ItemStack itemStack) {
         if (itemStack.getItem() instanceof SwordItem)
