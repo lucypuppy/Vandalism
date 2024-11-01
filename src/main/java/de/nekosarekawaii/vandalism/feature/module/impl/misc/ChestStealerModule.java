@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.InventoryUtil;
 import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.component.DataComponentTypes;
@@ -33,7 +34,6 @@ import net.minecraft.item.*;
 import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ChestStealerModule extends Module implements PlayerUpdateListener {
 
@@ -100,7 +100,7 @@ public class ChestStealerModule extends Module implements PlayerUpdateListener {
                 final ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
                 final int slot = InventoryUtil.getHotbarSlotForItem(itemStack);
 
-                if (slot != -1 && slot != 8) // Invalid Item
+                if (filterItems.getValue() && slot != -1 && slot != 8) // Invalid Item
                     continue;
 
                 if (itemStack.isEmpty() || (filterItems.getValue() && !canTakeItem(itemStack)))
@@ -123,7 +123,7 @@ public class ChestStealerModule extends Module implements PlayerUpdateListener {
     }
 
     private void updateDelay() {
-        this.delay = (int) (ThreadLocalRandom.current().nextGaussian() * (minDelay.getValue() - maxDelay.getValue())) + maxDelay.getValue();
+        this.delay = RandomUtils.randomLong(minDelay.getValue(), maxDelay.getValue());
     }
 
     private void stealItems(final GenericContainerScreen screen, int slotId, int slot, SlotActionType actionType) {
