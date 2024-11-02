@@ -57,6 +57,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
@@ -537,12 +538,21 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
         }
 
-        if (this.lookingAtBlockPosition.getValue() && mc.player != null && mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
-            final BlockPos lookingAt = blockHitResult.getBlockPos();
-            infoMap.put(
-                    "Looking At",
-                    String.format("%s, %s, %s", lookingAt.getX(), lookingAt.getY(), lookingAt.getZ())
-            );
+        if (this.lookingAtBlockPosition.getValue() && mc.player != null) {
+            final BlockPos lookingAt;
+            if (mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
+                lookingAt = blockHitResult.getBlockPos();
+            } else if (mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+                lookingAt = entityHitResult.getEntity().getBlockPos();
+            } else {
+                lookingAt = null;
+            }
+            if (lookingAt != null) {
+                infoMap.put(
+                        "Looking At",
+                        String.format("%s, %s, %s", lookingAt.getX(), lookingAt.getY(), lookingAt.getZ())
+                );
+            }
         }
 
         if (this.entities.getValue() && mc.world != null) {
