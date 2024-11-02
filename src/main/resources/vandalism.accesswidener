@@ -181,6 +181,10 @@ accessible method net/minecraft/client/resource/server/ServerResourcePackLoader 
 accessible method net/minecraft/client/resource/server/ServerResourcePackLoader toHashCode (Ljava/lang/String;)Lcom/google/common/hash/HashCode;
 accessible field com/mojang/blaze3d/systems/RenderSystem modelViewMatrix Lorg/joml/Matrix4f;
 accessible field net/minecraft/client/network/ClientPlayNetworkHandler session Lnet/minecraft/network/encryption/ClientPlayerSession;
+accessible method net/minecraft/client/render/BufferBuilder floatToByte (F)B
+accessible field net/minecraft/client/render/WorldRenderer entityOutlinesFramebuffer Lnet/minecraft/client/gl/Framebuffer;
+accessible field net/minecraft/client/render/Tessellator allocator Lnet/minecraft/client/util/BufferAllocator;
+accessible field com/mojang/blaze3d/systems/RenderSystem modelViewStack Lorg/joml/Matrix4fStack;
 accessible method net/minecraft/client/world/ClientWorld getPendingUpdateManager ()Lnet/minecraft/client/network/PendingUpdateManager;
 
 accessible field net/minecraft/entity/Entity submergedInWater Z
