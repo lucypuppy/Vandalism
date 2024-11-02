@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
