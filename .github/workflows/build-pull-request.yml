@@ -1,4 +1,4 @@
-name: "Build Check"
+name: "Build pull request"
 on: [ pull_request ]
 
 jobs:
