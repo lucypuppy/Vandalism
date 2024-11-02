@@ -186,7 +186,6 @@ accessible field net/minecraft/client/render/WorldRenderer entityOutlinesFramebu
 accessible field net/minecraft/client/render/Tessellator allocator Lnet/minecraft/client/util/BufferAllocator;
 accessible field com/mojang/blaze3d/systems/RenderSystem modelViewStack Lorg/joml/Matrix4fStack;
 accessible method net/minecraft/client/world/ClientWorld getPendingUpdateManager ()Lnet/minecraft/client/network/PendingUpdateManager;
-
 accessible field net/minecraft/entity/Entity submergedInWater Z
 accessible field net/minecraft/entity/Entity touchingWater Z
 accessible field net/minecraft/entity/LivingEntity jumpingCooldown I
@@ -200,3 +199,4 @@ mutable field net/minecraft/client/network/ClientPlayerEntity ticksToNextAutojum
 accessible field net/minecraft/client/sound/SoundManager soundSystem Lnet/minecraft/client/sound/SoundSystem;
 accessible method net/minecraft/client/gui/DrawContext tryDraw ()V
 accessible method net/minecraft/client/gui/hud/InGameHud renderHotbarItem (Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V
+accessible field net/minecraft/client/render/GameRenderer programs Ljava/util/Map;

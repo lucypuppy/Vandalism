@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.render.ResizeScreenListener;
 import de.nekosarekawaii.vandalism.util.DateUtil;
+import de.nekosarekawaii.vandalism.util.DebugHelper;
 import de.nekosarekawaii.vandalism.util.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.*;
 import de.nekosarekawaii.vandalism.util.render.effect.other.DepthFilterEffect;
@@ -35,6 +36,7 @@ import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderType;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import org.lwjgl.opengl.GL45C;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +49,7 @@ public class Shaders {
 
     private static boolean initialized;
 
-    private static final List<ShaderProgram> shaders = new ArrayList<>();
+    @Getter private static final List<ShaderProgram> shaders = new ArrayList<>();
 
     // Post-processing (just add the field here, and it will be automatically initialized)
 
@@ -69,7 +71,7 @@ public class Shaders {
     @Getter private static Kawase4PassBlurFillEffect kawase4PassBlurFillEffect;
 
     @Getter private static ShaderProgram passThroughShader;
-    private static final List<PostProcessEffect> postProcessEffects = new ArrayList<>();
+    @Getter private static final List<PostProcessEffect> postProcessEffects = new ArrayList<>();
 
     // General purpose shaders
     @Getter private static ShaderProgram positionShader;
@@ -169,7 +171,9 @@ public class Shaders {
 
     public static ShaderProgram create(String name, Shader... shaders) {
         try {
-            return ShaderProgram.compose(shaders);
+            final ShaderProgram program = ShaderProgram.compose(shaders);
+            DebugHelper.setObjectLabel(program.id(), GL45C.GL_PROGRAM, FabricBootstrap.MOD_ID + "/" + name);
+            return program;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create shader program " + name, e);
         }
@@ -201,5 +205,16 @@ public class Shaders {
 //        Buffers.lockFramebuffer = false;
         mc.worldRenderer.entityOutlinesFramebuffer = prevBuffer;
         Buffers.restoreBuffer();
+    }
+
+    public static void clearUniformCaches() {
+        for (PostProcessEffect effect : postProcessEffects) {
+            for (int i = 0; i < effect.numPasses(); i++) {
+                effect.shader(i).clearCache();
+            }
+        }
+        for (ShaderProgram shader : shaders) {
+            shader.clearCache();
+        }
     }
 }
