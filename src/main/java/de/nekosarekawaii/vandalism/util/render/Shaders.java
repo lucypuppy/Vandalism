@@ -23,9 +23,8 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.render.ResizeScreenListener;
 import de.nekosarekawaii.vandalism.util.DateUtil;
 import de.nekosarekawaii.vandalism.util.render.effect.PostProcessEffect;
-import de.nekosarekawaii.vandalism.util.render.effect.fill.ColorFillEffect;
-import de.nekosarekawaii.vandalism.util.render.effect.fill.GaussianBlurFillEffect;
-import de.nekosarekawaii.vandalism.util.render.effect.fill.Kawase4PassBlurFillEffect;
+import de.nekosarekawaii.vandalism.util.render.effect.fill.*;
+import de.nekosarekawaii.vandalism.util.render.effect.other.DepthFilterEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.outline.FastOuterOutlineEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.outline.GlowOutlineEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.outline.InnerOutlineEffect;
@@ -35,6 +34,7 @@ import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderType;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,8 +58,11 @@ public class Shaders {
     @Getter private static GlowOutlineEffect glowOutlineEffect;
 
     // Fills
-    @Getter
-    private static ColorFillEffect colorFillEffect;
+    @Getter private static ColorFillEffect colorFillEffect;
+    @Getter private static RainbowFillEffect rainbowFillEffect;
+    @Getter private static TextureFillEffect textureFillEffect;
+    @Getter private static InvertedTextureFillEffect invertedTextureFillEffect;
+    @Getter private static DepthFilterEffect depthFilterEffect;
 
     // Blur
     @Getter private static GaussianBlurFillEffect gaussianBlurFillEffect;
@@ -183,5 +186,18 @@ public class Shaders {
             if (input == null) throw new IOException("Shader " + name + " not found");
             return new String(input.readAllBytes());
         }
+    }
+
+    public static void runWithOutlineBufferSwapped(Framebuffer target, Runnable action) {
+        final MinecraftClient mc = MinecraftClient.getInstance();
+        final Framebuffer prevBuffer = mc.worldRenderer.entityOutlinesFramebuffer;
+        mc.worldRenderer.entityOutlinesFramebuffer = target;
+        Buffers.saveBuffer();
+        target.beginWrite(false);
+//        Buffers.lockFramebuffer = true;
+        action.run();
+//        Buffers.lockFramebuffer = false;
+        mc.worldRenderer.entityOutlinesFramebuffer = prevBuffer;
+        Buffers.restoreBuffer();
     }
 }

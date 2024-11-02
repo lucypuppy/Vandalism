@@ -79,6 +79,7 @@ public class ModuleManager extends NamedStorage<Module> implements
     private FastPlaceModule fastPlaceModule;
     private IllegalInteractionModule illegalInteractionModule;
     private ESPModule espModule;
+    private ESP2Module esp2Module;
     private KillAuraModule killAuraModule;
     private TickBaseModule tickBaseModule;
     private FullBrightModule fullBrightModule;
@@ -133,6 +134,7 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.betterTabListModule = new BetterTabListModule(),
                 this.trueSightModule = new TrueSightModule(),
                 this.espModule = new ESPModule(),
+                this.esp2Module = new ESP2Module(),
                 this.fullBrightModule = new FullBrightModule(),
                 this.zoomModule = new ZoomModule(),
                 this.ghostHandModule = new GhostHandModule(),

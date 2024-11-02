@@ -133,7 +133,8 @@
     "module.MixinStructureBlockBlockEntityRenderer",
     "module.MixinTextureUrlChecker",
     "module.MixinTextVisitFactory",
-    "module.MixinTranslatableTextContent"
+    "module.MixinTranslatableTextContent",
+    "module.MixinWorldRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
