@@ -46,10 +46,27 @@ import java.awt.*;
 
 public class HotbarHUDElement extends HUDElement {
 
-    private final BooleanValue blurEnabled = new BooleanValue(this, "Blur", "Enable / Disable hotbar blur", true);
-    private final ColorValue backgroundColor = new ColorValue(this, "Background Color", "Color of the hotbar background", new Color(168, 10, 225, 150));
+    private final BooleanValue blurEnabled = new BooleanValue(
+            this,
+            "Blur",
+            "Enable / Disable hotbar blur.",
+            true
+    );
 
-    public final EasingTypeValue selectItemAnimatino = new EasingTypeValue(this, "Select item animation", "Hotbar select item animation", Easing.LINEAR);
+    private final ColorValue backgroundColor = new ColorValue(
+            this,
+            "Background Color",
+            "Color of the hotbar background.",
+            new Color(168, 10, 225, 150)
+    );
+
+    public final EasingTypeValue selectItemAnimation = new EasingTypeValue(
+            this,
+            "Select item animation",
+            "Hotbar select item animation",
+            Easing.LINEAR
+    );
+
     private final FloatValue hotbarAnimationSpeed = new FloatValue(
             this,
             "Select item Animation Speed",
@@ -59,7 +76,13 @@ public class HotbarHUDElement extends HUDElement {
             2.0f
     );
 
-    public final EasingTypeValue barAnimation = new EasingTypeValue(this, "Bar animation", "Select the Bar animation", Easing.LINEAR);
+    public final EasingTypeValue barAnimation = new EasingTypeValue(
+            this,
+            "Bar animation",
+            "Select the Bar animation",
+            Easing.LINEAR
+    );
+
     private final FloatValue barAnimationSpeed = new FloatValue(
             this,
             "Bar Animation Speed",
@@ -69,7 +92,12 @@ public class HotbarHUDElement extends HUDElement {
             2.0f
     );
 
-    private final BooleanValue showBarsBelow = new BooleanValue(this, "Show Bars Below", "Show the bars below the hotbar", false);
+    private final BooleanValue showBarsBelow = new BooleanValue(
+            this,
+            "Show Bars Below",
+            "Show the bars below the hotbar.",
+            false
+    );
 
     private final Animator hotbarSlotAnimation = new Animator();
     private final Animator xpBarAnimation = new Animator();
@@ -80,7 +108,7 @@ public class HotbarHUDElement extends HUDElement {
     private final Animator armorBarAnimation = new Animator();
 
     public HotbarHUDElement() {
-        super("Hotbar", true, AlignmentX.MIDDLE, AlignmentY.BOTTOM);
+        super("Hotbar", false, AlignmentX.MIDDLE, AlignmentY.BOTTOM);
     }
 
     @Override
@@ -210,7 +238,7 @@ public class HotbarHUDElement extends HUDElement {
             RenderUtil.fill(context, x, y - 22, x + 180, y, new Color(0, 0, 0, 50).getRGB());
 
             final int selectedX = x + playerEntity.getInventory().selectedSlot * 20;
-            this.hotbarSlotAnimation.ease(this.selectItemAnimatino.getValue(), selectedX, this.hotbarAnimationSpeed.getValue());
+            this.hotbarSlotAnimation.ease(this.selectItemAnimation.getValue(), selectedX, this.hotbarAnimationSpeed.getValue());
             RenderUtil.fill(context, this.hotbarSlotAnimation.getCurrentX(), y - 22, this.hotbarSlotAnimation.getCurrentX() + 20, y, 0x80FFFFFF);
 
             for (int slot = 0; slot < 9; ++slot) {
