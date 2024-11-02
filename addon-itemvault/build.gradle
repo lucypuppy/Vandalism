@@ -7,6 +7,9 @@ dependencies {
     if (file != null) {
         modImplementation files(file)
     }
+
+    modImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
+    modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 }
 
 loom {

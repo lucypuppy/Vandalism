@@ -18,7 +18,9 @@
   "accessWidener": "vandalism-itemvault.accesswidener",
   "depends": {
     "vandalism": "*",
-    "itemvault": "*"
+    "itemvault": "*",
+    "fabric-registry-sync-v0": ">=4.0.13",
+    "fabric-item-group-api-v1": ">=4.0.20"
   },
   "custom": {
     "itemvault:disable_inbuilt_integration": true,
