@@ -26,7 +26,9 @@ dependencies {
     modImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
     modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 
-    modImplementation "de.florianmichael:ViaFabricPlus:3.4.9-SNAPSHOT"
+    // Always use release versions if we are behind, since only release versions are published against upstream release versions
+    // and would otherwise cause dependency issues where versions desync.
+    modImplementation "de.florianmichael:ViaFabricPlus:3.4.9"
 }
 
 processResources {
