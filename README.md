@@ -10,7 +10,7 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 
 ## Terminology
 
-Shared build script properties are exposed to `build-logic` and are defined was convention patterns per Gradle documentation.
+Shared build script properties are exposed to `build-logic` and are defined as convention patterns per Gradle documentation.
 
 ## How to use Addons
 
@@ -48,6 +48,6 @@ Ex: ``gradlew wrapper --gradle-version 8.8``
 
 ### How to name branches for pull requests
 
-- New features: feat/<addition>
-- Bug fixes: fix/<addition>
+- New features: `feat/<addition>`
+- Bug fixes: `fix/<addition>`
 

@@ -7,6 +7,7 @@ dependencies {
 }
 
 class BinaryExt {
+    // Used to include binaries from the mods folder, see addon-wurst and addon-baritone for examples
     static File includeMod(Project project, String fileMarker) {
         File modsDir = new File(project.projectDir, "run/mods")
 
@@ -30,14 +31,14 @@ tasks.register("installAddon") {
     group "vandalism"
 
     doLast {
-        //Locate the mods folder
+        // Locate the mods folder
         File modsFolder = new File(rootProject.projectDir, "run" + File.separator + "mods")
         modsFolder.mkdirs()
 
-        //Addon output jars are always named Addon<name>-<version>.jar
+        // Addon output jars are always named Addon<name>-<version>.jar
         String newName = project.name + "-${project.maven_version}.jar"
 
-        //Locate the output jar
+        // Locate the output jar
         File outputJar = new File(file("."), "build" + File.separator + "libs" + File.separator + newName)
 
         for (final def modFile in modsFolder.listFiles()) {
