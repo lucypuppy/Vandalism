@@ -26,7 +26,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.Animator;
-import de.nekosarekawaii.vandalism.util.RenderUtil;
 import de.nekosarekawaii.vandalism.util.interfaces.Easing;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.GaussianBlurFillEffect;
@@ -35,6 +34,7 @@ import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentX;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
+import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -131,6 +131,10 @@ public class HotbarHUDElement extends HUDElement {
 
         elementX += this.xOffset.getValue();
         elementY += this.yOffset.getValue();
+
+        //DebugHelper.pushMarker("Lennox");
+        //RenderUtil.drawRoundedRect(200, 200, 100, 100, 5, new Color(255, 0,0,255));
+        //DebugHelper.popMarker();
 
         if (mc.player != null && mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR)
             return;
@@ -280,10 +284,10 @@ public class HotbarHUDElement extends HUDElement {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.disableDepthTest();
-        GlobalUniforms.setBackgroundUniforms(backgroundShader);
+        GlobalUniforms.setGlobalUniforms(backgroundShader, true);
         backgroundShader.uniform("alpha").set(backgroundColor.getColor().getAlpha() / 255.0f);
         backgroundShader.uniform("color").set(backgroundColor.getColor(), false);
-        RenderUtil.drawShaderRect(x, y + 0.5f, x2, y2);
+        RenderUtil.drawShaderRect(x, y, x2, y2);
         RenderSystem.disableBlend();
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();

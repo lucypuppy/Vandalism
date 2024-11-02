@@ -7,8 +7,8 @@ precision mediump float;
 #endif
 
 // glslsandbox uniforms
-uniform float time;
-uniform vec2 resolution;
+uniform float u_Time;
+uniform vec2 u_WindowSize;
 uniform vec3 sparkColor;
 uniform vec3 bloomColor;
 uniform vec3 smokeColor;
@@ -18,8 +18,8 @@ uniform vec3 smokeColor;
 //#define SMOKE_COLOR vec3(1.0, 0.43, 0.1) * 0.8
 
 // shadertoy emulation
-#define iTime time
-#define iResolution resolution
+#define iTime u_Time
+#define iResolution u_WindowSize
 
 // Emulate some GLSL ES 3.x
 #define mat2x2 mat2

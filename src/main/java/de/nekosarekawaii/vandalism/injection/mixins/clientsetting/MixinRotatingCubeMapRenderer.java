@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.GlobalUniforms;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
+import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
@@ -30,8 +31,6 @@ import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.ReconfiguringScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
-import net.minecraft.client.render.*;
-import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -68,15 +67,10 @@ public abstract class MixinRotatingCubeMapRenderer {
                 case ReconfiguringScreen reconfiguringScreen -> shader = Shaders.getLoadingScreenBackgroundShader();
                 case null, default -> shader = Shaders.getBackgroundShader();
             }
+
             shader.bind();
-            GlobalUniforms.setBackgroundUniforms(shader);
-            final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-            bufferBuilder.vertex(matrix, -1F, -1F, 0F);
-            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F);
-            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), 0F);
-            bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F);
-            BufferRenderer.draw(bufferBuilder.end());
+            GlobalUniforms.setGlobalUniforms(shader, true);
+            RenderUtil.drawShaderRect();
             shader.unbind();
         }
     }

@@ -2,9 +2,9 @@
 
 precision highp float;
 
-uniform float time;
+uniform float u_Time;
 uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec2 u_WindowSize;
 
 //Creates a diagonal red-and-white striped pattern.
 vec3 barberpole(vec2 pos, vec2 rocketpos){
@@ -93,16 +93,16 @@ vec3 drawFireworks(float time, vec2 uv, vec3 particolor, float seed){
 
 void main( void )
 {
-	vec2 uv =1.0 -  2.0* gl_FragCoord.xy / resolution.xy;
-	uv.x *= resolution.x/resolution.y;
+	vec2 uv =1.0 -  2.0* gl_FragCoord.xy / u_WindowSize.xy;
+	uv.x *= u_WindowSize.x/ u_WindowSize.y;
 	vec3 col=vec3(0.1,0.1,0.2);
 	col += 0.1*uv.y;
 
 
-	col += drawFireworks(time    , uv,vec3(1.0,0.1,0.1), 1.);
-	col += drawFireworks(time-2.0, uv,vec3(0.0,1.0,0.5), 2.);
-	col += drawFireworks(time-3.0, uv,vec3(0.5,1.0,0.7), 4.);
-	col += drawFireworks(time-4.0, uv,vec3(1.0,1.0,0.1), 3.);
+	col += drawFireworks(u_Time, uv, vec3(1.0,0.1,0.1), 1.);
+	col += drawFireworks(u_Time -2.0, uv, vec3(0.0,1.0,0.5), 2.);
+	col += drawFireworks(u_Time -3.0, uv, vec3(0.5,1.0,0.7), 4.);
+	col += drawFireworks(u_Time -4.0, uv, vec3(1.0,1.0,0.1), 3.);
 
 	gl_FragColor = vec4(col,1.0);
 }

@@ -7,12 +7,12 @@
 
 precision highp float;
 
-uniform float time;
+uniform float u_Time;
 uniform vec2 mouse;
-uniform vec2 resolution;
+uniform vec2 u_WindowSize;
 
-float iTime = time;
-vec2 iResolution = resolution;
+float iTime = u_Time;
+vec2 iResolution = u_WindowSize;
 
 #define AA 2
 

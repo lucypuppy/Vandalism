@@ -40,9 +40,4 @@ public class GlobalUniforms implements MinecraftWrapper {
         program.uniform("u_TransformMatrix").set(matrix);
     }
 
-    public static void setBackgroundUniforms(ShaderProgram program) {
-        program.uniform("resolution").set((float) mc.getWindow().getWidth(), (float) mc.getWindow().getHeight());
-        program.uniform("time").set((float) (GLFW.glfwGetTime() - Vandalism.getInstance().getStartTime()));
-    }
-
 }

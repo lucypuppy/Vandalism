@@ -46,6 +46,7 @@ public class Passes {
     private static final RenderPass colorTextureTriangle    = new SimpleRenderPass(VertexLayouts.POSITION_TEX_COLOR8, VertexLayouts.halfPosition(3, 1), Shaders::getPositionTexColorShader, Shaders::getInstPositionTexColorShader);
     private static final RenderPass colorTriangleFan        = new SimpleRenderPass(PrimitiveType.TRIANGLE_FAN, VertexLayouts.POSITION_COLOR8, VertexLayouts.halfPosition(2, 1), Shaders::getPositionColorShader, Shaders::getInstPositionColorShader);
     private static final RenderPass colorRect               = new SimpleRenderPass(PrimitiveType.QUADS, VertexLayouts.POSITION_COLOR8, VertexLayouts.halfPosition(2, 1), Shaders::getPositionColorShader, Shaders::getInstPositionColorShader);
+    private static final RenderPass rect                    = new SimpleRenderPass(PrimitiveType.QUADS, VertexLayouts.POSITION, VertexLayouts.halfPosition(2, 1), Shaders::getPositionShader, Shaders::getInstPositionShader);
     private static final RenderPass textureRect             = new SimpleRenderPass(PrimitiveType.QUADS, VertexLayouts.POSITION_TEX, VertexLayouts.halfPosition(2, 1), Shaders::getPositionTexShader, Shaders::getInstPositionTexShader);
     private static final RenderPass colorTextureRect        = new SimpleRenderPass(PrimitiveType.QUADS, VertexLayouts.POSITION_TEX_COLOR8, VertexLayouts.halfPosition(3, 1), Shaders::getPositionTexColorShader, Shaders::getInstPositionTexColorShader);
     private static final RenderPass colorLineStrip          = new SimpleRenderPass(PrimitiveType.GL_LINE_STRIP, VertexLayouts.POSITION_COLOR8, VertexLayouts.halfPosition(2, 1), Shaders::getPositionColorShader, Shaders::getInstPositionColorShader);
@@ -101,6 +102,10 @@ public class Passes {
 
     public static RenderPass colorRect() {
         return colorRect;
+    }
+
+    public static RenderPass rect() {
+        return rect;
     }
 
     public static RenderPass textureRect() {
