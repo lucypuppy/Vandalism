@@ -6,8 +6,8 @@ precision highp float;
 
 #define NUM_OCTAVES 6
 
-uniform float time;
-uniform vec2 resolution;
+uniform float u_Time;
+uniform vec2 u_WindowSize;
 uniform float alpha;
 uniform vec3 color;
 
@@ -53,7 +53,7 @@ float fbm(vec2 pos) {
     mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
     for (int i = 0; i < NUM_OCTAVES; i++) {
         float dir = mod(float(i), 2.0) > 0.5 ? 1.0 : -1.0;
-        v += a * noise(pos - 0.05 * dir * time * 5.0);
+        v += a * noise(pos - 0.05 * dir * u_Time * 5.0);
 
         pos = rot * pos * 2.0 + shift;
         a *= 0.5;
@@ -62,7 +62,7 @@ float fbm(vec2 pos) {
 }
 
 void main(void) {
-    vec2 p = (gl_FragCoord.xy * 3.0 - resolution.xy) / min(resolution.x, resolution.y);
+    vec2 p = (gl_FragCoord.xy * 3.0 - u_WindowSize.xy) / min(u_WindowSize.x, u_WindowSize.y);
     p -= vec2(12.0, 0.0);
 
     float t = 0.0, d;

@@ -25,12 +25,11 @@ import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.GlobalUniforms;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
+import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.*;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -86,7 +85,6 @@ public abstract class MixinScreen {
 
             case SHADER -> {
                 ci.cancel();
-                final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
                 final ShaderProgram backgroundShader = Shaders.getIngameGuiBackgroundShader();
 
                 backgroundShader.bind();
@@ -94,7 +92,7 @@ public abstract class MixinScreen {
                 RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
                 RenderSystem.disableDepthTest();
 
-                GlobalUniforms.setBackgroundUniforms(backgroundShader);
+                GlobalUniforms.setGlobalUniforms(backgroundShader, true);
                 backgroundShader.uniform("sparkColor").set(menuSettings.shaderColorSpark.getColor(), false);
                 backgroundShader.uniform("bloomColor").set(menuSettings.shaderColorBloom.getColor(), false);
                 backgroundShader.uniform("smokeColor").set(menuSettings.shaderColorSmoke.getColor(), false);
@@ -102,12 +100,7 @@ public abstract class MixinScreen {
                 backgroundShader.uniform("size").set(6.28f);
                 backgroundShader.uniform("fadeDivision").set(1.0f);
 
-                final BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-                bufferBuilder.vertex(matrix, -1F, -1F, 0F);
-                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F);
-                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), 0F);
-                bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F);
-                BufferRenderer.draw(bufferBuilder.end());
+                RenderUtil.drawShaderRect();
 
                 RenderSystem.disableBlend();
                 RenderSystem.enableDepthTest();

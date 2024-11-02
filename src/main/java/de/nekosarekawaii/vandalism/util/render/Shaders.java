@@ -51,7 +51,7 @@ public class Shaders {
 
     // Post-processing (just add the field here, and it will be automatically initialized)
 
-    // Outlines
+    // Outlines @Formatter:off
     @Getter private static OuterOutlineEffect outerOutlineEffect;
     @Getter private static FastOuterOutlineEffect fastOuterOutlineEffect;
     @Getter private static InnerOutlineEffect innerOutlineEffect;
@@ -82,17 +82,17 @@ public class Shaders {
     @Getter private static ShaderProgram instPositionTexColorShader;
 
     // Background
-    @Getter
-    private static ShaderProgram titleScreenBackgroundShader;
-    @Getter
-    private static ShaderProgram backgroundShader;
-    @Getter
-    private static ShaderProgram loadingScreenBackgroundShader;
+    @Getter private static ShaderProgram titleScreenBackgroundShader;
+    @Getter private static ShaderProgram backgroundShader;
+    @Getter private static ShaderProgram loadingScreenBackgroundShader;
     @Getter private static ShaderProgram ingameGuiBackgroundShader;
     @Getter private static ShaderProgram hotbarBackgroundShader;
 
+    @Getter private static ShaderProgram roundedRectangleShader;
+
     // Font
     @Getter private static ShaderProgram fontShader;
+    // @Formatter:on
 
     public static void loadAll() {
         if (initialized) return;
@@ -112,12 +112,14 @@ public class Shaders {
         shaders.add(fontShader = create("font", load(ShaderType.VERTEX, "font/font"), load(ShaderType.FRAGMENT, "font/font")));
 
         try {
-            shaders.add(titleScreenBackgroundShader = create("title_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/" + (DateUtil.isBirthday() ? "title_screen_birthday" : "title_screen_default"))));
+            shaders.add(titleScreenBackgroundShader = create("title_screen_background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/" + (DateUtil.isBirthday() ? "title_screen_birthday" : "title_screen_default"))));
         } catch (final RuntimeException ignored) { }
-        shaders.add(backgroundShader = create("background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/default")));
-        shaders.add(loadingScreenBackgroundShader = create("loading_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/loading_screen")));
-        shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui")));
-        shaders.add(hotbarBackgroundShader = create("hotbar_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/hotbar_background")));
+        shaders.add(backgroundShader = create("background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/default")));
+        shaders.add(loadingScreenBackgroundShader = create("loading_screen_background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/loading_screen")));
+        shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui")));
+        shaders.add(hotbarBackgroundShader = create("hotbar_background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/hotbar_background")));
+
+        shaders.add(roundedRectangleShader = create("rounded_rectangle", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "shape/rounded_rectangle")));
 
         for (Field field : Shaders.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) continue;

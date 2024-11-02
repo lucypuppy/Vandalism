@@ -40,4 +40,9 @@ public class Rotation {
         return "Vec2f[" + vec.x + ", " + vec.y + "]";
     }
 
+    @Override
+    public String toString() {
+        return "Rotation[yaw=" + yaw + ", pitch=" + pitch + "]";
+    }
+
 }
