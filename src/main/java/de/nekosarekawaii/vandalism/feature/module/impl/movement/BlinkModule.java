@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.feature.module.Module;
 import de.nekosarekawaii.vandalism.util.PacketHelper;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -38,6 +39,7 @@ public class BlinkModule extends Module implements OutgoingPacketListener, Incom
     private final BooleanValue reSyncOnAttack = new BooleanValue(this, "Resync On Attack", "Resyncs you when attacking.", false);
     private final BooleanValue pulse = new BooleanValue(this, "Pulse", "Blinks in intervals.", false);
     private final IntegerValue pulseDelay = new IntegerValue(this, "Pulse Delay", "The delay between each pulse.", 500, 0, 5000);
+    private final BooleanValue showPlacedBlocks = new BooleanValue(this, "Show Placed Blocks", "Shows placed blocks while blinking.", false);
 
     private final ConcurrentLinkedQueue<BlinkPacket> packets = new ConcurrentLinkedQueue<>();
 
@@ -48,12 +50,12 @@ public class BlinkModule extends Module implements OutgoingPacketListener, Incom
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, IncomingPacketEvent.ID, AttackSendEvent.ID, GameTickEvent.ID);
-        lastSend = System.currentTimeMillis();
+        this.lastSend = System.currentTimeMillis();
     }
 
     @Override
     public void onDeactivate() {
-        sendPackets();
+        this.sendPackets();
         Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID, IncomingPacketEvent.ID, AttackSendEvent.ID, GameTickEvent.ID);
     }
 
@@ -62,11 +64,11 @@ public class BlinkModule extends Module implements OutgoingPacketListener, Incom
         if (event.networkPhase != NetworkPhase.PLAY || mc.world == null || mc.player == null) {
             return;
         }
-        if (!delayIncoming.getValue()) {
+        if (!this.delayIncoming.getValue() || (this.showPlacedBlocks.getValue() && event.packet instanceof final BlockUpdateS2CPacket updatePacket && !updatePacket.getState().isAir())) {
             return;
         }
         event.setCancelled(true);
-        packets.add(new BlinkPacket(event.packet, BlinkPacket.Direction.INCOMING));
+        this.packets.add(new BlinkPacket(event.packet, BlinkPacket.Direction.INCOMING));
     }
 
     @Override
@@ -75,14 +77,14 @@ public class BlinkModule extends Module implements OutgoingPacketListener, Incom
             return;
         }
         event.setCancelled(true);
-        packets.add(new BlinkPacket(event.packet, BlinkPacket.Direction.OUTGOING));
+        this.packets.add(new BlinkPacket(event.packet, BlinkPacket.Direction.OUTGOING));
     }
 
     @Override
     public void onAttackSend(AttackSendEvent event) {
-        if (reSyncOnAttack.getValue()) {
-            if (pulse.getValue()) {
-                sendPackets();
+        if (this.reSyncOnAttack.getValue()) {
+            if (this.pulse.getValue()) {
+                this.sendPackets();
             } else {
                 this.deactivate();
             }
@@ -94,21 +96,21 @@ public class BlinkModule extends Module implements OutgoingPacketListener, Incom
     @Override
     public void onGameTick(GameTickEvent event) {
         if (mc.player == null) return;
-        if (pulse.getValue() && System.currentTimeMillis() - lastSend >= pulseDelay.getValue()) {
-            sendPackets();
+        if (this.pulse.getValue() && System.currentTimeMillis() - this.lastSend >= this.pulseDelay.getValue()) {
+            this.sendPackets();
         }
     }
 
     private void sendPackets() {
-        while (!packets.isEmpty()) {
-            BlinkPacket packet = packets.poll();
-            if (packet.direction == BlinkPacket.Direction.INCOMING && delayIncoming.getValue()) {
+        while (!this.packets.isEmpty()) {
+            final BlinkPacket packet = this.packets.poll();
+            if (packet.direction == BlinkPacket.Direction.INCOMING && this.delayIncoming.getValue()) {
                 PacketHelper.receivePacket(packet.packet);
             } else if (packet.direction == BlinkPacket.Direction.OUTGOING) {
                 PacketHelper.sendImmediately(packet.packet, null, true);
             }
         }
-        lastSend = System.currentTimeMillis();
+        this.lastSend = System.currentTimeMillis();
     }
 
     private record BlinkPacket(Packet<?> packet, BlinkModule.BlinkPacket.Direction direction) {
