@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.util.DebugHelper;
-import de.nekosarekawaii.vandalism.util.GameNotifications;
+import de.nekosarekawaii.vandalism.util.ShittyGameNotifications;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderException;
@@ -245,7 +245,7 @@ public class ShaderDebuggerWindow extends ClientWindow {
                     GL45C.glShaderSource(this.id, this.lastSuccessfulSource);
                     final String error = GL45C.glGetShaderInfoLog(this.id);
                     Vandalism.getInstance().getLogger().error("Shader compile failed: {}", error);
-                    GameNotifications.multiline("Shader Compile Error", GL45C.glGetShaderInfoLog(this.id));
+                    ShittyGameNotifications.multiline("Shader Compile Error", GL45C.glGetShaderInfoLog(this.id));
                     this.setErrorMarkers(GL45C.glGetShaderInfoLog(this.id));
                     return;
                 }
@@ -255,7 +255,7 @@ public class ShaderDebuggerWindow extends ClientWindow {
                     GL45C.glShaderSource(this.id, this.lastSuccessfulSource);
                     final String error = GL45C.glGetProgramInfoLog(this.programId);
                     Vandalism.getInstance().getLogger().error("Shader link failed: {}", error);
-                    GameNotifications.multiline("Shader Link Error", error);
+                    ShittyGameNotifications.multiline("Shader Link Error", error);
                     return;
                 }
                 GL45C.glValidateProgram(this.programId);
@@ -264,7 +264,7 @@ public class ShaderDebuggerWindow extends ClientWindow {
                     GL45C.glShaderSource(this.id, this.lastSuccessfulSource);
                     final String error = GL45C.glGetProgramInfoLog(this.programId);
                     Vandalism.getInstance().getLogger().error("Shader validation failed: {}", error);
-                    GameNotifications.multiline("Shader Validation Error", error);
+                    ShittyGameNotifications.multiline("Shader Validation Error", error);
                     return;
                 }
                 this.editor.setErrorMarkers(Collections.emptyMap());

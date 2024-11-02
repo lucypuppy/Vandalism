@@ -18,44 +18,47 @@
 
 package de.nekosarekawaii.vandalism.util;
 
-import net.minecraft.client.MinecraftClient;
+import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 
-public class GameNotifications {
+/**
+ * Don't use this class, it's just a shitty way to show notifications in the game.
+ */
+public class ShittyGameNotifications implements MinecraftWrapper {
 
     public static final SystemToast.Type MOD_TOAST_ID = new SystemToast.Type();
 
-    public static void simple(Text title, Text message) {
-        MinecraftClient.getInstance().getToastManager().add(new SystemToast(MOD_TOAST_ID, title, message));
+    public static void simple(final Text title, final Text message) {
+        mc.getToastManager().add(new SystemToast(MOD_TOAST_ID, title, message));
     }
 
-    public static void simple(String title, Text message) {
+    public static void simple(final String title, final Text message) {
         simple(Text.literal(title), message);
     }
 
-    public static void simple(Text title, String message) {
+    public static void simple(final Text title, final String message) {
         simple(title, Text.literal(message));
     }
 
-    public static void simple(String title, String message) {
+    public static void simple(final String title, final String message) {
         simple(Text.literal(title), Text.literal(message));
     }
 
-    public static void multiline(Text title, Text message) {
-        final MinecraftClient mc = MinecraftClient.getInstance();
+    public static void multiline(final Text title, final Text message) {
         mc.getToastManager().add(SystemToast.create(mc, MOD_TOAST_ID, title, message));
     }
 
-    public static void multiline(String title, Text message) {
+    public static void multiline(final String title, final Text message) {
         multiline(Text.literal(title), message);
     }
 
-    public static void multiline(Text title, String message) {
+    public static void multiline(final Text title, final String message) {
         multiline(title, Text.literal(message));
     }
 
-    public static void multiline(String title, String message) {
+    public static void multiline(final String title, final String message) {
         multiline(Text.literal(title), Text.literal(message));
     }
+
 }
