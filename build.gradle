@@ -28,7 +28,7 @@ dependencies {
     jij "net.lenni0451:Reflect:1.3.4"
 
     // https://mvnrepository.com/artifact/io.netty/netty-codec-haproxy
-    jij "io.netty:netty-codec-haproxy:4.1.112.Final"
+    jij "io.netty:netty-codec-haproxy:4.1.114.Final"
 
     // https://github.com/SpaiR/imgui-java
     jij "io.github.spair:imgui-java-binding:1.86.11"
