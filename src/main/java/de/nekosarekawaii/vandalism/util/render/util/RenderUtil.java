@@ -23,6 +23,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
+import de.nekosarekawaii.vandalism.util.render.effect.fill.GaussianBlurFillEffect;
 import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
 import de.nekosarekawaii.vandalism.util.render.gl.render.InstancedAttribConsumer;
 import de.nekosarekawaii.vandalism.util.render.gl.render.passes.Passes;
@@ -180,6 +181,17 @@ public class RenderUtil implements MinecraftWrapper {
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
         shader.unbind();
+    }
+
+    public static void drawRoundedRectBlur(float x, float y, float width, float height, float radius, float directions, float quality, float blurRadius) {
+        final GaussianBlurFillEffect gaussianBlurFillEffect = Shaders.getGaussianBlurFillEffect();
+        gaussianBlurFillEffect.setDirections(directions);
+        gaussianBlurFillEffect.setQuality(quality);
+        gaussianBlurFillEffect.setRadius(blurRadius);
+        gaussianBlurFillEffect.setTextureId(mc.getFramebuffer().getColorAttachment());
+        gaussianBlurFillEffect.bindMask();
+        drawRoundedRect(x, y, width, height, radius, Color.WHITE);
+        gaussianBlurFillEffect.renderScissoredScaled(mc.getFramebuffer(), true, (int) x, (int) y, (int) x + (int) width, (int) y + (int) height);
     }
 
 }
