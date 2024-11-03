@@ -132,10 +132,6 @@ public class HotbarHUDElement extends HUDElement {
         elementX += this.xOffset.getValue();
         elementY += this.yOffset.getValue();
 
-        //DebugHelper.pushMarker("Lennox");
-        //RenderUtil.drawRoundedRect(200, 200, 100, 100, 5, new Color(255, 0,0,255));
-        //DebugHelper.popMarker();
-
         if (mc.player != null && mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR)
             return;
 

@@ -148,7 +148,7 @@ public class RenderUtil implements MinecraftWrapper {
     }
 
     public static void drawShaderRect(float x, float y, float x2, float y2) {
-        try(final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
             final InstancedAttribConsumer buffer = renderer.getAttribConsumers(Passes.rect()).main();
             buffer.pos(x, y2, 0.0F).next();
             buffer.pos(x2, y2, 0.0F).next();
@@ -165,15 +165,15 @@ public class RenderUtil implements MinecraftWrapper {
     public static void drawRoundedRect(float x, float y, float width, float height, float radius, Color color) {
         final ShaderProgram shader = Shaders.getRoundedRectangleShader();
         shader.bind();
-
-        GlobalUniforms.setGlobalUniforms(shader, true);
-        shader.uniform("u_size").set(width, height);
-        shader.uniform("u_radius").set(radius);
-        shader.uniform("u_color").set(color);
-
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.disableDepthTest();
+
+        GlobalUniforms.setGlobalUniforms(shader, true);
+        shader.uniform("u_position").set(x - 0.5f, y - 0.5f); // Position of the rectangle's top-left corner
+        shader.uniform("u_size").set(width + 1f, height + 1f); // Size of the rectangle
+        shader.uniform("u_radius").set(radius); // Radius for rounded corners
+        shader.uniform("u_color").set(color); // Color of the rectangle
 
         drawShaderRect(x, y, x + width, y + height);
 
