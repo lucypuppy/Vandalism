@@ -177,7 +177,7 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
         if (networkHandler != null) {
             for (final Map.Entry<String, Long> entry : this.queuedMessages.entrySet()) {
                 if (System.currentTimeMillis() - entry.getValue() >= RandomUtils.randomLong(this.minDelay.getValue(), this.maxDelay.getValue())) {
-                    final String message = entry.getKey();
+                    final String message = Formatting.strip(entry.getKey());
                     this.queuedMessages.remove(message);
                     final String self = mc.getGameProfile().getName();
                     final String targetPlaceholder = "%target%";
@@ -192,7 +192,7 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
                     final String targetPlayer = target;
                     this.contentMap.forEach((triggers, responses) -> {
                         for (final String trigger : triggers) {
-                            if (StringUtils.contains(Placeholders.applyReplacements(message), trigger)) {
+                            if (StringUtils.contains(Placeholders.applyReplacements(message), Placeholders.applyReplacements(trigger))) {
                                 String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomIndex(responses.length)];
                                 answer = Placeholders.applyReplacements(answer);
                                 if (answer.contains(targetPlaceholder) && !targetPlayer.equals(targetPlaceholder)) {
