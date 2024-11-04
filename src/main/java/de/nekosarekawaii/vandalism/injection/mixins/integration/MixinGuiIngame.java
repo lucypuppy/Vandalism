@@ -53,4 +53,11 @@ public abstract class MixinGuiIngame implements IChatHud {
         }
     }
 
+    @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"), cancellable = true)
+    private void renderScoreboard(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+        if (Vandalism.getInstance().getHudManager().scoreboardHUDElement.isActive()) {
+            ci.cancel();
+        }
+    }
+
 }
