@@ -25,10 +25,7 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.hud.config.HUDConfig;
 import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
-import de.nekosarekawaii.vandalism.feature.hud.impl.HotbarHUDElement;
-import de.nekosarekawaii.vandalism.feature.hud.impl.InfoHUDElement;
-import de.nekosarekawaii.vandalism.feature.hud.impl.ModuleListHUDElement;
-import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
+import de.nekosarekawaii.vandalism.feature.hud.impl.*;
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.storage.Storage;
 import net.minecraft.client.gui.DrawContext;
@@ -41,6 +38,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     public ModuleListHUDElement moduleListHUDElement;
     public InfoHUDElement infoHUDElement;
     public HotbarHUDElement hotbarHUDElement;
+    public ScoreboardHUDElement scoreboardHUDElement;
 
     private final File logoFolder;
 
@@ -56,6 +54,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     @Override
     public void init() {
         this.add(
+                this.scoreboardHUDElement = new ScoreboardHUDElement(),
                 this.hotbarHUDElement = new HotbarHUDElement(),
                 this.watermarkHUDElement = new WatermarkHUDElement(this.logoFolder),
                 this.infoHUDElement = new InfoHUDElement(),
