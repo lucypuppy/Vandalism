@@ -72,8 +72,10 @@ public class ChatReactionModule extends Module implements IncomingPacketListener
 
     private final ButtonValue openFileButton = new ButtonValue(this, "Open File", "Opens the chat reaction file.", buttonValue -> {
         try {
+            this.reset();
+            this.reloadContent();
             Util.getOperatingSystem().open(this.contentFile);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to open chat reaction file!", e);
         }
     });
