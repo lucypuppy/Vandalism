@@ -49,7 +49,7 @@ public class AutoSprintModule extends Module implements PlayerUpdateListener {
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.mc.options.sprintKey.setPressed(true);
+        mc.options.sprintKey.setPressed(true);
     }
 
 }

@@ -201,3 +201,5 @@ accessible method net/minecraft/client/gui/DrawContext tryDraw ()V
 accessible method net/minecraft/client/gui/hud/InGameHud renderHotbarItem (Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;I)V
 accessible field net/minecraft/client/render/GameRenderer programs Ljava/util/Map;
 accessible field net/minecraft/client/gui/hud/InGameHud SCOREBOARD_ENTRY_COMPARATOR Ljava/util/Comparator;
+accessible field net/minecraft/network/packet/c2s/common/ClientOptionsC2SPacket options Lnet/minecraft/network/packet/c2s/common/SyncedClientOptions;
+mutable field net/minecraft/network/packet/c2s/common/ClientOptionsC2SPacket options Lnet/minecraft/network/packet/c2s/common/SyncedClientOptions;
