@@ -21,11 +21,16 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
+import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.util.MSTimer;
 import de.nekosarekawaii.vandalism.util.StringUtils;
-import net.minecraft.client.resource.language.LanguageDefinition;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.message.ChatVisibility;
 import net.minecraft.network.packet.c2s.common.ClientOptionsC2SPacket;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
@@ -35,11 +40,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-public class OptionsSpooferModule extends Module implements OutgoingPacketListener {
+public class OptionsSpooferModule extends Module implements WorldListener, OutgoingPacketListener, PlayerUpdateListener {
 
     private static final SyncedClientOptions DEFAULT_OPTIONS = SyncedClientOptions.createDefault();
 
-    private final ModeValue language;
+    private final StringValue language = new StringValue(
+            this,
+            "Language",
+            "The game language.",
+            DEFAULT_OPTIONS.language()
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
 
     private final IntegerValue viewDistance = new IntegerValue(
             this,
@@ -48,21 +58,21 @@ public class OptionsSpooferModule extends Module implements OutgoingPacketListen
             DEFAULT_OPTIONS.viewDistance(),
             0,
             32
-    );
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
 
     private final ModeValue chatVisibility = new ModeValue(
             this,
             "Chat Visibility",
             "The chat visibility.",
             Arrays.stream(ChatVisibility.values()).map(visibility -> StringUtils.normalizeEnumName(visibility.name())).toArray(String[]::new)
-    );
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
 
     private final BooleanValue chatColorsEnabled = new BooleanValue(
             this,
             "Chat Colors Enabled",
             "Whether chat colors are enabled.",
             DEFAULT_OPTIONS.chatColorsEnabled()
-    );
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
 
     private final IntegerValue playerModelParts = new IntegerValue(
             this,
@@ -71,7 +81,7 @@ public class OptionsSpooferModule extends Module implements OutgoingPacketListen
             DEFAULT_OPTIONS.playerModelParts(),
             0,
             255
-    );
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
 
     private final ModeValue mainArm = new ModeValue(
             this,
@@ -81,44 +91,90 @@ public class OptionsSpooferModule extends Module implements OutgoingPacketListen
                 Collections.reverse(list); // Reverse the list to make the default value right (idk why the first entry in the enum is left)
                 return list.toArray(new String[0]);
             }))
-    );
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
 
     private final BooleanValue filtersText = new BooleanValue(
             this,
             "Filters Text",
             "Whether text is filtered.",
             DEFAULT_OPTIONS.filtersText()
-    );
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
 
     private final BooleanValue allowsServerListing = new BooleanValue(
             this,
             "Allows Server Listing",
             "Whether server listing is allowed.",
-            DEFAULT_OPTIONS.allowsServerListing()
+            true
+    ).onValueChange((oldValue, newValue) -> this.sendPacket());
+
+    private final IntegerValue minWorldLoadPacketDelay = new IntegerValue(
+            this,
+            "Min World Load Packet Delay",
+            "The minimum delay between sending the options packet after the world has been loaded.",
+            1000,
+            100,
+            10000
     );
+
+    private final IntegerValue maxWorldLoadPacketDelay = new IntegerValue(
+            this,
+            "Max World Load Packet Delay",
+            "The maximum delay between sending the options packet after the world has been loaded.",
+            1500,
+            150,
+            10000
+    );
+
+    private final MSTimer worldLoadPacketDelayTimer = new MSTimer();
+    private boolean worldHasBeenLoaded = false;
 
     public OptionsSpooferModule() {
         super("Options Spoofer", "Allows you to spoof server side settings.", Category.MISC);
-        this.language = new ModeValue(
-                this,
-                "Language",
-                "The game language.",
-                mc.getLanguageManager().getAllLanguages().values().stream().map(LanguageDefinition::region).toArray(String[]::new)
-        );
+    }
+
+    private void sendPacket() {
+        if (!this.isActive()) {
+            return;
+        }
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (networkHandler == null) {
+            return;
+        }
+        networkHandler.sendPacket(new ClientOptionsC2SPacket(DEFAULT_OPTIONS));
     }
 
     @Override
     protected void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, WorldLoadEvent.ID, PlayerUpdateEvent.ID);
+        this.sendPacket();
     }
 
     @Override
     protected void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID, WorldLoadEvent.ID, PlayerUpdateEvent.ID);
+        mc.options.sendClientSettings();
+        this.worldHasBeenLoaded = false;
+    }
+
+    @Override
+    public void onPostWorldLoad() {
+        this.worldHasBeenLoaded = true;
+    }
+
+    @Override
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        // Using this to prevent an possible server side detection caused by the client sending the packet too early
+        if (this.worldHasBeenLoaded) {
+            if (this.worldLoadPacketDelayTimer.hasReached(RandomUtils.randomInt(this.minWorldLoadPacketDelay.getValue(), this.maxWorldLoadPacketDelay.getValue()), true)) {
+                this.worldHasBeenLoaded = false;
+                this.sendPacket();
+            }
+        }
     }
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
+        // Using this to prevent the user from sending an options packet without the settings of this module
         if (event.packet instanceof final ClientOptionsC2SPacket packet) {
             packet.options = new SyncedClientOptions(
                     this.language.getValue(),
