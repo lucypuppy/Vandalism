@@ -40,6 +40,8 @@ public class ClientWindow implements IName, MinecraftWrapper {
     @Getter
     private boolean active;
 
+    private boolean shouldResetSize;
+
     public ClientWindow(final String name, final Category category, final float width, final float height) {
         this(name, category, width, height, -1);
     }
@@ -61,7 +63,15 @@ public class ClientWindow implements IName, MinecraftWrapper {
     protected void onDisable() {
     }
 
+    public void resetSize() {
+        this.shouldResetSize = true;
+    }
+
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (this.shouldResetSize) {
+            this.shouldResetSize = false;
+            ImGui.setWindowSize(this.getName(), this.width, this.height);
+        }
         ImGui.setNextWindowSizeConstraints(ImUtils.modulateDimension(this.width), ImUtils.modulateDimension(this.height), ImUtils.modulateDimension(1000000f), ImUtils.modulateDimension(1000000f));
         if (this.windowFlags != -1) {
             ImGui.begin(this.getName(), this.windowFlags);
