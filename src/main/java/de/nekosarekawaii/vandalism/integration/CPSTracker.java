@@ -49,12 +49,12 @@ public class CPSTracker implements MinecraftWrapper {
 
     public void leftClick() {
         this.leftClicks.add(Util.getMeasuringTimeMs());
-        this.clickPredictor.click();
+        this.clickPredictor.click(System.currentTimeMillis());
     }
 
     public void rightClick() {
         this.rightClicks.add(Util.getMeasuringTimeMs());
-        this.clickPredictor.click();
+        this.clickPredictor.click(System.currentTimeMillis());
     }
 
     public int getLeftClicks() {

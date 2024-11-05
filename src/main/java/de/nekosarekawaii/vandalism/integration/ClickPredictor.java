@@ -63,8 +63,7 @@ public class ClickPredictor {
         this.errorCovariance = (1 - kalmanGain) * this.errorCovariance + processNoise;
     }
 
-    public void click() {
-        final long current = System.currentTimeMillis();
+    public void click(final long current) {
         final long delta = current - this.lastClick;
 
         if (this.lastClick <= 0 || delta > 1000) {
@@ -75,6 +74,10 @@ public class ClickPredictor {
         predictNextDelta();
         this.clickIntervals.add(delta);
         this.lastClick = current;
+    }
+
+    public int getPredictedCPS() {
+        return (int) (1000 / this.estimatedDelta);
     }
 
 }
