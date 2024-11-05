@@ -192,7 +192,6 @@ public class BackTrackModule extends Module implements PlayerUpdateListener,
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
-
         if (
                 packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
                         packet instanceof LightUpdateS2CPacket ||

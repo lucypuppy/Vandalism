@@ -222,7 +222,8 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new AutoDisconnectModule(),
                 new TeamsModule(),
                 new MaceInstaKillModule(),
-                new OptionsSpooferModule()
+                new OptionsSpooferModule(),
+                new HighPingModule()
         );
         if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
             this.add(new TestModule());
