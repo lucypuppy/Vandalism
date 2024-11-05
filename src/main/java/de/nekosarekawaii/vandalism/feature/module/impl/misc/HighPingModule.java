@@ -1,0 +1,351 @@
+package de.nekosarekawaii.vandalism.feature.module.impl.misc;
+
+import de.florianmichael.dietrichevents2.Priorities;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.game.WorldListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.render.Render3DListener;
+import de.nekosarekawaii.vandalism.feature.module.Module;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.FakeLagModule;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.MSTimer;
+import de.nekosarekawaii.vandalism.util.PacketHelper;
+import de.nekosarekawaii.vandalism.util.SyncPosition;
+import de.nekosarekawaii.vandalism.util.math.RandomUtils;
+import de.nekosarekawaii.vandalism.util.player.prediction.PredictionSystem;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.c2s.play.ClientStatusC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
+import net.minecraft.util.Pair;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class HighPingModule extends Module implements PlayerUpdateListener, IncomingPacketListener, OutgoingPacketListener, Render3DListener, WorldListener {
+
+    private final IntegerValue packetDelay = new IntegerValue(
+            this,
+            "Packet Delay",
+            "The amount of time in milliseconds to delay packets.",
+            60,
+            0,
+            1000);
+
+    private final ColorValue realColor = new ColorValue(
+            this,
+            "Real Color",
+            "The color of the real position.",
+            new Color(255, 0, 0, 102));
+
+    private final ValueGroup resyncGroup = new ValueGroup(this, "Resync", "Resync options.");
+
+    private final BooleanValue resyncOnDamage = new BooleanValue(
+            this.resyncGroup,
+            "Resync on Damage",
+            "Resync if you take damage.",
+            true);
+
+    private final IntegerValue resyncHurtTime = new IntegerValue(
+            this.resyncGroup,
+            "Resync Hurt Time",
+            "The amount of hurt time in ticks to resync on damage.",
+            5,
+            1,
+            9).visibleCondition(this.resyncOnDamage::getValue);
+
+    private final BooleanValue resyncOnWorldChange = new BooleanValue(
+            this.resyncGroup,
+            "Resync on World Change",
+            "Resync if the world changes.",
+            true);
+
+    private final BooleanValue resyncOnRespawn = new BooleanValue(
+            this.resyncGroup,
+            "Resync on Respawn",
+            "Resync if you respawn.",
+            true);
+
+    private final BooleanValue resyncOnTeleport = new BooleanValue(
+            this.resyncGroup,
+            "Resync on Teleport",
+            "Resync if the server teleports you.",
+            true);
+
+    private final SyncPosition serverPosition = new SyncPosition();
+
+    private final ConcurrentLinkedQueue<DelayedPacket> packets = new ConcurrentLinkedQueue<>();
+
+    private final MSTimer packetDropTimer = new MSTimer();
+
+    private boolean sentAttackPackets = false;
+    private double currentLocalPlayerRange = 69;
+    private double targetToFakerange = 69;
+    private LivingEntity target;
+
+    public HighPingModule() {
+        super(
+                "High Ping",
+                "Rofl copter high ping tickbase.",
+                Category.EXPLOIT
+        );
+    }
+
+    @Override
+    public void onActivate() {
+        Vandalism.getInstance().getEventSystem().subscribe(
+                this,
+                PlayerUpdateEvent.ID,
+                Render3DEvent.ID,
+                WorldLoadEvent.ID,
+                IncomingPacketEvent.ID
+        );
+
+        Vandalism.getInstance().getEventSystem().subscribe(
+                OutgoingPacketEvent.ID,
+                this,
+                Priorities.HIGH
+        );
+        this.currentLocalPlayerRange = 69;
+        this.targetToFakerange = 69;
+    }
+
+    @Override
+    public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(
+                this,
+                PlayerUpdateEvent.ID,
+                OutgoingPacketEvent.ID,
+                Render3DEvent.ID,
+                WorldLoadEvent.ID,
+                IncomingPacketEvent.ID
+        );
+        handlePackets(true);
+    }
+
+    @Override
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        this.serverPosition.onLivingUpdate();
+
+        if (this.resyncOnDamage.getValue() && mc.player.hurtTime >= this.resyncHurtTime.getValue()) {
+            this.handlePackets(true);
+            this.packetDropTimer.reset();
+        }
+
+        final KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
+        if (killAuraModule != null && killAuraModule.isActive()) {
+            if (killAuraModule.getTarget() instanceof LivingEntity e) {
+                this.target = e;
+                if (killAuraModule.getTarget() instanceof final PlayerEntity player) {
+                    this.calculatePlayerReach(player);
+                }
+            }else{
+                this.target = null;
+            }
+        } else {
+            this.target = null;
+            this.currentLocalPlayerRange = 69;
+            this.targetToFakerange = 69;
+        }
+    }
+
+    @Override
+    public void onOutgoingPacket(final OutgoingPacketEvent event) {
+        final Packet<?> packet = event.packet;
+
+        if (mc.player == null ||
+                (packet instanceof final ClientStatusC2SPacket clientStatusC2SPacket
+                        && clientStatusC2SPacket.getMode().equals(ClientStatusC2SPacket.Mode.PERFORM_RESPAWN))) {
+            handlePackets(true);
+            return;
+        }
+
+        if (packet instanceof final PlayerInteractEntityC2SPacket interact && interact.type == PlayerInteractEntityC2SPacket.ATTACK) {
+            handlePackets(true);
+            this.sentAttackPackets = true;
+            return;
+        }
+
+        event.cancel();
+
+        final long now = System.currentTimeMillis();
+        this.packets.add(new DelayedPacket(packet, now));
+        final boolean localSanityCondition = (this.target != null && this.target.hurtTime <= 2);
+        final boolean serverSanityCondition = mc.player.hurtTime <= 3; //TODO: ADD MORE
+        final boolean localCondition = this.currentLocalPlayerRange > 0 && this.currentLocalPlayerRange <= 3.0 && localSanityCondition;
+        final boolean serverCondition = this.targetToFakerange > 0 && this.targetToFakerange <= 3.16 && serverSanityCondition;
+        handlePackets(localCondition || serverCondition);
+    }
+
+    @Override
+    public void onIncomingPacket(final IncomingPacketEvent event) {
+        if (mc.player == null) {
+            return;
+        }
+
+        if (event.packet instanceof PlayerRespawnS2CPacket && this.resyncOnRespawn.getValue()) {
+            handlePackets(true);
+            this.packetDropTimer.reset();
+        }
+
+        if (event.packet instanceof PlayerPositionLookS2CPacket && this.resyncOnTeleport.getValue()) {
+            handlePackets(true);
+            this.packetDropTimer.reset();
+        }
+    }
+
+    @Override
+    public void onPreWorldLoad() {
+        if (this.resyncOnWorldChange.getValue()) {
+            handlePackets(true);
+            this.packetDropTimer.reset();
+        }
+    }
+
+    @Override
+    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
+        if (this.serverPosition == null) {
+            return;
+        }
+
+        final Vec3d pos = this.serverPosition.pos;
+        if (pos.distanceTo(mc.player.getPos()) < 0.1) {
+            return;
+        }
+
+        matrixStack.push();
+
+        final Box box = new Box(
+                pos.x - mc.player.getWidth() / 2f,
+                pos.y,
+                pos.z - mc.player.getWidth() / 2f,
+                pos.x + mc.player.getWidth() / 2f,
+                pos.y + mc.player.getHeight(),
+                pos.z + mc.player.getWidth() / 2f
+        );
+
+        final Vec3d center = box.getCenter();
+        final double scale = 1.5;
+
+        final Vec3d camPos = mc.gameRenderer.getCamera().getPos();
+        matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
+
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
+
+        matrixStack.push();
+        final double minX = (box.minX - center.x) * scale + center.x;
+        final double minZ = (box.minZ - center.z) * scale + center.z;
+        final double maxX = (box.maxX - center.x) * scale + center.x;
+        final double maxZ = (box.maxZ - center.z) * scale + center.z;
+        DebugRenderer.drawBox(
+                matrixStack,
+                immediate,
+                minX, box.minY, minZ, maxX, box.maxY, maxZ,
+                (float) realColor.getColor().getRed() / 255,
+                (float) realColor.getColor().getGreen() / 255,
+                (float) realColor.getColor().getBlue() / 255,
+                (float) realColor.getColor().getAlpha() / 255
+        );
+        matrixStack.pop();
+
+        immediate.draw();
+
+        matrixStack.pop();
+    }
+
+    private record DelayedPacket(Packet<?> packet, long time) {
+    }
+
+    private void calculatePlayerReach(final PlayerEntity target) {
+        Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedPlayerPair = PredictionSystem.predictState(1);
+        Pair<ClientPlayerEntity, ArrayList<Vec3d>> predictedTargetPair = PredictionSystem.predictState(4, target);
+        final Vec3d pos = this.serverPosition.pos;
+        final Vec3d playerEyePos = predictedPlayerPair.getRight().getFirst().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        final Vec3d serverEyePos = pos.add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        final Vec3d targetEyePos = predictedTargetPair.getRight().getFirst().add(0, target.getEyeHeight(target.getPose()), 0);
+        final Vec3d targetEyePosNext = predictedTargetPair.getRight().get(3).add(0, target.getEyeHeight(target.getPose()), 0);
+        final float[] rotation = this.getBestRotationsCustom(predictedTargetPair.getLeft(), mc.player, predictedTargetPair.getRight().getFirst(), predictedPlayerPair.getRight().getFirst());
+        final float[] targetRotation = this.getBestRotationsCustom(predictedTargetPair.getLeft(), mc.player, predictedTargetPair.getRight().get(3), serverEyePos);
+        final Vec3d playerHitPoint = this.getHitPoint(playerEyePos, rotation[0], rotation[1], targetEyePos);
+        final Vec3d targetHitPoint = this.getHitPoint(serverEyePos, targetRotation[0], targetRotation[1], targetEyePosNext);
+        this.currentLocalPlayerRange = playerEyePos.distanceTo(playerHitPoint);
+        this.targetToFakerange = serverEyePos.distanceTo(targetHitPoint);
+    }
+
+    private void handlePackets(final boolean flush) {
+        long currentTime = System.currentTimeMillis();
+
+        while (!this.packets.isEmpty()) {
+            DelayedPacket packet = this.packets.peek(); // Get the packet at the front of the queue
+            //(50L * (int)Math.round(Math.random() * 5))) {
+            if (flush || currentTime - packet.time() >= this.packetDelay.getValue() + (50L * (int) Math.round(Math.random() * 2))) {
+                Packet currentPacket = this.packets.poll().packet();
+                PacketHelper.sendImmediately(currentPacket, null, true);
+                if (packet.packet() instanceof final PlayerMoveC2SPacket moveC2SPacket) {
+                    this.serverPosition.setPos(
+                            new Vec3d(
+                                    moveC2SPacket.getX(this.serverPosition.pos.x),
+                                    moveC2SPacket.getY(this.serverPosition.pos.y),
+                                    moveC2SPacket.getZ(this.serverPosition.pos.z)
+                            ),
+                            true
+                    );
+                }
+            } else {
+                break; // Stop processing if the next packet isn’t ready for release
+            }
+        }
+    }
+
+    private Vec3d getHitPoint(final Vec3d origin, final float yaw, final float pitch, final Vec3d target) {
+        final Vec3d opponentDirection = Vec3d.fromPolar(pitch, yaw);
+        final double distance = target.distanceTo(origin);
+
+        return origin.add(opponentDirection.multiply(distance));
+    }
+
+    private float[] getBestRotationsCustom(ClientPlayerEntity e, ClientPlayerEntity player, Vec3d targetVec, Vec3d playerVec) {
+        if (e == null) {
+            return new float[]{0, 0};
+        }
+        double offset = 2;
+        float width = (e.getWidth());
+        width /= offset;
+        double deltaX = playerVec.getX() >= targetVec.getX() - width && playerVec.getX() <= targetVec.getX() + width ? 0 : targetVec.getX() - playerVec.getX() < 0 ? targetVec.getX() - playerVec.getX() + width : targetVec.getX() - playerVec.getX() - width;
+        double deltaZ = playerVec.getZ() >= targetVec.getZ() - width && playerVec.getZ() <= targetVec.getZ() + width ? 0 : targetVec.getZ() - playerVec.getZ() < 0 ? targetVec.getZ() - playerVec.getZ() + width : targetVec.getZ() - playerVec.getZ() - width;
+
+        double deltaY = 0;
+
+        if (targetVec.getY() + e.getHeight() < playerVec.getY() + player.getEyeHeight(player.getPose())) {
+            deltaY = targetVec.getY() + e.getHeight() - (playerVec.getY() + player.getEyeHeight(player.getPose()));
+        }
+        if (targetVec.getY() > playerVec.getY() + player.getEyeHeight(player.getPose())) {
+            deltaY = targetVec.getY() - (playerVec.getY() + player.getEyeHeight(player.getPose()));
+        }
+
+        double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2));
+        float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180D / Math.PI) - 90F;
+        float pitch = (float) -Math.toDegrees(Math.atan2(deltaY, distance));
+        return new float[]{yaw, pitch, (float) deltaX, (float) deltaZ};
+    }
+}

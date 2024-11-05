@@ -528,6 +528,12 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
                 return Double.compare(armor1, armor2);
             });
 
+            case HURT_TIME -> entities.sort((entity1, entity2) -> {
+                final int hurtTime1 = entity1 instanceof LivingEntity living1 ? living1.hurtTime : 10;
+                final int hurtTime2 = entity1 instanceof LivingEntity living2 ? living2.hurtTime : 10;
+                return Integer.compare(hurtTime1, hurtTime2);
+            });
+
             case SCOREBOARD_HEALTH -> entities.sort((entity1, entity2) -> {
                 double health1 = getHealthFromScoreboard(entity1);
                 double health2 = getHealthFromScoreboard(entity2);
@@ -674,6 +680,7 @@ public class KillAuraModule extends ClickerModule implements RaytraceListener, R
         HEALTH,
         FOV,
         ARMOR,
+        HURT_TIME,
         SCOREBOARD_HEALTH;
 
         private final String name;
