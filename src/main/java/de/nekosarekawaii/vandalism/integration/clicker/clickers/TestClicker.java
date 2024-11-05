@@ -88,6 +88,14 @@ public class TestClicker extends Clicker implements PlayerUpdateListener {
 
         long currentTime = System.currentTimeMillis();
 
+        final double predicted = Vandalism.getInstance().getCpsTracker().getClickPredictor().getEstimatedDelta();
+        final double delta = Math.abs(predicted - this.delay);
+
+        if (delta < 10) { //Todo this is testwise
+            this.calculateCPS();
+            return;
+        }
+
         while (currentTime - this.lastClickTime >= this.delay) {
             if (ThreadLocalRandom.current().nextDouble() >= this.failClickChance.getValue() * 0.01) {
                 this.clickerModule.onClick();
