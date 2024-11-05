@@ -105,9 +105,6 @@ public class ModulesClientWindow extends ClientWindow {
             final String searchInput = this.searchInput.get();
             if (!searchInput.isBlank()) {
                 for (final Module module : moduleManager.getList()) {
-                    if (menuSettings.hideExperimentalModules.getValue() && module.isExperimental()) {
-                        continue;
-                    }
                     final String moduleName = module.getName();
                     final boolean doesContainName = StringUtils.contains(moduleName, searchInput) || StringUtils.contains(moduleName.replace(" ", ""), searchInput);
                     if (doesContainName || (module.getDescription() != null && StringUtils.contains(module.getDescription(), searchInput))) {
