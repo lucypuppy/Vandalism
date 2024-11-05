@@ -38,6 +38,9 @@ MC_VERSION=$(grep "^minecraft_version=" gradle.properties | cut -d'=' -f2)
 
 cd "$REPO_DIR"
 
+echo "Setting execution permissions..."
+chmod +x ./gradlew
+
 echo "Building the project..."
 ./gradlew build
 if [ $? -ne 0 ]; then
