@@ -57,6 +57,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.storage.NamedStorage;
 import lombok.Getter;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -122,6 +123,12 @@ public class ModuleManager extends NamedStorage<Module> implements
         if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
             this.add(new TestModule());
         }
+        if (FabricLoader.getInstance().isModLoaded("voicechat")) {
+            this.add(
+                    this.henklerSprenklerModule = new HenklerSprenklerModule(),
+                    new HenkelPortModule()
+            );
+        }
         this.add(
                 this.killAuraModule = new KillAuraModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
@@ -153,7 +160,6 @@ public class ModuleManager extends NamedStorage<Module> implements
                 this.noSlowModule = new NoSlowModule(),
                 this.flightModule = new FlightModule(),
                 this.haProxySpooferModule = new HAProxySpooferModule(),
-                this.henklerSprenklerModule = new HenklerSprenklerModule(),
                 this.speedModule = new SpeedModule(),
                 new FakeLagModule(),
                 new AutoClickerModule(),
@@ -219,7 +225,6 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new KaboomFuckerModule(),
                 new ProtocolIdChangerModule(),
                 new NoObfuscatedTextModule(),
-                new HenkelPortModule(),
                 new DerpModule(),
                 new UseItemSpammerModule(),
                 new TriggerBotModule(),
