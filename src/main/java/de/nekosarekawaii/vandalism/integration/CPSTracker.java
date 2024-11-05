@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.integration;
 
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import lombok.Getter;
-import net.minecraft.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,9 @@ public class CPSTracker implements MinecraftWrapper {
     private final List<Long> rightClicks;
     private final ClickPredictor clickPredictor;
 
+    private long lastLeftClick = -1;
+    private long lastRightClick = -1;
+
     public CPSTracker() {
         this.leftClicks = new ArrayList<>();
         this.rightClicks = new ArrayList<>();
@@ -40,21 +42,35 @@ public class CPSTracker implements MinecraftWrapper {
 
     public void update() {
         if (!this.leftClicks.isEmpty()) {
-            this.leftClicks.removeIf((click) -> Util.getMeasuringTimeMs() - click > 1000);
+            this.leftClicks.removeIf((click) -> System.currentTimeMillis() - click > 1000);
         }
         if (!this.rightClicks.isEmpty()) {
-            this.rightClicks.removeIf((click) -> Util.getMeasuringTimeMs() - click > 1000);
+            this.rightClicks.removeIf((click) -> System.currentTimeMillis() - click > 1000);
         }
     }
 
     public void leftClick() {
-        this.leftClicks.add(Util.getMeasuringTimeMs());
-        this.clickPredictor.click(System.currentTimeMillis());
+        final long current = System.currentTimeMillis();
+        this.leftClicks.add(current);
+
+        if (this.lastLeftClick > 0) {
+            final long diff = current - this.lastLeftClick;
+            this.clickPredictor.click(diff);
+        }
+
+        this.lastLeftClick = current;
     }
 
     public void rightClick() {
-        this.rightClicks.add(Util.getMeasuringTimeMs());
-        this.clickPredictor.click(System.currentTimeMillis());
+        final long current = System.currentTimeMillis();
+        this.rightClicks.add(current);
+
+        if (this.lastRightClick > 0) {
+            final long diff = current - this.lastRightClick;
+            this.clickPredictor.click(diff);
+        }
+
+        this.lastRightClick = current;
     }
 
     public int getLeftClicks() {

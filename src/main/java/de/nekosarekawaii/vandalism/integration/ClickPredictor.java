@@ -28,8 +28,6 @@ public class ClickPredictor {
 
     private final EvictingList<Long> clickIntervals = new EvictingList<>(new ArrayList<>(), 200);
 
-    private long lastClick = -1;
-
     @Getter
     private double estimatedDelta = 0;
     private double errorCovariance = 1;
@@ -63,20 +61,20 @@ public class ClickPredictor {
         this.errorCovariance = (1 - kalmanGain) * this.errorCovariance + processNoise;
     }
 
-    public void click(final long current) {
-        final long delta = current - this.lastClick;
-
-        if (this.lastClick <= 0 || delta > 1000) {
-            this.lastClick = current;
+    public void click(final long delta) {
+        if (delta > 1000) {
             return;
         }
 
         predictNextDelta();
         this.clickIntervals.add(delta);
-        this.lastClick = current;
     }
 
     public int getPredictedCPS() {
+        if (this.estimatedDelta == 0) {
+            return 0;
+        }
+
         return (int) (1000 / this.estimatedDelta);
     }
 
