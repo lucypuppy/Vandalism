@@ -199,9 +199,6 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.separator();
                 ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
                 for (final Module module : modulesByCategory) {
-                    if (menuSettings.hideExperimentalModules.getValue() && module.isExperimental()) {
-                        continue;
-                    }
                     this.renderModule(module, "category");
                 }
                 ImGui.endChild();

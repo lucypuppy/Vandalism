@@ -58,13 +58,6 @@ public class MenuSettings extends ValueGroup {
             false
     );
 
-    public final BooleanValue hideExperimentalModules = new BooleanValue(
-            this,
-            "Hide Experimental Modules",
-            "Hides experimental modules in module tabs.",
-            true
-    );
-
     public final FloatValue moduleTabMaxHeight = new FloatValue(
             this,
             "Module Tab Max Height",
