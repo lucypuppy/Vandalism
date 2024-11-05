@@ -348,7 +348,9 @@ public class NoSlowModule extends Module implements PlayerSlowdownListener, CanS
 
     @Override
     public void onShouldSlowdown(final ShouldSlowdownEvent event) {
-        event.shouldSlowdown = false;
+        if (this.getForwardMultiplier() > 0f || this.getSidewaysMultiplier() > 0f) {
+            event.shouldSlowdown = false;
+        }
     }
 
 }
