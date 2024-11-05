@@ -18,26 +18,24 @@
 
 package de.nekosarekawaii.vandalism.integration;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
+import lombok.Getter;
 import net.minecraft.util.Util;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CPSTracker implements MouseInputListener, KeyboardInputListener, MinecraftWrapper {
+@Getter
+public class CPSTracker implements MinecraftWrapper {
 
     private final List<Long> leftClicks;
     private final List<Long> rightClicks;
+    private final ClickPredictor clickPredictor;
 
     public CPSTracker() {
         this.leftClicks = new ArrayList<>();
         this.rightClicks = new ArrayList<>();
-
-        Vandalism.getInstance().getEventSystem().subscribe(this, MouseEvent.ID, KeyboardInputEvent.ID);
+        this.clickPredictor = new ClickPredictor();
     }
 
     public void update() {
@@ -51,10 +49,12 @@ public class CPSTracker implements MouseInputListener, KeyboardInputListener, Mi
 
     public void leftClick() {
         this.leftClicks.add(Util.getMeasuringTimeMs());
+        this.clickPredictor.click();
     }
 
     public void rightClick() {
         this.rightClicks.add(Util.getMeasuringTimeMs());
+        this.clickPredictor.click();
     }
 
     public int getLeftClicks() {
@@ -63,27 +63,6 @@ public class CPSTracker implements MouseInputListener, KeyboardInputListener, Mi
 
     public int getRightClicks() {
         return this.rightClicks.size();
-    }
-
-    @Override
-    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS) return;
-        if (key == mc.options.attackKey.boundKey.getCode()) {
-            this.leftClick();
-        } else if (key == mc.options.useKey.boundKey.getCode()) {
-            this.rightClick();
-        }
-    }
-
-    @Override
-    public void onMouse(final MouseEvent event) {
-        if (event.action != GLFW.GLFW_PRESS) return;
-        final int button = event.button;
-        if (button == mc.options.attackKey.boundKey.getCode()) {
-            this.leftClick();
-        } else if (button == mc.options.useKey.boundKey.getCode()) {
-            this.rightClick();
-        }
     }
 
 }
