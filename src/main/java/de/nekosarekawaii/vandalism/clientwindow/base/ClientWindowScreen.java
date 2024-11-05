@@ -101,6 +101,11 @@ public class ClientWindowScreen extends Screen {
                     }
                 }
                 if (ImGui.beginMainMenuBar()) {
+                    if (ImGui.button("Reset Window Sizes")) {
+                        for (final ClientWindow clientWindow : this.clientWindowManager.getList()) {
+                            clientWindow.resetSize();
+                        }
+                    }
                     if (ImGui.button("Close")) {
                         this.close();
                     }
