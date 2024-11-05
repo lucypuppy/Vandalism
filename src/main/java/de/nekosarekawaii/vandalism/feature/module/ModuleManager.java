@@ -120,15 +120,6 @@ public class ModuleManager extends NamedStorage<Module> implements
 
     @Override
     public void init() {
-        if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
-            this.add(new TestModule());
-        }
-        if (FabricLoader.getInstance().isModLoaded("voicechat")) {
-            this.add(
-                    this.henklerSprenklerModule = new HenklerSprenklerModule(),
-                    new HenkelPortModule()
-            );
-        }
         this.add(
                 this.killAuraModule = new KillAuraModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
@@ -233,8 +224,17 @@ public class ModuleManager extends NamedStorage<Module> implements
                 new MaceInstaKillModule(),
                 new AnticheatChecker()
         );
+        if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
+            this.add(new TestModule());
+        }
         if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
             this.add(new AntiCaptureModule());
+        }
+        if (FabricLoader.getInstance().isModLoaded("voicechat")) {
+            this.add(
+                    this.henklerSprenklerModule = new HenklerSprenklerModule(),
+                    new HenkelPortModule()
+            );
         }
 
         this.configManager.add(new ModuleConfig(this));
