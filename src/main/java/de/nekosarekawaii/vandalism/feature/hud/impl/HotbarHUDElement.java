@@ -203,7 +203,7 @@ public class HotbarHUDElement extends HUDElement {
             final float absorptionPercentage = mc.player.getAbsorptionAmount() / mc.player.getMaxAbsorption();
             this.absorbtionBarAnimation.ease(this.barAnimation.getValue(), absorptionPercentage, this.barAnimationSpeed.getValue());
             RenderUtil.fillWidth(context, x, y - 24, 80, 4, Integer.MIN_VALUE);
-            RenderUtil.fillWidth(context, x, y - 24, 80 * this.armorBarAnimation.getCurrentX(), 4, Color.YELLOW.getRGB());
+            RenderUtil.fillWidth(context, x, y - 24, 80 * this.absorbtionBarAnimation.getCurrentX(), 4, Color.YELLOW.getRGB());
         }
 
         y -= below ? -6 : 6;
