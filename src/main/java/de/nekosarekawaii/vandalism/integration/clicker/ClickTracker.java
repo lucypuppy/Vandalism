@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration;
+package de.nekosarekawaii.vandalism.integration.clicker;
 
 import de.nekosarekawaii.vandalism.util.interfaces.MinecraftWrapper;
 import lombok.Getter;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class CPSTracker implements MinecraftWrapper {
+public class ClickTracker implements MinecraftWrapper {
 
     private final List<Long> leftClicks;
     private final List<Long> rightClicks;
@@ -34,7 +34,7 @@ public class CPSTracker implements MinecraftWrapper {
     private long lastLeftClick = -1;
     private long lastRightClick = -1;
 
-    public CPSTracker() {
+    public ClickTracker() {
         this.leftClicks = new ArrayList<>();
         this.rightClicks = new ArrayList<>();
         this.clickPredictor = new ClickPredictor();

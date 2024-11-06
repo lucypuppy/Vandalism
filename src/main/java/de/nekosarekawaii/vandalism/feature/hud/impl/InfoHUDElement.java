@@ -32,7 +32,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
-import de.nekosarekawaii.vandalism.integration.CPSTracker;
+import de.nekosarekawaii.vandalism.integration.clicker.ClickTracker;
 import de.nekosarekawaii.vandalism.util.DateUtil;
 import de.nekosarekawaii.vandalism.util.ServerUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
@@ -153,6 +153,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             0.01f,
             4.0f
     ).visibleCondition(this.glowOutline::getValue);
+
+    private final BooleanValue debugMode = new BooleanValue(
+            this,
+            "Debug Mode",
+            "Shows debug information.",
+            false
+    );
 
     private final BooleanValue fps = new BooleanValue(
             this,
@@ -476,8 +483,15 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.cps.getValue()) {
-            final CPSTracker cpsTracker = Vandalism.getInstance().getCpsTracker();
-            infoMap.put("CPS", cpsTracker.getLeftClicks() + " | " + cpsTracker.getRightClicks());
+            final ClickTracker clickTracker = Vandalism.getInstance().getClickTracker();
+            infoMap.put("CPS", clickTracker.getLeftClicks() + " | " + clickTracker.getRightClicks());
+
+            if (this.debugMode.getValue()) {
+                final double estimatedCPS = clickTracker.getClickPredictor().getPredictedCPS();
+                final double estimatedDelta = clickTracker.getClickPredictor().getEstimatedDelta();
+
+                infoMap.put("Predicted CPS", String.format("%.2f (%.2f)", estimatedCPS, estimatedDelta));
+            }
         }
 
         if (this.username.getValue()) {

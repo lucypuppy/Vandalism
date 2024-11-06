@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.event.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
-import de.nekosarekawaii.vandalism.integration.CPSTracker;
+import de.nekosarekawaii.vandalism.integration.clicker.ClickTracker;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.minigames.MinigamesManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
@@ -116,7 +116,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private SpotifyManager spotifyManager;
     private ServerDiscoveryManager serverDiscoveryManager;
     private MinigamesManager minigamesManager;
-    private CPSTracker cpsTracker;
+    private ClickTracker clickTracker;
 
     // Features
     private ModuleManager moduleManager;
@@ -195,7 +195,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.minigamesManager = new MinigamesManager(this.configManager, this.clientWindowManager);
         this.minigamesManager.init();
 
-        this.cpsTracker = new CPSTracker();
+        this.clickTracker = new ClickTracker();
 
         // Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientWindowManager);
