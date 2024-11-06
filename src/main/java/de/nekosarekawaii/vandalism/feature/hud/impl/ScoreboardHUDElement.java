@@ -18,8 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.hud.impl;
 
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.render.Shaders;
+import de.nekosarekawaii.vandalism.util.render.effect.fill.BackgroundFillEffect;
+import de.nekosarekawaii.vandalism.util.render.effect.fill.GaussianBlurFillEffect;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentX;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
@@ -38,6 +42,20 @@ import java.awt.*;
 public class ScoreboardHUDElement extends HUDElement {
 
     private final BooleanValue showRedNumbers = new BooleanValue(this, "Show Red Numbers", "Enables Or disables the red numbers", true);
+
+    private final ColorValue backgroundColor = new ColorValue(
+            this,
+            "Background Color",
+            "Color of the hotbar background.",
+            new Color(168, 10, 225, 150)
+    );
+
+    private final BooleanValue blurEnabled = new BooleanValue(
+            this,
+            "Blur",
+            "Enable / Disable hotbar blur.",
+            true
+    );
 
     public ScoreboardHUDElement() {
         super("Scoreboard", false, AlignmentX.RIGHT, AlignmentY.MIDDLE);
@@ -121,7 +139,22 @@ public class ScoreboardHUDElement extends HUDElement {
     }
 
     private void renderBackground(float x, float y, float width, float height) {
-        RenderUtil.drawRoundedRectBlur(x, y, width, height, 8, 16, 8, 16);
+        if (this.blurEnabled.getValue()) {
+            final GaussianBlurFillEffect gaussianBlurFillEffect = Shaders.getGaussianBlurFillEffect();
+            gaussianBlurFillEffect.setDirections(16.0f);
+            gaussianBlurFillEffect.setQuality(8.0f);
+            gaussianBlurFillEffect.setRadius(16.0f);
+            gaussianBlurFillEffect.setTextureId(mc.getFramebuffer().getColorAttachment());
+            gaussianBlurFillEffect.bindMask();
+            RenderUtil.drawRoundedRect(x, y, width, height, 8, Color.BLACK);
+            gaussianBlurFillEffect.renderScissoredScaled(mc.getFramebuffer(), true, (int) x, (int) y, (int) (width), (int) (height));
+        }
+
+        final BackgroundFillEffect backgroundShader = Shaders.getBackgroundFillEffect();
+        backgroundShader.setColor(backgroundColor.getColor());
+        backgroundShader.bindMask();
+        RenderUtil.drawRoundedRect(x, y, width, height, 8, Color.BLACK);
+        backgroundShader.renderScissoredScaled(mc.getFramebuffer(), false, (int) x, (int) y, (int) (width), (int) (height));
     }
 
     private record SidebarEntry(Text name, Text score, int scoreWidth) {

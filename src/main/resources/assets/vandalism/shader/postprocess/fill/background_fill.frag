@@ -1,3 +1,5 @@
+#version 330 core
+
 #ifdef GL_ES
 precision highp float;
 #endif
@@ -6,10 +8,14 @@ precision highp float;
 
 #define NUM_OCTAVES 6
 
+in vec2 RlTexCoord;
+out vec4 FragColor;
+
+uniform sampler2D mask;
+uniform sampler2D tex;
 uniform float u_Time;
 uniform vec2 u_WindowSize;
-uniform float alpha;
-uniform vec3 color;
+uniform vec4 color;
 
 mat3 rotX(float a) {
     float c = cos(a);
@@ -62,6 +68,12 @@ float fbm(vec2 pos) {
 }
 
 void main(void) {
+    vec4 texColor = texture(mask, RlTexCoord);
+    if (texColor.a == 0.0) {
+        discard;
+        return;
+    }
+
     vec2 p = (gl_FragCoord.xy * 3.0 - u_WindowSize.xy) / min(u_WindowSize.x, u_WindowSize.y);
     p -= vec2(12.0, 0.0);
 
@@ -77,8 +89,8 @@ void main(void) {
     r.y = fbm(p + 1.0 * q + vec2(8.3, 2.8) + 0.126 * time2);
     float f = fbm(p + r);
 
-    vec3 color2 = (f * f * f * 1.0 + 0.5 * 1.7 * 0.0 + 0.9 * f) * color;
+    vec3 color2 = (f * f * f * 1.0 + 0.5 * 1.7 * 0.0 + 0.9 * f) * color.rgb;
 
-    gl_FragColor = vec4(color2 * 100.0, color2.r);
-    gl_FragColor = vec4(color2, alpha);
+    FragColor = vec4(color2 * 100.0, color2.r);
+    FragColor = vec4(color2, color.a);
 }
