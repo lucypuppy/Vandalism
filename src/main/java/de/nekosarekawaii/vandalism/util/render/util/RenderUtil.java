@@ -191,7 +191,7 @@ public class RenderUtil implements MinecraftWrapper {
         gaussianBlurFillEffect.setTextureId(mc.getFramebuffer().getColorAttachment());
         gaussianBlurFillEffect.bindMask();
         drawRoundedRect(x, y, width, height, radius, Color.WHITE);
-        gaussianBlurFillEffect.renderScissoredScaled(mc.getFramebuffer(), true, (int) x, (int) y, (int) x + (int) width, (int) y + (int) height);
+        gaussianBlurFillEffect.renderScissoredScaled(mc.getFramebuffer(), false, (int) x, (int) y, (int) x + (int) width, (int) y + (int) height);
     }
 
 }
