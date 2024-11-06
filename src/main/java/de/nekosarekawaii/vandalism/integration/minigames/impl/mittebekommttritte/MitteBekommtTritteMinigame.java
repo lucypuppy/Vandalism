@@ -280,7 +280,7 @@ public class MitteBekommtTritteMinigame extends Minigame {
                 );
             }
         }
-        final String kps = Formatting.WHITE.toString() + Vandalism.getInstance().getCpsTracker().getLeftClicks() + " « Tritte pro Sekunde";
+        final String kps = Formatting.WHITE.toString() + Vandalism.getInstance().getClickTracker().getLeftClicks() + " « Tritte pro Sekunde";
         context.drawText(
                 mc.textRenderer,
                 kps,
