@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.hud.impl;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.EasingTypeValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
@@ -28,9 +26,8 @@ import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.Animator;
 import de.nekosarekawaii.vandalism.util.interfaces.Easing;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
+import de.nekosarekawaii.vandalism.util.render.effect.fill.BackgroundFillEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.GaussianBlurFillEffect;
-import de.nekosarekawaii.vandalism.util.render.gl.shader.GlobalUniforms;
-import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentX;
 import de.nekosarekawaii.vandalism.util.render.util.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
@@ -275,19 +272,11 @@ public class HotbarHUDElement extends HUDElement {
             gaussianBlurFillEffect.renderScissoredScaled(mc.getFramebuffer(), true, (int) x, (int) y, (int) x2, (int) y2);
         }
 
-        final ShaderProgram backgroundShader = Shaders.getHotbarBackgroundShader();
-        backgroundShader.bind();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.disableDepthTest();
-        GlobalUniforms.setGlobalUniforms(backgroundShader, true);
-        backgroundShader.uniform("alpha").set(backgroundColor.getColor().getAlpha() / 255.0f);
-        backgroundShader.uniform("color").set(backgroundColor.getColor(), false);
-        RenderUtil.drawShaderRect(x, y, x2, y2);
-        RenderSystem.disableBlend();
-        RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
-        backgroundShader.unbind();
+        final BackgroundFillEffect backgroundShader = Shaders.getBackgroundFillEffect();
+        backgroundShader.setColor(backgroundColor.getColor());
+        backgroundShader.bindMask();
+        RenderUtil.fill(context, x, y, x2, y2, Integer.MIN_VALUE);
+        backgroundShader.renderScissoredScaled(mc.getFramebuffer(), false, (int) x, (int) y, (int) x2, (int) y2);
     }
 
 }

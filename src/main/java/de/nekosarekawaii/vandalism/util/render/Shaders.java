@@ -65,6 +65,7 @@ public class Shaders {
     @Getter private static TextureFillEffect textureFillEffect;
     @Getter private static InvertedTextureFillEffect invertedTextureFillEffect;
     @Getter private static DepthFilterEffect depthFilterEffect;
+    @Getter private static BackgroundFillEffect backgroundFillEffect;
 
     // Blur
     @Getter private static GaussianBlurFillEffect gaussianBlurFillEffect;
@@ -88,7 +89,6 @@ public class Shaders {
     @Getter private static ShaderProgram backgroundShader;
     @Getter private static ShaderProgram loadingScreenBackgroundShader;
     @Getter private static ShaderProgram ingameGuiBackgroundShader;
-    @Getter private static ShaderProgram hotbarBackgroundShader;
 
     @Getter private static ShaderProgram roundedRectangleShader;
 
@@ -119,7 +119,6 @@ public class Shaders {
         shaders.add(backgroundShader = create("background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/default")));
         shaders.add(loadingScreenBackgroundShader = create("loading_screen_background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/loading_screen")));
         shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui")));
-        shaders.add(hotbarBackgroundShader = create("hotbar_background", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "fragment/background/hotbar_background")));
 
         shaders.add(roundedRectangleShader = create("rounded_rectangle", load(ShaderType.VERTEX, "general_purpose/position"), load(ShaderType.FRAGMENT, "shape/rounded_rectangle")));
 
