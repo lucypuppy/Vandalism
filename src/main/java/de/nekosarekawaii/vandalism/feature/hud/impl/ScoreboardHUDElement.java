@@ -105,7 +105,7 @@ public class ScoreboardHUDElement extends HUDElement {
         int scoreboardWidth = getTextWidth(text);
         int scoreboardHeight = getTextHeight(text);
 
-        int x = 2;
+        int x = 4;
         int y = 2;
         switch (this.alignmentX.getValue()) {
             case MIDDLE -> x = mc.getWindow().getScaledWidth() / 2 - this.width / 2;
@@ -120,7 +120,7 @@ public class ScoreboardHUDElement extends HUDElement {
         x += xOffset.getValue();
         y += yOffset.getValue();
 
-        renderBackground(x, y, this.width + 6, this.height);
+        renderBackground(x - 2, y, this.width + 8, this.height + 2);
         drawText(text, context, x + this.width / 2f - getTextWidth(text) / 2f + 2, y + 2f, false, new Color(255, 255, 255).getRGB());
 
         final int k = getTextWidth(": ");
