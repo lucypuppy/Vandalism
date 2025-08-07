@@ -22,7 +22,7 @@ dependencies {
     jij "de.florianmichael:WaybackAuthLib:1.0.1"
 
     // https://github.com/Lenni0451/MCPing
-    jij "net.lenni0451:MCPing:1.4.2"
+    jij "net.lenni0451:MCPing:1.4.4"
 
     // https://github.com/Lenni0451/Reflect
     jij "net.lenni0451:Reflect:1.4.0"
