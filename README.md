@@ -51,3 +51,5 @@ Ex: ``gradlew wrapper --gradle-version 8.8``
 - New features: `feat/<addition>`
 - Bug fixes: `fix/<addition>`
 
+### Info
+Ist ja licensed unter der GNU General Public License, kann ich ja redistributen. In jeder file steht ja sowieso "This program is free software: you can redistribute it and/or modify".
