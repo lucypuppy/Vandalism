@@ -53,3 +53,6 @@ Ex: ``gradlew wrapper --gradle-version 8.8``
 
 ### Info
 Ist ja licensed unter der GNU General Public License, kann ich ja redistributen. In jeder file steht ja sowieso "This program is free software: you can redistribute it and/or modify".
+
+### Special thanks to
+Verschxlfene (EnZaXD): For making this Client even worse
